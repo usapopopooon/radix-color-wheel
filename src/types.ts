@@ -1,4 +1,62 @@
 /**
+ * RGB color space representation
+ *
+ * @property r - Red (0-255)
+ * @property g - Green (0-255)
+ * @property b - Blue (0-255)
+ */
+export interface RGB {
+  /** Red (0-255) */
+  readonly r: number
+  /** Green (0-255) */
+  readonly g: number
+  /** Blue (0-255) */
+  readonly b: number
+}
+
+/**
+ * RGBA color space representation (RGB with alpha)
+ *
+ * @property r - Red (0-255)
+ * @property g - Green (0-255)
+ * @property b - Blue (0-255)
+ * @property a - Alpha (0-1)
+ */
+export interface RGBA extends RGB {
+  /** Alpha (0-1) */
+  readonly a: number
+}
+
+/**
+ * HSL color space representation
+ *
+ * @property h - Hue (0-360 degrees)
+ * @property s - Saturation (0-100%)
+ * @property l - Lightness (0-100%)
+ */
+export interface HSL {
+  /** Hue (0-360) */
+  readonly h: number
+  /** Saturation (0-100) */
+  readonly s: number
+  /** Lightness (0-100) */
+  readonly l: number
+}
+
+/**
+ * HSLA color space representation (HSL with alpha)
+ *
+ * @property h - Hue (0-360 degrees)
+ * @property s - Saturation (0-100%)
+ * @property l - Lightness (0-100%)
+ * @property a - Alpha (0-1)
+ */
+export interface HSLA extends HSL {
+  /** Alpha (0-1) */
+  readonly a: number
+}
+
+/**
  * HSV color space representation
  *
  * @property h - Hue (0-360 degrees)

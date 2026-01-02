@@ -350,29 +350,64 @@ function CustomComponent() {
 
 ## Utilities
 
+### Color Conversion Functions
+
 ```tsx
 import {
-  hsvToHex,        // (h: number, s: number, v: number) => string
-  hexToHsv,        // (hex: string) => { h: number, s: number, v: number }
-  hsvToRgb,        // (h: number, s: number, v: number) => { r, g, b }
-  rgbToHsv,        // (r: number, g: number, b: number) => { h, s, v }
-  isValidHex,      // (hex: string) => boolean
-  normalizeHex,    // (hex: string) => string (adds # if missing, lowercase)
-  getColorNameEn,  // (hue: number) => string ("red" | "orange" | ...)
-  clamp,           // (value: number, min: number, max: number) => number
+  // HSV conversions
+  hsvToHex,        // (h, s, v) => "#rrggbb"
+  hexToHsv,        // (hex) => { h, s, v }
+
+  // RGB conversions
+  hexToRgb,        // (hex) => { r, g, b }
+  rgbToHex,        // ({ r, g, b }) => "#rrggbb"
+  hexToRgba,       // (hex) => { r, g, b, a }
+  rgbaToHex,       // ({ r, g, b, a }) => "#rrggbbaa"
+
+  // HSL conversions
+  hexToHsl,        // (hex) => { h, s, l }
+  hslToHex,        // ({ h, s, l }) => "#rrggbb"
+  hexToHsla,       // (hex) => { h, s, l, a }
+  hslaToHex,       // ({ h, s, l, a }) => "#rrggbbaa"
+
+  // CSS string conversions
+  hexToCssRgb,     // (hex) => "rgb(r, g, b)" or "rgba(r, g, b, a)"
+  cssRgbToHex,     // (cssRgb) => "#rrggbb" or "#rrggbbaa"
+  hexToCssHsl,     // (hex) => "hsl(h, s%, l%)" or "hsla(h, s%, l%, a)"
+  cssHslToHex,     // (cssHsl) => "#rrggbb" or "#rrggbbaa"
+
+  // Other utilities
+  isValidHex,      // (hex) => boolean
+  normalizeHex,    // (hex) => string (adds # if missing, lowercase)
+  getColorNameEn,  // (hue) => "red" | "orange" | ...
+  clamp,           // (value, min, max) => number
 } from '@usapopo/react-color-wheel'
 ```
 
 ### Examples
 
 ```tsx
-import { hsvToHex, hexToHsv, getColorNameEn } from '@usapopo/react-color-wheel'
+import {
+  hsvToHex, hexToHsv, hexToRgb, rgbToHex,
+  hexToHsl, hslToHex, hexToCssRgb, cssRgbToHex,
+  getColorNameEn
+} from '@usapopo/react-color-wheel'
 
-// HSV to HEX
+// HSV <-> HEX
 const hex = hsvToHex(0, 100, 100) // "#ff0000"
-
-// HEX to HSV
 const hsv = hexToHsv('#00ff00') // { h: 120, s: 100, v: 100 }
+
+// RGB <-> HEX
+const rgb = hexToRgb('#ff0000') // { r: 255, g: 0, b: 0 }
+const hex2 = rgbToHex({ r: 0, g: 255, b: 0 }) // "#00ff00"
+
+// HSL <-> HEX
+const hsl = hexToHsl('#ff0000') // { h: 0, s: 100, l: 50 }
+const hex3 = hslToHex({ h: 120, s: 100, l: 50 }) // "#00ff00"
+
+// CSS strings <-> HEX
+const css = hexToCssRgb('#ff000080') // "rgba(255, 0, 0, 0.5)"
+const hex4 = cssRgbToHex('rgb(0, 255, 0)') // "#00ff00"
 
 // Get color name
 const name = getColorNameEn(30) // "orange"
@@ -449,8 +484,12 @@ import type {
   CopyButtonProps,
   PasteButtonProps,
 
-  // Data Types
-  HSV, // { h: number, s: number, v: number }
+  // Color Types
+  RGB,  // { r: number, g: number, b: number }
+  RGBA, // { r, g, b, a: number }
+  HSL,  // { h: number, s: number, l: number }
+  HSLA, // { h, s, l, a: number }
+  HSV,  // { h: number, s: number, v: number }
   ColorWheelRef, // Imperative API ref type
 } from '@usapopo/react-color-wheel'
 ```

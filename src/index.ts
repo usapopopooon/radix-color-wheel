@@ -24,6 +24,11 @@ export type {
   AlphaSliderProps,
   CopyButtonProps,
   PasteButtonProps,
+  // Color types
+  RGB,
+  RGBA,
+  HSL,
+  HSLA,
   HSV,
   ColorWheelRef,
 } from './types'
@@ -40,4 +45,19 @@ export {
   getSVFromPosition,
   getColorNameEn,
   clamp,
+  // RGB conversions
+  hexToRgb,
+  rgbToHex,
+  hexToRgba,
+  rgbaToHex,
+  // HSL conversions
+  hexToHsl,
+  hslToHex,
+  hexToHsla,
+  hslaToHex,
+  // CSS string conversions
+  hexToCssRgb,
+  cssRgbToHex,
+  hexToCssHsl,
+  cssHslToHex,
 } from './utils'
