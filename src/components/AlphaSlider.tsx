@@ -1,7 +1,7 @@
 import { useMemo, useCallback, useRef } from 'react'
 import { useColorWheelContext } from '../context/ColorWheelContext'
 import { clamp } from '../utils'
-import { cn } from '@/lib/utils'
+import { Thumb } from './Thumb'
 import type { AlphaSliderProps } from '../types'
 
 /**
@@ -34,10 +34,15 @@ export function AlphaSlider({
   const isHorizontal = orientation === 'horizontal'
 
   // Calculate thumb position based on alpha value
-  // Formula: position = alpha / 100 * size
-  const thumbPosition = useMemo(() => {
-    return `${alpha}%`
-  }, [alpha])
+  const thumbPosition = useMemo(() => `${alpha}%`, [alpha])
+
+  // Convert hex to rgba with current alpha for thumb background
+  const thumbColor = useMemo(() => {
+    const r = parseInt(hex.slice(1, 3), 16)
+    const g = parseInt(hex.slice(3, 5), 16)
+    const b = parseInt(hex.slice(5, 7), 16)
+    return `rgba(${r}, ${g}, ${b}, ${alpha / 100})`
+  }, [hex, alpha])
 
   const handlePointerDown = useCallback(
     (e: React.PointerEvent) => {
@@ -146,26 +151,10 @@ export function AlphaSlider({
     [isHorizontal, hex]
   )
 
-  // Convert hex to rgba with current alpha for thumb background
-  const thumbColor = useMemo(() => {
-    const r = parseInt(hex.slice(1, 3), 16)
-    const g = parseInt(hex.slice(3, 5), 16)
-    const b = parseInt(hex.slice(5, 7), 16)
-    return `rgba(${r}, ${g}, ${b}, ${alpha / 100})`
-  }, [hex, alpha])
-
-  const thumbStyle: React.CSSProperties = useMemo(
-    () => ({
-      position: 'absolute',
-      width: 16,
-      height: 16,
-      // Structure: color circle -> white inset shadow (as border) -> outer border -> focus ring
-      boxShadow: 'inset 0 0 0 2px white, 0 0 0 1px rgba(0, 0, 0, 0.3), 0 2px 4px rgba(0, 0, 0, 0.2)',
-      backgroundColor: thumbColor,
-      transform: 'translate(-50%, -50%)',
-      ...(isHorizontal ? { left: thumbPosition, top: '50%' } : { top: thumbPosition, left: '50%' }),
-    }),
-    [isHorizontal, thumbPosition, thumbColor]
+  const thumbPositionStyle: React.CSSProperties = useMemo(
+    () =>
+      isHorizontal ? { left: thumbPosition, top: '50%' } : { top: thumbPosition, left: '50%' },
+    [isHorizontal, thumbPosition]
   )
 
   return (
@@ -179,19 +168,17 @@ export function AlphaSlider({
       onPointerUp={handlePointerUp}
     >
       <div style={gradientStyle} aria-hidden="true" />
-      <div
-        data-color-wheel-thumb
-        className={cn('rounded-full focus-visible:outline focus-visible:outline-3 focus-visible:outline-gray-500/[.75] active:cursor-grabbing')}
-        style={thumbStyle}
-        role="slider"
-        tabIndex={disabled ? -1 : 0}
+      <Thumb
+        size={16}
+        color={thumbColor}
+        style={thumbPositionStyle}
         aria-label="Opacity"
         aria-valuemin={0}
         aria-valuemax={100}
         aria-valuenow={alpha}
         aria-valuetext={`${alpha}%`}
         aria-orientation={orientation}
-        aria-disabled={disabled}
+        disabled={disabled}
         onKeyDown={handleKeyDown}
       />
     </div>

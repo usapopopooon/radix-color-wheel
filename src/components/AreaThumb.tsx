@@ -2,7 +2,7 @@ import { useMemo, useCallback, useRef } from 'react'
 import { useColorWheelContext } from '../context/ColorWheelContext'
 import { useWheelContext } from '../context/WheelContext'
 import { getSVFromPosition, hsvToHex, clamp } from '../utils'
-import { cn } from '@/lib/utils'
+import { Thumb } from './Thumb'
 import type { AreaThumbProps } from '../types'
 
 /**
@@ -48,6 +48,12 @@ export function AreaThumb({ className, style }: AreaThumbProps): React.ReactElem
       y: areaOffset + ((100 - hsv.v) / 100) * areaSize,
     }
   }, [hsv.s, hsv.v, areaSize, areaOffset])
+
+  // Use the current selected color for the thumb
+  const currentColor = useMemo(() => hsvToHex(hsv.h, hsv.s, hsv.v), [hsv.h, hsv.s, hsv.v])
+
+  // Thumb size proportional to wheel size (base: 14px at 200px wheel)
+  const thumbSize = useMemo(() => Math.round(size * 0.07), [size])
 
   const handlePointerDown = useCallback(
     (e: React.PointerEvent) => {
@@ -127,47 +133,30 @@ export function AreaThumb({ className, style }: AreaThumbProps): React.ReactElem
     [disabled, hsv.s, hsv.v, setSaturation, setBrightness]
   )
 
-  // Use the current selected color for the thumb
-  const currentColor = useMemo(() => hsvToHex(hsv.h, hsv.s, hsv.v), [hsv.h, hsv.s, hsv.v])
-
-  // Thumb size proportional to wheel size (base: 14px at 200px wheel)
-  const thumbSize = useMemo(() => Math.round(size * 0.07), [size])
-
-  const thumbStyle: React.CSSProperties = useMemo(
+  const positionStyle: React.CSSProperties = useMemo(
     () => ({
-      position: 'absolute',
-      width: thumbSize,
-      height: thumbSize,
-      // Structure: color circle -> white inset shadow (as border) -> outer border -> focus ring
-      boxShadow: 'inset 0 0 0 2px white, 0 0 0 1px rgba(0, 0, 0, 0.3), 0 2px 4px rgba(0, 0, 0, 0.2)',
-      backgroundColor: currentColor,
-      // Position at calculated point, centered on the thumb
       left: thumbPosition.x,
       top: thumbPosition.y,
-      transform: 'translate(-50%, -50%)',
-      cursor: disabled ? 'not-allowed' : 'grab',
-      touchAction: 'none',
       zIndex: 1,
       ...style,
     }),
-    [thumbSize, thumbPosition, currentColor, disabled, style]
+    [thumbPosition, style]
   )
 
   return (
-    <div
+    <Thumb
       ref={thumbRef}
-      data-color-wheel-area-thumb
-      data-color-wheel-thumb
-      className={cn('rounded-full focus-visible:outline focus-visible:outline-3 focus-visible:outline-gray-500/[.75] active:cursor-grabbing', className)}
-      style={thumbStyle}
-      role="slider"
-      tabIndex={disabled ? -1 : 0}
+      size={thumbSize}
+      color={currentColor}
+      className={className}
+      style={positionStyle}
+      dataAttributes={{ 'color-wheel-area-thumb': '' }}
       aria-label="Saturation and brightness"
       aria-valuemin={0}
       aria-valuemax={100}
       aria-valuenow={hsv.s}
       aria-valuetext={`Saturation ${hsv.s}%, brightness ${hsv.v}%`}
-      aria-disabled={disabled}
+      disabled={disabled}
       onPointerDown={handlePointerDown}
       onPointerMove={handlePointerMove}
       onPointerUp={handlePointerUp}

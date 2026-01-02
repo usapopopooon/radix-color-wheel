@@ -2,7 +2,7 @@ import { useMemo, useCallback, useRef } from 'react'
 import { useColorWheelContext } from '../context/ColorWheelContext'
 import { useWheelContext } from '../context/WheelContext'
 import { getColorNameEn, getHueFromPosition, hsvToHex } from '../utils'
-import { cn } from '@/lib/utils'
+import { Thumb } from './Thumb'
 import type { HueThumbProps } from '../types'
 
 /**
@@ -46,6 +46,9 @@ export function HueThumb({ className, style }: HueThumbProps): React.ReactElemen
 
   // Current hue color for thumb background
   const hueColor = useMemo(() => hsvToHex(hsv.h, 100, 100), [hsv.h])
+
+  // Thumb size proportional to wheel size (base: 14px at 200px wheel)
+  const thumbSize = useMemo(() => Math.round(size * 0.07), [size])
 
   const handlePointerDown = useCallback(
     (e: React.PointerEvent) => {
@@ -117,44 +120,30 @@ export function HueThumb({ className, style }: HueThumbProps): React.ReactElemen
     [disabled, hsv.h, setHue]
   )
 
-  // Thumb size proportional to wheel size (base: 14px at 200px wheel)
-  const thumbSize = useMemo(() => Math.round(size * 0.07), [size])
-
-  const thumbStyle: React.CSSProperties = useMemo(
+  const positionStyle: React.CSSProperties = useMemo(
     () => ({
-      position: 'absolute',
-      width: thumbSize,
-      height: thumbSize,
-      // Structure: color circle -> white inset shadow (as border) -> outer border -> focus ring
-      boxShadow: 'inset 0 0 0 2px white, 0 0 0 1px rgba(0, 0, 0, 0.3), 0 2px 4px rgba(0, 0, 0, 0.2)',
-      backgroundColor: hueColor,
-      // Position at calculated point, centered on the thumb
       left: thumbPosition.x,
       top: thumbPosition.y,
-      transform: 'translate(-50%, -50%)',
-      cursor: disabled ? 'not-allowed' : 'grab',
-      touchAction: 'none',
       ...style,
     }),
-    [thumbSize, thumbPosition, hueColor, disabled, style]
+    [thumbPosition, style]
   )
 
   return (
-    <div
+    <Thumb
       ref={thumbRef}
-      data-color-wheel-hue-thumb
-      data-color-wheel-thumb
-      className={cn('rounded-full focus-visible:outline focus-visible:outline-3 focus-visible:outline-gray-500/[.75] active:cursor-grabbing', className)}
-      style={thumbStyle}
-      role="slider"
-      tabIndex={disabled ? -1 : 0}
+      size={thumbSize}
+      color={hueColor}
+      className={className}
+      style={positionStyle}
+      dataAttributes={{ 'color-wheel-hue-thumb': '' }}
       aria-label="Hue"
       aria-valuemin={0}
       aria-valuemax={360}
       aria-valuenow={hsv.h}
       aria-valuetext={`${getColorNameEn(hsv.h)}, ${hsv.h} degrees`}
       aria-orientation="horizontal"
-      aria-disabled={disabled}
+      disabled={disabled}
       onPointerDown={handlePointerDown}
       onPointerMove={handlePointerMove}
       onPointerUp={handlePointerUp}
