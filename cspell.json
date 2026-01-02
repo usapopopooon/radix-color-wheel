@@ -28,7 +28,8 @@
     "clamp",
     "Chroma",
     "Vitest",
-    "jsdom"
+    "jsdom",
+    "autodocs"
   ],
   "ignorePaths": [
     "node_modules",
