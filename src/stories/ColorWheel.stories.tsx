@@ -3,52 +3,32 @@ import { useState } from 'react'
 import * as ColorWheel from '../components'
 import { ColorWheelSimple } from '../presets/Simple'
 
-/**
- * ColorWheel is a compound component library for building accessible color pickers.
- * It follows the Radix UI design philosophy with composable primitives.
- */
-const meta: Meta<typeof ColorWheelSimple> = {
+const meta = {
   title: 'Components/ColorWheel',
   component: ColorWheelSimple,
   parameters: {
     layout: 'centered',
-    docs: {
-      description: {
-        component:
-          'A flexible color wheel component built with React. Supports HSV color selection with hue ring, saturation/value area, alpha slider, and hex input.',
-      },
-    },
   },
+  tags: ['autodocs'],
   argTypes: {
     size: {
       control: { type: 'number', min: 100, max: 400, step: 10 },
-      description: 'Size of the color wheel in pixels',
-      table: { defaultValue: { summary: '200' } },
     },
     showHexInput: {
       control: 'boolean',
-      description: 'Show hex color input field',
-      table: { defaultValue: { summary: 'true' } },
     },
     showSwatch: {
       control: 'boolean',
-      description: 'Show color swatch preview',
-      table: { defaultValue: { summary: 'true' } },
     },
     disabled: {
       control: 'boolean',
-      description: 'Disable the color wheel',
-      table: { defaultValue: { summary: 'false' } },
     },
   },
-}
+} satisfies Meta<typeof ColorWheelSimple>
 
 export default meta
 type Story = StoryObj<typeof meta>
 
-/**
- * Default color wheel with basic configuration.
- */
 export const Default: Story = {
   args: {
     defaultValue: '#3b82f6',
@@ -56,9 +36,6 @@ export const Default: Story = {
   },
 }
 
-/**
- * Color wheel with hex input and swatch preview.
- */
 export const WithHexInput: Story = {
   args: {
     defaultValue: '#ef4444',
@@ -68,9 +45,6 @@ export const WithHexInput: Story = {
   },
 }
 
-/**
- * Larger color wheel with all options enabled.
- */
 export const LargeWithAllOptions: Story = {
   args: {
     defaultValue: '#22c55e',
@@ -80,9 +54,6 @@ export const LargeWithAllOptions: Story = {
   },
 }
 
-/**
- * Disabled state - the color wheel is non-interactive.
- */
 export const Disabled: Story = {
   args: {
     defaultValue: '#9333ea',
@@ -91,10 +62,7 @@ export const Disabled: Story = {
   },
 }
 
-/**
- * Demonstrates controlled mode with external state management.
- */
-function ControlledStory(): React.ReactElement {
+const ControlledStory = () => {
   const [color, setColor] = useState('#06b6d4')
   return (
     <div>
@@ -106,20 +74,9 @@ function ControlledStory(): React.ReactElement {
 
 export const Controlled: Story = {
   render: () => <ControlledStory />,
-  parameters: {
-    docs: {
-      description: {
-        story:
-          'Use `value` and `onValueChange` for controlled mode with external state management.',
-      },
-    },
-  },
 }
 
-/**
- * Demonstrates different sizes of the color wheel.
- */
-function CustomSizeStory(): React.ReactElement {
+const CustomSizeStory = () => {
   const [color, setColor] = useState('#f97316')
   return (
     <div style={{ display: 'flex', gap: 32, alignItems: 'flex-start' }}>
@@ -151,19 +108,9 @@ function CustomSizeStory(): React.ReactElement {
 
 export const CustomSize: Story = {
   render: () => <CustomSizeStory />,
-  parameters: {
-    docs: {
-      description: {
-        story: 'The color wheel can be customized with different sizes and ring widths.',
-      },
-    },
-  },
 }
 
-/**
- * Demonstrates the compound component API for full customization.
- */
-function CompoundComponentStory(): React.ReactElement {
+const CompoundComponentStory = () => {
   const [color, setColor] = useState('#8b5cf6')
   return (
     <ColorWheel.Root value={color} onValueChange={setColor}>
@@ -188,12 +135,4 @@ function CompoundComponentStory(): React.ReactElement {
 
 export const CompoundComponent: Story = {
   render: () => <CompoundComponentStory />,
-  parameters: {
-    docs: {
-      description: {
-        story:
-          'Use the compound component API (`ColorWheel.Root`, `ColorWheel.Wheel`, etc.) for full customization of the color picker layout.',
-      },
-    },
-  },
 }
