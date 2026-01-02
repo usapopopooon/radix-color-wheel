@@ -20,6 +20,12 @@ const meta = {
     showSwatch: {
       control: 'boolean',
     },
+    showCopyButton: {
+      control: 'boolean',
+    },
+    showPasteButton: {
+      control: 'boolean',
+    },
     disabled: {
       control: 'boolean',
     },
@@ -122,11 +128,42 @@ const CompoundComponentStory = () => {
       </ColorWheel.Wheel>
       <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginTop: 16 }}>
         <ColorWheel.Swatch
-          style={{ width: 40, height: 40, borderRadius: 4, border: '1px solid #ccc' }}
+          style={{ width: 24, height: 24, borderRadius: 4, border: '1px solid #ccc' }}
         />
         <ColorWheel.HexInput
-          style={{ flex: 1, padding: '8px 12px', border: '1px solid #ccc', borderRadius: 4 }}
+          style={{ width: 80, padding: '2px 4px', border: '1px solid #ccc', borderRadius: 4 }}
         />
+        <ColorWheel.CopyButton
+          onCopy={() => console.log('Copied!')}
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            width: 24,
+            height: 24,
+            border: '1px solid #ccc',
+            borderRadius: 4,
+            cursor: 'pointer',
+          }}
+        >
+          Copy
+        </ColorWheel.CopyButton>
+        <ColorWheel.PasteButton
+          onPaste={() => console.log('Pasted!')}
+          onError={() => console.log('Invalid color')}
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            width: 24,
+            height: 24,
+            border: '1px solid #ccc',
+            borderRadius: 4,
+            cursor: 'pointer',
+          }}
+        >
+          Paste
+        </ColorWheel.PasteButton>
       </div>
       <ColorWheel.AlphaSlider style={{ marginTop: 12 }} />
     </ColorWheel.Root>

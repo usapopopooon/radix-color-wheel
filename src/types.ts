@@ -180,6 +180,40 @@ export interface AlphaSliderProps {
 }
 
 /**
+ * Props for ColorWheel.CopyButton component
+ */
+export interface CopyButtonProps {
+  /** Additional CSS class */
+  readonly className?: string
+  /** Inline styles */
+  readonly style?: React.CSSProperties
+  /** Callback after copy (receives the copied hex value) */
+  readonly onCopy?: (hex: string) => void
+  /** When true, renders child element instead of default button */
+  readonly asChild?: boolean
+  /** Child elements */
+  readonly children?: React.ReactNode
+}
+
+/**
+ * Props for ColorWheel.PasteButton component
+ */
+export interface PasteButtonProps {
+  /** Additional CSS class */
+  readonly className?: string
+  /** Inline styles */
+  readonly style?: React.CSSProperties
+  /** Callback after successful paste (receives the pasted hex value) */
+  readonly onPaste?: (hex: string) => void
+  /** Callback when paste fails (invalid format) */
+  readonly onError?: () => void
+  /** When true, renders child element instead of default button */
+  readonly asChild?: boolean
+  /** Child elements */
+  readonly children?: React.ReactNode
+}
+
+/**
  * Props for ColorWheelSimple preset component
  */
 export interface ColorWheelSimpleProps {
@@ -195,6 +229,16 @@ export interface ColorWheelSimpleProps {
   readonly showHexInput?: boolean
   /** Whether to show Swatch */
   readonly showSwatch?: boolean
+  /** Whether to show copy button */
+  readonly showCopyButton?: boolean
+  /** Whether to show paste button */
+  readonly showPasteButton?: boolean
   /** If true, disables all interactions */
   readonly disabled?: boolean
+  /** Callback after copy */
+  readonly onCopy?: (hex: string) => void
+  /** Callback after paste */
+  readonly onPaste?: (hex: string) => void
+  /** Callback when paste fails */
+  readonly onPasteError?: () => void
 }
