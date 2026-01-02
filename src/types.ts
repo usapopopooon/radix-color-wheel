@@ -305,6 +305,33 @@ export interface AlphaSliderProps extends React.ComponentPropsWithoutRef<'div'> 
 }
 
 /**
+ * Props for ColorWheel.HueSlider component
+ */
+export interface HueSliderProps extends React.ComponentPropsWithoutRef<'div'> {
+  /** Orientation of the slider */
+  readonly orientation?: 'horizontal' | 'vertical'
+  /**
+   * If true, inverts the slider direction.
+   * - horizontal: hue 360 on left, 0 on right
+   * - vertical: hue 360 on top, 0 on bottom
+   * @default false
+   */
+  readonly inverted?: boolean
+  /**
+   * Thickness of the slider track in pixels.
+   * For horizontal: height of the slider
+   * For vertical: width of the slider
+   * @default 12
+   */
+  readonly trackSize?: number
+  /**
+   * Size of the thumb in pixels.
+   * @default 16
+   */
+  readonly thumbSize?: number
+}
+
+/**
  * Props for ColorWheel.CopyButton component
  */
 export interface CopyButtonProps extends Omit<

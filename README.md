@@ -158,6 +158,29 @@ Supports `ref` forwarding and all standard `div` attributes.
 | `Alt + ArrowLeft` / `Alt + ArrowDown` | Set alpha to 0% |
 | `Alt + ArrowRight` / `Alt + ArrowUp` | Set alpha to 100% |
 
+### HueSlider
+
+Optional linear hue slider (alternative to circular HueRing).
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `orientation` | `'horizontal' \| 'vertical'` | `'horizontal'` | Slider orientation |
+| `inverted` | `boolean` | `false` | Inverts slider direction (360 on left/top) |
+| `trackSize` | `number` | `12` | Track thickness in pixels |
+| `thumbSize` | `number` | `16` | Thumb size in pixels |
+
+Supports `ref` forwarding and all standard `div` attributes.
+
+**Keyboard Navigation:**
+
+| Key | Action |
+|-----|--------|
+| `ArrowLeft` / `ArrowDown` / `A` / `S` | Decrease hue by 1° |
+| `ArrowRight` / `ArrowUp` / `D` / `W` | Increase hue by 1° |
+| `Shift + Arrow` | Change hue by 10° |
+| `Alt + ArrowLeft` / `Alt + ArrowDown` | Set hue to 0° |
+| `Alt + ArrowRight` / `Alt + ArrowUp` | Set hue to 359° |
+
 ### HexInput
 
 Text input for direct hex color entry.
@@ -294,6 +317,8 @@ function ColorPicker() {
         </ColorWheel.PasteButton>
       </div>
 
+      {/* Linear hue slider (alternative to circular HueRing) */}
+      <ColorWheel.HueSlider className="mt-3" />
       {/* trackSize/thumbSize: custom slider dimensions */}
       <ColorWheel.AlphaSlider className="mt-3" trackSize={16} thumbSize={20} />
       {/* Inverted: opaque on left, transparent on right */}

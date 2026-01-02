@@ -8,6 +8,7 @@ export {
   HexInput,
   Swatch,
   AlphaSlider,
+  HueSlider,
   CopyButton,
   PasteButton,
 } from './components'
@@ -22,6 +23,7 @@ export type {
   HexInputProps,
   SwatchProps,
   AlphaSliderProps,
+  HueSliderProps,
   CopyButtonProps,
   PasteButtonProps,
   // Color types
