@@ -278,15 +278,16 @@ export interface HexInputProps extends Omit<
 export type SwatchProps = React.ComponentPropsWithoutRef<'div'>
 
 /**
- * Props for ColorWheel.AlphaSlider component
+ * Base props for all slider components
  */
-export interface AlphaSliderProps extends React.ComponentPropsWithoutRef<'div'> {
-  /** Orientation of the slider */
+export interface SliderPropsBase extends React.ComponentPropsWithoutRef<'div'> {
+  /**
+   * Orientation of the slider.
+   * @default 'horizontal'
+   */
   readonly orientation?: 'horizontal' | 'vertical'
   /**
    * If true, inverts the slider direction.
-   * - horizontal: opaque on left, transparent on right
-   * - vertical: opaque on top, transparent on bottom
    * @default false
    */
   readonly inverted?: boolean
@@ -303,130 +304,36 @@ export interface AlphaSliderProps extends React.ComponentPropsWithoutRef<'div'> 
    */
   readonly thumbSize?: number
 }
+
+/**
+ * Props for ColorWheel.AlphaSlider component
+ */
+export type AlphaSliderProps = SliderPropsBase
 
 /**
  * Props for ColorWheel.HueSlider component
  */
-export interface HueSliderProps extends React.ComponentPropsWithoutRef<'div'> {
-  /** Orientation of the slider */
-  readonly orientation?: 'horizontal' | 'vertical'
-  /**
-   * If true, inverts the slider direction.
-   * - horizontal: hue 360 on left, 0 on right
-   * - vertical: hue 360 on top, 0 on bottom
-   * @default false
-   */
-  readonly inverted?: boolean
-  /**
-   * Thickness of the slider track in pixels.
-   * For horizontal: height of the slider
-   * For vertical: width of the slider
-   * @default 12
-   */
-  readonly trackSize?: number
-  /**
-   * Size of the thumb in pixels.
-   * @default 16
-   */
-  readonly thumbSize?: number
-}
+export type HueSliderProps = SliderPropsBase
 
 /**
  * Props for ColorWheel.SaturationSlider component
  */
-export interface SaturationSliderProps extends React.ComponentPropsWithoutRef<'div'> {
-  /** Orientation of the slider */
-  readonly orientation?: 'horizontal' | 'vertical'
-  /**
-   * If true, inverts the slider direction.
-   * - horizontal: saturation 100 on left, 0 on right
-   * - vertical: saturation 100 on top, 0 on bottom
-   * @default false
-   */
-  readonly inverted?: boolean
-  /**
-   * Thickness of the slider track in pixels.
-   * @default 12
-   */
-  readonly trackSize?: number
-  /**
-   * Size of the thumb in pixels.
-   * @default 16
-   */
-  readonly thumbSize?: number
-}
+export type SaturationSliderProps = SliderPropsBase
 
 /**
  * Props for ColorWheel.BrightnessSlider component
  */
-export interface BrightnessSliderProps extends React.ComponentPropsWithoutRef<'div'> {
-  /** Orientation of the slider */
-  readonly orientation?: 'horizontal' | 'vertical'
-  /**
-   * If true, inverts the slider direction.
-   * - horizontal: brightness 100 on left, 0 on right
-   * - vertical: brightness 100 on top, 0 on bottom
-   * @default false
-   */
-  readonly inverted?: boolean
-  /**
-   * Thickness of the slider track in pixels.
-   * @default 12
-   */
-  readonly trackSize?: number
-  /**
-   * Size of the thumb in pixels.
-   * @default 16
-   */
-  readonly thumbSize?: number
-}
+export type BrightnessSliderProps = SliderPropsBase
 
 /**
  * Props for ColorWheel.LightnessSlider component
  */
-export interface LightnessSliderProps extends React.ComponentPropsWithoutRef<'div'> {
-  /** Orientation of the slider */
-  readonly orientation?: 'horizontal' | 'vertical'
-  /**
-   * If true, inverts the slider direction.
-   * - horizontal: lightness 100 on left, 0 on right
-   * - vertical: lightness 100 on top, 0 on bottom
-   * @default false
-   */
-  readonly inverted?: boolean
-  /**
-   * Thickness of the slider track in pixels.
-   * @default 12
-   */
-  readonly trackSize?: number
-  /**
-   * Size of the thumb in pixels.
-   * @default 16
-   */
-  readonly thumbSize?: number
-}
+export type LightnessSliderProps = SliderPropsBase
 
 /**
  * Props for ColorWheel.GammaSlider component
  */
-export interface GammaSliderProps extends React.ComponentPropsWithoutRef<'div'> {
-  /** Orientation of the slider */
-  readonly orientation?: 'horizontal' | 'vertical'
-  /**
-   * If true, inverts the slider direction.
-   * @default false
-   */
-  readonly inverted?: boolean
-  /**
-   * Thickness of the slider track in pixels.
-   * @default 12
-   */
-  readonly trackSize?: number
-  /**
-   * Size of the thumb in pixels.
-   * @default 16
-   */
-  readonly thumbSize?: number
+export interface GammaSliderProps extends SliderPropsBase {
   /**
    * Minimum gamma value.
    * @default 0.1

@@ -110,3 +110,17 @@ export {
   getNamedColors,
 } from './colorParser'
 export type { ColorFormat, ParsedColor } from './colorParser'
+
+// Color constants
+export {
+  COLOR_BLACK,
+  COLOR_WHITE,
+  COLOR_TRANSPARENT,
+  GAMMA_GRADIENT,
+  GAMMA_THUMB_GRAY,
+  CHECKERBOARD,
+  getCheckerboardStyle,
+} from './colors'
+
+// Value normalizers
+export { ratioToPercent, ratioToHue, normalizeGamma, ratioToGamma } from './normalizers'

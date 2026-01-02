@@ -1,6 +1,6 @@
 import { forwardRef, useMemo, useCallback, useImperativeHandle, useState } from 'react'
 import { useColorWheelContext } from '../context/ColorWheelContext'
-import { clamp } from '../utils'
+import { normalizeGamma, ratioToGamma, GAMMA_GRADIENT, GAMMA_THUMB_GRAY } from '../utils'
 import { useSliderBase } from '../hooks/useSliderBase'
 import { useSliderKeyboard } from '../hooks/useSliderKeyboard'
 import { Thumb } from './Thumb'
@@ -69,10 +69,7 @@ export const GammaSlider = forwardRef<HTMLDivElement, GammaSliderProps>(
 
     const setGamma = useCallback(
       (newGamma: number) => {
-        const clampedGamma = clamp(newGamma, min, max)
-        // Round to step precision
-        const roundedGamma = Math.round(clampedGamma / step) * step
-        const finalGamma = Math.round(roundedGamma * 100) / 100 // Avoid floating point issues
+        const finalGamma = normalizeGamma(newGamma, min, max, step)
 
         if (!isControlled) {
           setInternalValue(finalGamma)
@@ -84,7 +81,7 @@ export const GammaSlider = forwardRef<HTMLDivElement, GammaSliderProps>(
 
     const handleChange = useCallback(
       (ratio: number) => {
-        const newGamma = min + ratio * (max - min)
+        const newGamma = ratioToGamma(ratio, min, max)
         setGamma(newGamma)
       },
       [min, max, setGamma]
@@ -115,13 +112,9 @@ export const GammaSlider = forwardRef<HTMLDivElement, GammaSliderProps>(
 
     // Thumb color based on gamma: darker for <1, lighter for >1
     const thumbColor = useMemo(() => {
-      // Grayscale range for thumb: darkest (min gamma) to lightest (max gamma)
-      const GRAY_MIN = 28
-      const GRAY_MAX = 228
-      const GRAY_RANGE = GRAY_MAX - GRAY_MIN
-
+      const grayRange = GAMMA_THUMB_GRAY.MAX - GAMMA_THUMB_GRAY.MIN
       const normalized = (gamma - min) / (max - min)
-      const gray = Math.round(normalized * GRAY_RANGE + GRAY_MIN)
+      const gray = Math.round(normalized * grayRange + GAMMA_THUMB_GRAY.MIN)
       return `rgb(${gray}, ${gray}, ${gray})`
     }, [gamma, min, max])
 
@@ -136,7 +129,7 @@ export const GammaSlider = forwardRef<HTMLDivElement, GammaSliderProps>(
         position: 'absolute',
         inset: 0,
         borderRadius,
-        background: `linear-gradient(${gradientDirection}, #1a1a1a, #808080 33%, #e0e0e0)`,
+        background: `linear-gradient(${gradientDirection}, ${GAMMA_GRADIENT.DARK}, ${GAMMA_GRADIENT.MID} 33%, ${GAMMA_GRADIENT.LIGHT})`,
       }),
       [borderRadius, gradientDirection]
     )

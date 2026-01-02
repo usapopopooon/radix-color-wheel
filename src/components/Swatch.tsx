@@ -1,5 +1,6 @@
 import { forwardRef, useMemo } from 'react'
 import { useColorWheelContext } from '../context/ColorWheelContext'
+import { CHECKERBOARD } from '../utils'
 import type { SwatchProps } from '../types'
 
 /**
@@ -31,16 +32,10 @@ export const Swatch = forwardRef<HTMLDivElement, SwatchProps>(
       () => ({
         borderRadius: 4,
         backgroundColor: hex,
-        // Checkerboard pattern for transparency (future alpha support)
-        backgroundImage: `
-        linear-gradient(${hex}, ${hex}),
-        linear-gradient(45deg, #ccc 25%, transparent 25%),
-        linear-gradient(-45deg, #ccc 25%, transparent 25%),
-        linear-gradient(45deg, transparent 75%, #ccc 75%),
-        linear-gradient(-45deg, transparent 75%, #ccc 75%)
-      `,
-        backgroundSize: '100% 100%, 8px 8px, 8px 8px, 8px 8px, 8px 8px',
-        backgroundPosition: '0 0, 0 0, 4px 0, 4px -4px, 0 4px',
+        // Checkerboard pattern for transparency visualization
+        backgroundImage: `linear-gradient(${hex}, ${hex}), ${CHECKERBOARD.BACKGROUND_IMAGE}`,
+        backgroundSize: `100% 100%, ${CHECKERBOARD.BACKGROUND_SIZE}`,
+        backgroundPosition: `0 0, ${CHECKERBOARD.BACKGROUND_POSITION}`,
         ...style,
       }),
       [hex, style]

@@ -1,5 +1,6 @@
 import { forwardRef, useMemo, useCallback, useImperativeHandle } from 'react'
 import { useColorWheelContext } from '../context/ColorWheelContext'
+import { getCheckerboardStyle } from '../utils'
 import { useSliderBase } from '../hooks/useSliderBase'
 import { useSliderKeyboard } from '../hooks/useSliderKeyboard'
 import { Thumb } from './Thumb'
@@ -104,14 +105,7 @@ export const AlphaSlider = forwardRef<HTMLDivElement, AlphaSliderProps>(
     const sliderStyle: React.CSSProperties = useMemo(
       () => ({
         ...baseSliderStyle,
-        backgroundImage: `
-          linear-gradient(45deg, #ccc 25%, transparent 25%),
-          linear-gradient(-45deg, #ccc 25%, transparent 25%),
-          linear-gradient(45deg, transparent 75%, #ccc 75%),
-          linear-gradient(-45deg, transparent 75%, #ccc 75%)
-        `,
-        backgroundSize: '8px 8px',
-        backgroundPosition: '0 0, 0 4px, 4px -4px, -4px 0',
+        ...getCheckerboardStyle(),
         ...style,
       }),
       [baseSliderStyle, style]
