@@ -9,6 +9,10 @@ export {
   Swatch,
   AlphaSlider,
   HueSlider,
+  SaturationSlider,
+  BrightnessSlider,
+  LightnessSlider,
+  GammaSlider,
   CopyButton,
   PasteButton,
 } from './components'
@@ -24,6 +28,10 @@ export type {
   SwatchProps,
   AlphaSliderProps,
   HueSliderProps,
+  SaturationSliderProps,
+  BrightnessSliderProps,
+  LightnessSliderProps,
+  GammaSliderProps,
   CopyButtonProps,
   PasteButtonProps,
   // Color types

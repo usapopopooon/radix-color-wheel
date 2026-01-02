@@ -181,6 +181,106 @@ Supports `ref` forwarding and all standard `div` attributes.
 | `Alt + ArrowLeft` / `Alt + ArrowDown` | Set hue to 0° |
 | `Alt + ArrowRight` / `Alt + ArrowUp` | Set hue to 359° |
 
+### SaturationSlider
+
+Linear slider for adjusting saturation (HSV).
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `orientation` | `'horizontal' \| 'vertical'` | `'horizontal'` | Slider orientation |
+| `inverted` | `boolean` | `false` | Inverts slider direction (100% on left/top) |
+| `trackSize` | `number` | `12` | Track thickness in pixels |
+| `thumbSize` | `number` | `16` | Thumb size in pixels |
+
+Supports `ref` forwarding and all standard `div` attributes.
+
+**Keyboard Navigation:**
+
+| Key | Action |
+|-----|--------|
+| `ArrowLeft` / `ArrowDown` / `A` / `S` | Decrease saturation by 1% |
+| `ArrowRight` / `ArrowUp` / `D` / `W` | Increase saturation by 1% |
+| `Shift + Arrow` | Change saturation by 10% |
+| `Alt + ArrowLeft` / `Alt + ArrowDown` | Set saturation to 0% |
+| `Alt + ArrowRight` / `Alt + ArrowUp` | Set saturation to 100% |
+
+### BrightnessSlider
+
+Linear slider for adjusting brightness/value (HSV).
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `orientation` | `'horizontal' \| 'vertical'` | `'horizontal'` | Slider orientation |
+| `inverted` | `boolean` | `false` | Inverts slider direction (100% on left/top) |
+| `trackSize` | `number` | `12` | Track thickness in pixels |
+| `thumbSize` | `number` | `16` | Thumb size in pixels |
+
+Supports `ref` forwarding and all standard `div` attributes.
+
+**Keyboard Navigation:**
+
+| Key | Action |
+|-----|--------|
+| `ArrowLeft` / `ArrowDown` / `A` / `S` | Decrease brightness by 1% |
+| `ArrowRight` / `ArrowUp` / `D` / `W` | Increase brightness by 1% |
+| `Shift + Arrow` | Change brightness by 10% |
+| `Alt + ArrowLeft` / `Alt + ArrowDown` | Set brightness to 0% |
+| `Alt + ArrowRight` / `Alt + ArrowUp` | Set brightness to 100% |
+
+### LightnessSlider
+
+Linear slider for adjusting lightness (HSL). Displays a gradient from black through pure color (50%) to white.
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `orientation` | `'horizontal' \| 'vertical'` | `'horizontal'` | Slider orientation |
+| `inverted` | `boolean` | `false` | Inverts slider direction (100% on left/top) |
+| `trackSize` | `number` | `12` | Track thickness in pixels |
+| `thumbSize` | `number` | `16` | Thumb size in pixels |
+
+Supports `ref` forwarding and all standard `div` attributes.
+
+**Note:** This slider modifies the color by converting to HSL, adjusting lightness, and converting back. This may result in slight color shifts when used with HSV-based color pickers.
+
+**Keyboard Navigation:**
+
+| Key | Action |
+|-----|--------|
+| `ArrowLeft` / `ArrowDown` / `A` / `S` | Decrease lightness by 1% |
+| `ArrowRight` / `ArrowUp` / `D` / `W` | Increase lightness by 1% |
+| `Shift + Arrow` | Change lightness by 10% |
+| `Alt + ArrowLeft` / `Alt + ArrowDown` | Set lightness to 0% |
+| `Alt + ArrowRight` / `Alt + ArrowUp` | Set lightness to 100% |
+
+### GammaSlider
+
+Independent slider for gamma correction. Unlike other sliders, GammaSlider manages its own state and is not tied to the color wheel's color value.
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `value` | `number` | - | Controlled gamma value |
+| `defaultValue` | `number` | `1.0` | Initial gamma value for uncontrolled mode |
+| `min` | `number` | `0.1` | Minimum gamma value |
+| `max` | `number` | `3.0` | Maximum gamma value |
+| `step` | `number` | `0.1` | Step size for keyboard navigation |
+| `onValueChange` | `(gamma: number) => void` | - | Called when gamma value changes |
+| `orientation` | `'horizontal' \| 'vertical'` | `'horizontal'` | Slider orientation |
+| `inverted` | `boolean` | `false` | Inverts slider direction |
+| `trackSize` | `number` | `12` | Track thickness in pixels |
+| `thumbSize` | `number` | `16` | Thumb size in pixels |
+
+Supports `ref` forwarding and all standard `div` attributes.
+
+**Keyboard Navigation:**
+
+| Key | Action |
+|-----|--------|
+| `ArrowLeft` / `ArrowDown` / `A` / `S` | Decrease gamma by step |
+| `ArrowRight` / `ArrowUp` / `D` / `W` | Increase gamma by step |
+| `Alt + ArrowLeft` / `Alt + ArrowDown` | Set gamma to min |
+| `Alt + ArrowRight` / `Alt + ArrowUp` | Set gamma to max |
+| `Home` | Reset gamma to 1.0 (neutral) |
+
 ### HexInput
 
 Text input for direct hex color entry.
@@ -240,6 +340,11 @@ All components have data attributes for styling:
 | `Area` | `data-color-wheel-area` |
 | `AreaThumb` | `data-color-wheel-thumb` |
 | `AlphaSlider` | `data-color-wheel-alpha-slider` |
+| `HueSlider` | `data-color-wheel-hue-slider` |
+| `SaturationSlider` | `data-color-wheel-saturation-slider` |
+| `BrightnessSlider` | `data-color-wheel-brightness-slider` |
+| `LightnessSlider` | `data-color-wheel-lightness-slider` |
+| `GammaSlider` | `data-color-wheel-gamma-slider` |
 | `HexInput` | `data-color-wheel-hex-input` |
 | `Swatch` | `data-color-wheel-swatch` |
 | `CopyButton` | `data-color-wheel-copy-button` |
@@ -323,6 +428,18 @@ function ColorPicker() {
       <ColorWheel.AlphaSlider className="mt-3" trackSize={16} thumbSize={20} />
       {/* Inverted: opaque on left, transparent on right */}
       <ColorWheel.AlphaSlider className="mt-3" inverted />
+      {/* Additional sliders for fine-tuned color control */}
+      <ColorWheel.SaturationSlider className="mt-3" />
+      <ColorWheel.BrightnessSlider className="mt-3" />
+      <ColorWheel.LightnessSlider className="mt-3" />
+      {/* Gamma slider with custom range and callback */}
+      <ColorWheel.GammaSlider
+        className="mt-3"
+        min={0.5}
+        max={2.5}
+        defaultValue={1.0}
+        onValueChange={(gamma) => console.log('Gamma:', gamma)}
+      />
     </ColorWheel.Root>
   )
 }
@@ -768,6 +885,11 @@ import type {
   HexInputProps,
   SwatchProps,
   AlphaSliderProps,
+  HueSliderProps,
+  SaturationSliderProps,
+  BrightnessSliderProps,
+  LightnessSliderProps,
+  GammaSliderProps,
   CopyButtonProps,
   PasteButtonProps,
 
@@ -788,6 +910,11 @@ This component follows WAI-ARIA best practices:
 - **HueRing**: `role="slider"`, `aria-label="Hue"`, `aria-valuemin/max/now/text`
 - **Area**: `role="slider"`, `aria-label="Saturation and brightness"`, `aria-valuetext`
 - **AlphaSlider**: `role="slider"`, `aria-label="Opacity"`, `aria-valuemin/max/now/text`
+- **HueSlider**: `role="slider"`, `aria-label="Hue"`, `aria-valuemin/max/now/text`
+- **SaturationSlider**: `role="slider"`, `aria-label="Saturation"`, `aria-valuemin/max/now/text`
+- **BrightnessSlider**: `role="slider"`, `aria-label="Brightness"`, `aria-valuemin/max/now/text`
+- **LightnessSlider**: `role="slider"`, `aria-label="Lightness"`, `aria-valuemin/max/now/text`
+- **GammaSlider**: `role="slider"`, `aria-label="Gamma"`, `aria-valuemin/max/now/text`
 - **HexInput**: `aria-label="Hexadecimal color code"`, `aria-invalid` for validation
 - **CopyButton**: `aria-label="Copy color"`
 - **PasteButton**: `aria-label="Paste color"`

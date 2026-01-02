@@ -332,6 +332,132 @@ export interface HueSliderProps extends React.ComponentPropsWithoutRef<'div'> {
 }
 
 /**
+ * Props for ColorWheel.SaturationSlider component
+ */
+export interface SaturationSliderProps extends React.ComponentPropsWithoutRef<'div'> {
+  /** Orientation of the slider */
+  readonly orientation?: 'horizontal' | 'vertical'
+  /**
+   * If true, inverts the slider direction.
+   * - horizontal: saturation 100 on left, 0 on right
+   * - vertical: saturation 100 on top, 0 on bottom
+   * @default false
+   */
+  readonly inverted?: boolean
+  /**
+   * Thickness of the slider track in pixels.
+   * @default 12
+   */
+  readonly trackSize?: number
+  /**
+   * Size of the thumb in pixels.
+   * @default 16
+   */
+  readonly thumbSize?: number
+}
+
+/**
+ * Props for ColorWheel.BrightnessSlider component
+ */
+export interface BrightnessSliderProps extends React.ComponentPropsWithoutRef<'div'> {
+  /** Orientation of the slider */
+  readonly orientation?: 'horizontal' | 'vertical'
+  /**
+   * If true, inverts the slider direction.
+   * - horizontal: brightness 100 on left, 0 on right
+   * - vertical: brightness 100 on top, 0 on bottom
+   * @default false
+   */
+  readonly inverted?: boolean
+  /**
+   * Thickness of the slider track in pixels.
+   * @default 12
+   */
+  readonly trackSize?: number
+  /**
+   * Size of the thumb in pixels.
+   * @default 16
+   */
+  readonly thumbSize?: number
+}
+
+/**
+ * Props for ColorWheel.LightnessSlider component
+ */
+export interface LightnessSliderProps extends React.ComponentPropsWithoutRef<'div'> {
+  /** Orientation of the slider */
+  readonly orientation?: 'horizontal' | 'vertical'
+  /**
+   * If true, inverts the slider direction.
+   * - horizontal: lightness 100 on left, 0 on right
+   * - vertical: lightness 100 on top, 0 on bottom
+   * @default false
+   */
+  readonly inverted?: boolean
+  /**
+   * Thickness of the slider track in pixels.
+   * @default 12
+   */
+  readonly trackSize?: number
+  /**
+   * Size of the thumb in pixels.
+   * @default 16
+   */
+  readonly thumbSize?: number
+}
+
+/**
+ * Props for ColorWheel.GammaSlider component
+ */
+export interface GammaSliderProps extends React.ComponentPropsWithoutRef<'div'> {
+  /** Orientation of the slider */
+  readonly orientation?: 'horizontal' | 'vertical'
+  /**
+   * If true, inverts the slider direction.
+   * @default false
+   */
+  readonly inverted?: boolean
+  /**
+   * Thickness of the slider track in pixels.
+   * @default 12
+   */
+  readonly trackSize?: number
+  /**
+   * Size of the thumb in pixels.
+   * @default 16
+   */
+  readonly thumbSize?: number
+  /**
+   * Minimum gamma value.
+   * @default 0.1
+   */
+  readonly min?: number
+  /**
+   * Maximum gamma value.
+   * @default 3.0
+   */
+  readonly max?: number
+  /**
+   * Step increment for keyboard navigation.
+   * @default 0.1
+   */
+  readonly step?: number
+  /**
+   * Current gamma value (controlled).
+   */
+  readonly value?: number
+  /**
+   * Initial gamma value (uncontrolled).
+   * @default 1.0
+   */
+  readonly defaultValue?: number
+  /**
+   * Callback when gamma value changes.
+   */
+  readonly onValueChange?: (gamma: number) => void
+}
+
+/**
  * Props for ColorWheel.CopyButton component
  */
 export interface CopyButtonProps extends Omit<
