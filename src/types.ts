@@ -148,6 +148,13 @@ export interface HexInputProps {
   readonly style?: React.CSSProperties
   /** Placeholder text */
   readonly placeholder?: string
+  /**
+   * When true, renders the child element instead of the default input.
+   * The child must accept all input props (value, onChange, etc.)
+   */
+  readonly asChild?: boolean
+  /** Child element for asChild mode */
+  readonly children?: React.ReactNode
 }
 
 /**

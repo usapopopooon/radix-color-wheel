@@ -1,0 +1,111 @@
+<style>
+  body {
+    margin: 0;
+    padding: 1rem;
+    transition: background-color 0.3s ease, color 0.3s ease;
+  }
+
+  body.dark {
+    background-color: #1a1a1a !important;
+    color: #ffffff !important;
+  }
+
+  body.light {
+    background-color: #ffffff !important;
+    color: #000000 !important;
+  }
+
+  /* Override Storybook Docs internal styles for dark mode */
+  body.dark .sbdocs,
+  body.dark .sbdocs-wrapper,
+  body.dark .sbdocs-content,
+  body.dark .sbdocs-preview,
+  body.dark .sb-unstyled,
+  body.dark [class*="css-"] {
+    background-color: #1a1a1a !important;
+    color: #ffffff !important;
+    border-color: #444 !important;
+  }
+
+  /* Story preview container */
+  body.dark .docs-story,
+  body.dark .sb-story,
+  body.dark [id^="story--"] {
+    background-color: #1a1a1a !important;
+  }
+
+  /* Canvas/story wrapper */
+  body.dark .innerZoomElementWrapper,
+  body.dark .innerZoomElementWrapper > div {
+    background-color: #1a1a1a !important;
+  }
+
+  /* Keep story content visible */
+  body.dark .sbdocs h1,
+  body.dark .sbdocs h2,
+  body.dark .sbdocs h3,
+  body.dark .sbdocs p,
+  body.dark .sbdocs span,
+  body.dark .sbdocs code {
+    color: #e0e0e0 !important;
+  }
+
+  body.dark .sbdocs code {
+    background-color: #2d2d2d !important;
+  }
+
+  body.dark .sbdocs a {
+    color: #60a5fa !important;
+  }
+
+  /* Table styles for docs */
+  body.dark .sbdocs table,
+  body.dark .sbdocs th,
+  body.dark .sbdocs td {
+    border-color: #444 !important;
+    background-color: #1a1a1a !important;
+    color: #e0e0e0 !important;
+  }
+
+  body.dark .sbdocs th {
+    background-color: #2d2d2d !important;
+  }
+
+  /* Docblock argstable - remove unwanted background */
+  body.dark .docblock-argstable th,
+  body.dark .docblock-argstable tr,
+  body.dark .docblock-argstable thead,
+  body.dark .docblock-argstable thead tr,
+  body.dark .docblock-argstable thead th,
+  body.dark [class*="docblock-argstable"] th,
+  body.dark [class*="docblock-argstable"] tr {
+    background-color: transparent !important;
+    background: transparent !important;
+  }
+
+  body.dark .docblock-argstable,
+  body.dark .docblock-argstable tbody,
+  body.dark .docblock-argstable td,
+  body.dark [class*="docblock-argstable"] {
+    background-color: #1a1a1a !important;
+    color: #e0e0e0 !important;
+  }
+
+  /* All borders in dark mode */
+  body.dark * {
+    border-color: #444 !important;
+  }
+
+  /* Storybook preview block borders */
+  body.dark .sbdocs-preview,
+  body.dark .docs-story {
+    border: 1px solid #444 !important;
+  }
+
+  /* Dividers and separators */
+  body.dark hr,
+  body.dark .sbdocs hr {
+    border-color: #444 !important;
+    background-color: #444 !important;
+  }
+</style>
