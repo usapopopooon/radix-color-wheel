@@ -144,7 +144,7 @@ export function HueThumb({ className, style }: HueThumbProps): React.ReactElemen
       ref={thumbRef}
       data-color-wheel-hue-thumb
       data-color-wheel-thumb
-      className={cn('rounded-full focus-visible:outline focus-visible:outline-3 focus-visible:outline-gray-500/[.75]', className)}
+      className={cn('rounded-full focus-visible:outline focus-visible:outline-3 focus-visible:outline-gray-500/[.75] active:cursor-grabbing', className)}
       style={thumbStyle}
       role="slider"
       tabIndex={disabled ? -1 : 0}

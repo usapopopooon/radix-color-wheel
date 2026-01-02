@@ -28,6 +28,7 @@ export function Swatch({ className, style }: SwatchProps): React.ReactElement {
 
   const swatchStyle: React.CSSProperties = useMemo(
     () => ({
+      borderRadius: 4,
       backgroundColor: hex,
       // Checkerboard pattern for transparency (future alpha support)
       backgroundImage: `

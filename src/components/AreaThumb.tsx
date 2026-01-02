@@ -158,7 +158,7 @@ export function AreaThumb({ className, style }: AreaThumbProps): React.ReactElem
       ref={thumbRef}
       data-color-wheel-area-thumb
       data-color-wheel-thumb
-      className={cn('rounded-full focus-visible:outline focus-visible:outline-3 focus-visible:outline-gray-500/[.75]', className)}
+      className={cn('rounded-full focus-visible:outline focus-visible:outline-3 focus-visible:outline-gray-500/[.75] active:cursor-grabbing', className)}
       style={thumbStyle}
       role="slider"
       tabIndex={disabled ? -1 : 0}

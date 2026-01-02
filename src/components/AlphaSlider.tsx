@@ -115,8 +115,8 @@ export function AlphaSlider({
   const sliderStyle: React.CSSProperties = useMemo(
     () => ({
       position: 'relative',
-      width: isHorizontal ? '100%' : 'var(--cw-slider-height, 12px)',
-      height: isHorizontal ? 'var(--cw-slider-height, 12px)' : '100%',
+      width: isHorizontal ? '100%' : 12,
+      height: isHorizontal ? 12 : '100%',
       minHeight: isHorizontal ? undefined : 100,
       borderRadius: 6,
       // Checkerboard pattern
@@ -150,8 +150,8 @@ export function AlphaSlider({
   const thumbStyle: React.CSSProperties = useMemo(
     () => ({
       position: 'absolute',
-      width: 'var(--cw-slider-thumb-size, 16px)',
-      height: 'var(--cw-slider-thumb-size, 16px)',
+      width: 16,
+      height: 16,
       // Structure: color circle -> white inset shadow (as border) -> outer border -> focus ring
       boxShadow: 'inset 0 0 0 2px white, 0 0 0 1px rgba(0, 0, 0, 0.3), 0 2px 4px rgba(0, 0, 0, 0.2)',
       backgroundColor: hex,
@@ -175,7 +175,7 @@ export function AlphaSlider({
       <div style={gradientStyle} aria-hidden="true" />
       <div
         data-color-wheel-thumb
-        className={cn('rounded-full focus-visible:outline focus-visible:outline-3 focus-visible:outline-gray-500/[.75]')}
+        className={cn('rounded-full focus-visible:outline focus-visible:outline-3 focus-visible:outline-gray-500/[.75] active:cursor-grabbing')}
         style={thumbStyle}
         role="slider"
         tabIndex={disabled ? -1 : 0}

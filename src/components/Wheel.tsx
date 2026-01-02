@@ -45,8 +45,6 @@ export function Wheel({
       position: 'relative',
       width: size,
       height: size,
-      background: 'var(--cw-wheel-bg, #ffffff)',
-      borderRadius: '50%',
       ...style,
     }),
     [size, style]
