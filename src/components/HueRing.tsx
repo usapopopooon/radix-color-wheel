@@ -26,7 +26,7 @@ export const HueRing = forwardRef<HTMLDivElement, HueRingProps>(
   ({ className, style, ...props }, ref) => {
     const { setHue, disabled, jumpOnClick, onDragStart, onDragEnd, hex, onDrag } =
       useColorWheelContext()
-    const { size, ringWidth } = useWheelContext()
+    const { size, ringWidth, hueOffset } = useWheelContext()
     const ringRef = useRef<HTMLDivElement>(null)
 
     useImperativeHandle(ref, () => ringRef.current!, [])
@@ -54,11 +54,11 @@ export const HueRing = forwardRef<HTMLDivElement, HueRingProps>(
           onDragStart?.()
 
           // Calculate and set hue
-          const newHue = getHueFromPosition(x, y, center, center)
+          const newHue = getHueFromPosition(x, y, center, center, hueOffset)
           setHue(Math.round(newHue))
         }
       },
-      [disabled, jumpOnClick, size, ringWidth, setHue, onDragStart]
+      [disabled, jumpOnClick, size, ringWidth, hueOffset, setHue, onDragStart]
     )
 
     const handlePointerMove = useCallback(
@@ -71,11 +71,11 @@ export const HueRing = forwardRef<HTMLDivElement, HueRingProps>(
         const y = e.clientY - rect.top
         const center = size / 2
 
-        const newHue = getHueFromPosition(x, y, center, center)
+        const newHue = getHueFromPosition(x, y, center, center, hueOffset)
         setHue(Math.round(newHue))
         onDrag?.(hex)
       },
-      [disabled, size, setHue, onDrag, hex]
+      [disabled, size, hueOffset, setHue, onDrag, hex]
     )
 
     const handlePointerUp = useCallback(
@@ -97,7 +97,7 @@ export const HueRing = forwardRef<HTMLDivElement, HueRingProps>(
         // This creates a transparent center naturally
         border: `${ringWidth}px solid transparent`,
         backgroundImage: `conic-gradient(
-        from -90deg,
+        from ${hueOffset}deg,
         hsl(0, 100%, 50%),
         hsl(60, 100%, 50%),
         hsl(120, 100%, 50%),
@@ -117,7 +117,7 @@ export const HueRing = forwardRef<HTMLDivElement, HueRingProps>(
         touchAction: 'none',
         ...style,
       }),
-      [ringWidth, style, disabled]
+      [ringWidth, hueOffset, style, disabled]
     )
 
     return (

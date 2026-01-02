@@ -228,6 +228,15 @@ export interface WheelProps extends Omit<React.ComponentPropsWithoutRef<'div'>, 
   readonly size?: number
   /** Width of the hue ring in pixels */
   readonly ringWidth?: number
+  /** Custom thumb size in pixels (default: auto-calculated based on wheel size) */
+  readonly thumbSize?: number
+  /**
+   * Starting angle offset for the hue ring in degrees.
+   * 0 = red at 3 o'clock (right), 90 = red at 6 o'clock (bottom),
+   * -90 = red at 12 o'clock (top), 180 = red at 9 o'clock (left)
+   * @default -90 (red at top)
+   */
+  readonly hueOffset?: number
   /** Child components */
   readonly children: React.ReactNode
 }
@@ -281,6 +290,18 @@ export interface AlphaSliderProps extends React.ComponentPropsWithoutRef<'div'> 
    * @default false
    */
   readonly inverted?: boolean
+  /**
+   * Thickness of the slider track in pixels.
+   * For horizontal: height of the slider
+   * For vertical: width of the slider
+   * @default 12
+   */
+  readonly trackSize?: number
+  /**
+   * Size of the thumb in pixels.
+   * @default 16
+   */
+  readonly thumbSize?: number
 }
 
 /**

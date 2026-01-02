@@ -27,7 +27,18 @@ import type { AlphaSliderProps } from '../types'
  * ```
  */
 export const AlphaSlider = forwardRef<HTMLDivElement, AlphaSliderProps>(
-  ({ className, style, orientation = 'horizontal', inverted = false, ...props }, ref) => {
+  (
+    {
+      className,
+      style,
+      orientation = 'horizontal',
+      inverted = false,
+      trackSize = 12,
+      thumbSize = 16,
+      ...props
+    },
+    ref
+  ) => {
     const {
       hex,
       hex8,
@@ -145,13 +156,15 @@ export const AlphaSlider = forwardRef<HTMLDivElement, AlphaSliderProps>(
       [disabled, alpha, setAlpha]
     )
 
+    const borderRadius = trackSize / 2
+
     const sliderStyle: React.CSSProperties = useMemo(
       () => ({
         position: 'relative',
-        width: isHorizontal ? '100%' : 12,
-        height: isHorizontal ? 12 : '100%',
+        width: isHorizontal ? '100%' : trackSize,
+        height: isHorizontal ? trackSize : '100%',
         minHeight: isHorizontal ? undefined : 100,
-        borderRadius: 6,
+        borderRadius,
         // Checkerboard pattern
         backgroundImage: `
           linear-gradient(45deg, #ccc 25%, transparent 25%),
@@ -165,7 +178,7 @@ export const AlphaSlider = forwardRef<HTMLDivElement, AlphaSliderProps>(
         touchAction: 'none',
         ...style,
       }),
-      [isHorizontal, disabled, style]
+      [isHorizontal, trackSize, borderRadius, disabled, style]
     )
 
     const gradientStyle: React.CSSProperties = useMemo(() => {
@@ -182,10 +195,10 @@ export const AlphaSlider = forwardRef<HTMLDivElement, AlphaSliderProps>(
       return {
         position: 'absolute',
         inset: 0,
-        borderRadius: 6,
+        borderRadius,
         background: `linear-gradient(${gradientDirection}, transparent, ${hex})`,
       }
-    }, [isHorizontal, inverted, hex])
+    }, [isHorizontal, inverted, borderRadius, hex])
 
     const thumbPositionStyle: React.CSSProperties = useMemo(
       () =>
@@ -206,7 +219,7 @@ export const AlphaSlider = forwardRef<HTMLDivElement, AlphaSliderProps>(
       >
         <div style={gradientStyle} aria-hidden="true" />
         <Thumb
-          size={16}
+          size={thumbSize}
           color={thumbColor}
           style={thumbPositionStyle}
           aria-label="Opacity"

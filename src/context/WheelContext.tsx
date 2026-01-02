@@ -43,6 +43,8 @@ export interface WheelContextValue {
   readonly areaSize: number
   /** Calculated thumb size in pixels */
   readonly thumbSize: number
+  /** Hue offset angle in degrees (0 = red at 3 o'clock) */
+  readonly hueOffset: number
 }
 
 /**

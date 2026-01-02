@@ -31,9 +31,24 @@ import type { WheelProps } from '../types'
  * ```
  */
 export const Wheel = forwardRef<HTMLDivElement, WheelProps>(
-  ({ size = 200, ringWidth = 20, className, style, children, ...props }, ref) => {
+  (
+    {
+      size = 200,
+      ringWidth = 20,
+      thumbSize: customThumbSize,
+      hueOffset = -90,
+      className,
+      style,
+      children,
+      ...props
+    },
+    ref
+  ) => {
     const areaSize = useMemo(() => calculateAreaSize(size, ringWidth), [size, ringWidth])
-    const thumbSize = useMemo(() => calculateThumbSize(size), [size])
+    const thumbSize = useMemo(
+      () => customThumbSize ?? calculateThumbSize(size),
+      [customThumbSize, size]
+    )
 
     const contextValue = useMemo<WheelContextValue>(
       () => ({
@@ -41,8 +56,9 @@ export const Wheel = forwardRef<HTMLDivElement, WheelProps>(
         ringWidth,
         areaSize,
         thumbSize,
+        hueOffset,
       }),
-      [size, ringWidth, areaSize, thumbSize]
+      [size, ringWidth, areaSize, thumbSize, hueOffset]
     )
 
     const wheelStyle: React.CSSProperties = useMemo(

@@ -323,3 +323,129 @@ export const AlphaSliderVerticalInverted: StoryFn = () => {
     </div>
   )
 }
+
+/**
+ * Custom thumb size for the wheel.
+ * Larger thumbs are easier to grab on touch devices.
+ */
+export const CustomThumbSize: StoryFn = () => {
+  const [color, setColor] = useState('#3b82f6')
+  return (
+    <div style={{ display: 'flex', gap: 32, alignItems: 'flex-start' }}>
+      <div style={{ textAlign: 'center' }}>
+        <p style={{ marginBottom: 8, color: '#666' }}>Default thumb</p>
+        <ColorWheel.Root value={color} onValueChange={setColor}>
+          <ColorWheel.Wheel size={200} ringWidth={20}>
+            <ColorWheel.HueRing />
+            <ColorWheel.HueThumb />
+            <ColorWheel.Area />
+            <ColorWheel.AreaThumb />
+          </ColorWheel.Wheel>
+        </ColorWheel.Root>
+      </div>
+      <div style={{ textAlign: 'center' }}>
+        <p style={{ marginBottom: 8, color: '#666' }}>Large thumb (24px)</p>
+        <ColorWheel.Root value={color} onValueChange={setColor}>
+          <ColorWheel.Wheel size={200} ringWidth={20} thumbSize={24}>
+            <ColorWheel.HueRing />
+            <ColorWheel.HueThumb />
+            <ColorWheel.Area />
+            <ColorWheel.AreaThumb />
+          </ColorWheel.Wheel>
+        </ColorWheel.Root>
+      </div>
+    </div>
+  )
+}
+
+/**
+ * Custom track and thumb size for AlphaSlider.
+ */
+export const CustomAlphaSliderSize: StoryFn = () => {
+  const [color, setColor] = useState('#8b5cf6')
+  return (
+    <div style={{ width: 300 }}>
+      <ColorWheel.Root value={color} onValueChange={setColor}>
+        <ColorWheel.Wheel size={200} ringWidth={20}>
+          <ColorWheel.HueRing />
+          <ColorWheel.HueThumb />
+          <ColorWheel.Area />
+          <ColorWheel.AreaThumb />
+        </ColorWheel.Wheel>
+        <div style={{ marginTop: 16 }}>
+          <p style={{ fontSize: 12, color: '#666', marginBottom: 4 }}>Default (12px track, 16px thumb):</p>
+          <ColorWheel.AlphaSlider />
+        </div>
+        <div style={{ marginTop: 12 }}>
+          <p style={{ fontSize: 12, color: '#666', marginBottom: 4 }}>Larger (20px track, 24px thumb):</p>
+          <ColorWheel.AlphaSlider trackSize={20} thumbSize={24} />
+        </div>
+        <div style={{ marginTop: 12 }}>
+          <p style={{ fontSize: 12, color: '#666', marginBottom: 4 }}>Slim (8px track, 12px thumb):</p>
+          <ColorWheel.AlphaSlider trackSize={8} thumbSize={12} />
+        </div>
+      </ColorWheel.Root>
+      <p style={{ marginTop: 16, fontFamily: 'monospace' }}>Selected: {color}</p>
+    </div>
+  )
+}
+
+/**
+ * Custom hue offset to change the starting angle of the hue ring.
+ * Default is -90 (red at 12 o'clock).
+ */
+export const CustomHueOffset: StoryFn = () => {
+  const [color, setColor] = useState('#ef4444')
+  return (
+    <div style={{ display: 'flex', gap: 32, alignItems: 'flex-start', flexWrap: 'wrap' }}>
+      <div style={{ textAlign: 'center' }}>
+        <p style={{ marginBottom: 8, color: '#666' }}>Default (-90°)</p>
+        <p style={{ marginBottom: 8, fontSize: 12, color: '#999' }}>Red at top</p>
+        <ColorWheel.Root value={color} onValueChange={setColor}>
+          <ColorWheel.Wheel size={150} ringWidth={16}>
+            <ColorWheel.HueRing />
+            <ColorWheel.HueThumb />
+            <ColorWheel.Area />
+            <ColorWheel.AreaThumb />
+          </ColorWheel.Wheel>
+        </ColorWheel.Root>
+      </div>
+      <div style={{ textAlign: 'center' }}>
+        <p style={{ marginBottom: 8, color: '#666' }}>Offset 0°</p>
+        <p style={{ marginBottom: 8, fontSize: 12, color: '#999' }}>Red at right</p>
+        <ColorWheel.Root value={color} onValueChange={setColor}>
+          <ColorWheel.Wheel size={150} ringWidth={16} hueOffset={0}>
+            <ColorWheel.HueRing />
+            <ColorWheel.HueThumb />
+            <ColorWheel.Area />
+            <ColorWheel.AreaThumb />
+          </ColorWheel.Wheel>
+        </ColorWheel.Root>
+      </div>
+      <div style={{ textAlign: 'center' }}>
+        <p style={{ marginBottom: 8, color: '#666' }}>Offset 90°</p>
+        <p style={{ marginBottom: 8, fontSize: 12, color: '#999' }}>Red at bottom</p>
+        <ColorWheel.Root value={color} onValueChange={setColor}>
+          <ColorWheel.Wheel size={150} ringWidth={16} hueOffset={90}>
+            <ColorWheel.HueRing />
+            <ColorWheel.HueThumb />
+            <ColorWheel.Area />
+            <ColorWheel.AreaThumb />
+          </ColorWheel.Wheel>
+        </ColorWheel.Root>
+      </div>
+      <div style={{ textAlign: 'center' }}>
+        <p style={{ marginBottom: 8, color: '#666' }}>Offset 180°</p>
+        <p style={{ marginBottom: 8, fontSize: 12, color: '#999' }}>Red at left</p>
+        <ColorWheel.Root value={color} onValueChange={setColor}>
+          <ColorWheel.Wheel size={150} ringWidth={16} hueOffset={180}>
+            <ColorWheel.HueRing />
+            <ColorWheel.HueThumb />
+            <ColorWheel.Area />
+            <ColorWheel.AreaThumb />
+          </ColorWheel.Wheel>
+        </ColorWheel.Root>
+      </div>
+    </div>
+  )
+}

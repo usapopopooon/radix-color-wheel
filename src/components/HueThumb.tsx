@@ -26,7 +26,7 @@ import type { HueThumbProps } from '../types'
 export const HueThumb = forwardRef<HTMLDivElement, HueThumbProps>(({ className, style }, ref) => {
   const { hsv, hex, setHue, disabled, onDragStart, onDrag, onDragEnd, onFocus, onBlur } =
     useColorWheelContext()
-  const { size, ringWidth, thumbSize } = useWheelContext()
+  const { size, ringWidth, thumbSize, hueOffset } = useWheelContext()
   const thumbRef = useRef<HTMLDivElement>(null)
 
   // Forward ref to internal thumb element
@@ -34,19 +34,19 @@ export const HueThumb = forwardRef<HTMLDivElement, HueThumbProps>(({ className, 
 
   // Calculate thumb position on the ring
   // Formula: x = center + radius * cos(angle), y = center + radius * sin(angle)
-  // Angle is adjusted: 0 degrees at top (12 o'clock), clockwise
+  // Angle is adjusted based on hueOffset (default -90 = red at top/12 o'clock)
   const thumbPosition = useMemo(() => {
     const center = size / 2
     // Radius is the middle of the ring
     const radius = center - ringWidth / 2
-    // Convert hue to radians, adjusting for 0 at top
-    // Formula: angle = (hue - 90) * pi / 180
-    const angleRad = ((hsv.h - 90) * Math.PI) / 180
+    // Convert hue to radians, adjusting for hueOffset
+    // hueOffset is in CSS convention (0 = 3 o'clock), we add it to hue
+    const angleRad = ((hsv.h + hueOffset) * Math.PI) / 180
     return {
       x: center + radius * Math.cos(angleRad),
       y: center + radius * Math.sin(angleRad),
     }
-  }, [hsv.h, size, ringWidth])
+  }, [hsv.h, size, ringWidth, hueOffset])
 
   // Current hue color for thumb background
   const hueColor = useMemo(() => hsvToHex(hsv.h, 100, 100), [hsv.h])
@@ -77,13 +77,13 @@ export const HueThumb = forwardRef<HTMLDivElement, HueThumbProps>(({ className, 
       const center = size / 2
 
       // Calculate hue from position
-      const newHue = getHueFromPosition(x, y, center, center)
+      const newHue = getHueFromPosition(x, y, center, center, hueOffset)
       setHue(Math.round(newHue))
 
       // Call onDrag with current hex
       onDrag?.(hex)
     },
-    [disabled, size, setHue, onDrag, hex]
+    [disabled, size, hueOffset, setHue, onDrag, hex]
   )
 
   const handlePointerUp = useCallback(

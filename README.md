@@ -81,6 +81,8 @@ Container for the hue ring and saturation/brightness area.
 |------|------|---------|-------------|
 | `size` | `number` | `200` | Wheel diameter in pixels |
 | `ringWidth` | `number` | `20` | Hue ring width in pixels |
+| `thumbSize` | `number` | auto | Custom thumb size in pixels (default: auto-calculated based on wheel size) |
+| `hueOffset` | `number` | `-90` | Starting angle for hue ring in degrees (0=right, -90=top, 90=bottom, 180=left) |
 | `children` | `ReactNode` | - | Child components (HueRing, HueThumb, Area, AreaThumb) |
 
 Supports `ref` forwarding and all standard `div` attributes.
@@ -141,6 +143,8 @@ Optional transparency slider.
 |------|------|---------|-------------|
 | `orientation` | `'horizontal' \| 'vertical'` | `'horizontal'` | Slider orientation |
 | `inverted` | `boolean` | `false` | Inverts slider direction (opaque on left/top) |
+| `trackSize` | `number` | `12` | Track thickness in pixels |
+| `thumbSize` | `number` | `16` | Thumb size in pixels |
 
 Supports `ref` forwarding and all standard `div` attributes.
 
@@ -265,7 +269,8 @@ function ColorPicker() {
       onHueChange={(hue) => console.log('Hue:', hue)}
       jumpOnClick={true} // Default: click on ring/area jumps thumb to position
     >
-      <ColorWheel.Wheel size={240} ringWidth={24}>
+      {/* thumbSize: custom thumb size, hueOffset: red starts at top (-90) */}
+      <ColorWheel.Wheel size={240} ringWidth={24} thumbSize={20} hueOffset={-90}>
         <ColorWheel.HueRing />
         <ColorWheel.HueThumb />
         <ColorWheel.Area />
@@ -289,7 +294,8 @@ function ColorPicker() {
         </ColorWheel.PasteButton>
       </div>
 
-      <ColorWheel.AlphaSlider className="mt-3" />
+      {/* trackSize/thumbSize: custom slider dimensions */}
+      <ColorWheel.AlphaSlider className="mt-3" trackSize={16} thumbSize={20} />
       {/* Inverted: opaque on left, transparent on right */}
       <ColorWheel.AlphaSlider className="mt-3" inverted />
     </ColorWheel.Root>
