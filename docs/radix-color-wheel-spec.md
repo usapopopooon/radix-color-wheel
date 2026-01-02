@@ -590,7 +590,9 @@ ColorWheel.Root          # Context Provider, value management
 │   └── ColorWheel.AreaThumb  # SV thumb
 ├── ColorWheel.AlphaSlider    # Alpha slider (optional)
 ├── ColorWheel.HexInput       # HEX input field (optional)
-└── ColorWheel.Swatch         # Color preview (optional)
+├── ColorWheel.Swatch         # Color preview (optional)
+├── ColorWheel.CopyButton     # Copy color to clipboard (optional)
+└── ColorWheel.PasteButton    # Paste color from clipboard (optional)
 ```
 
 ---
@@ -722,6 +724,35 @@ interface SwatchProps {
 }
 ```
 
+### ColorWheel.CopyButton
+
+Button to copy current color to clipboard.
+
+```tsx
+interface CopyButtonProps {
+  className?: string
+  style?: React.CSSProperties
+  onCopy?: (hex: string) => void  // Callback after copy
+  asChild?: boolean               // Render child element instead of default button
+  children?: React.ReactNode
+}
+```
+
+### ColorWheel.PasteButton
+
+Button to paste color from clipboard.
+
+```tsx
+interface PasteButtonProps {
+  className?: string
+  style?: React.CSSProperties
+  onPaste?: (hex: string) => void  // Callback after successful paste
+  onError?: () => void             // Callback when paste fails (invalid format)
+  asChild?: boolean                // Render child element instead of default button
+  children?: React.ReactNode
+}
+```
+
 ---
 
 ## 使用例
@@ -771,12 +802,25 @@ function App() {
     <ColorWheel.Area />
     <ColorWheel.AreaThumb />
   </ColorWheel.Wheel>
-  
+
   <div className="flex items-center gap-2 mt-4">
-    <ColorWheel.Swatch className="w-10 h-10 rounded border" />
-    <ColorWheel.HexInput className="flex-1 px-2 py-1 border rounded" />
+    <ColorWheel.Swatch className="w-6 h-6 rounded border" />
+    <ColorWheel.HexInput className="w-20 px-2 py-1 border rounded" />
+    <ColorWheel.CopyButton
+      className="p-1 border rounded"
+      onCopy={() => toast('Copied!')}
+    >
+      <CopyIcon />
+    </ColorWheel.CopyButton>
+    <ColorWheel.PasteButton
+      className="p-1 border rounded"
+      onPaste={() => toast('Pasted!')}
+      onError={() => toast.error('Invalid format')}
+    >
+      <PasteIcon />
+    </ColorWheel.PasteButton>
   </div>
-  
+
   <ColorWheel.AlphaSlider className="mt-2" />
 </ColorWheel.Root>
 ```
@@ -1676,7 +1720,9 @@ src/
 │   ├── AreaThumb.tsx
 │   ├── AlphaSlider.tsx
 │   ├── HexInput.tsx
-│   └── Swatch.tsx
+│   ├── Swatch.tsx
+│   ├── CopyButton.tsx
+│   └── PasteButton.tsx
 │
 ├── hooks/
 │   ├── useDrag.ts
@@ -1719,24 +1765,45 @@ For those who find it tedious to write Compound Components every time.
 // src/presets/Simple.tsx
 export function ColorWheelSimple({
   value,
+  defaultValue,
   onValueChange,
   size = 200,
   showHexInput = true,
   showSwatch = true,
-  ...props
+  showCopyButton = true,
+  showPasteButton = true,
+  disabled,
+  onCopy,
+  onPaste,
+  onPasteError,
 }: ColorWheelSimpleProps) {
   return (
-    <ColorWheel.Root value={value} onValueChange={onValueChange} {...props}>
+    <ColorWheel.Root
+      value={value}
+      defaultValue={defaultValue}
+      onValueChange={onValueChange}
+      disabled={disabled}
+    >
       <ColorWheel.Wheel size={size}>
         <ColorWheel.HueRing />
         <ColorWheel.HueThumb />
         <ColorWheel.Area />
         <ColorWheel.AreaThumb />
       </ColorWheel.Wheel>
-      {(showHexInput || showSwatch) && (
-        <div style={{ display: 'flex', gap: 8, marginTop: 8 }}>
+      {(showHexInput || showSwatch || showCopyButton || showPasteButton) && (
+        <div style={{ display: 'flex', gap: 8, marginTop: 12, alignItems: 'center' }}>
           {showSwatch && <ColorWheel.Swatch />}
           {showHexInput && <ColorWheel.HexInput />}
+          {showCopyButton && (
+            <ColorWheel.CopyButton onCopy={onCopy}>
+              <CopyIcon />
+            </ColorWheel.CopyButton>
+          )}
+          {showPasteButton && (
+            <ColorWheel.PasteButton onPaste={onPaste} onError={onPasteError}>
+              <PasteIcon />
+            </ColorWheel.PasteButton>
+          )}
         </div>
       )}
     </ColorWheel.Root>
@@ -1747,7 +1814,7 @@ export function ColorWheelSimple({
 使用例:
 
 ```tsx
-import { ColorWheelSimple } from '@usapopo/radix-color-wheel/simple'
+import { ColorWheelSimple } from '@usapopo/radix-color-wheel'
 
 <ColorWheelSimple value={color} onValueChange={setColor} />
 ```
@@ -1768,6 +1835,8 @@ export {
   AlphaSlider,
   HexInput,
   Swatch,
+  CopyButton,
+  PasteButton,
 } from './components'
 
 export type {
