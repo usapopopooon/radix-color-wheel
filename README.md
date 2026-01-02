@@ -182,4 +182,4 @@ import type {
 
 ## License
 
-MIT
+[MIT](./LICENSE)
