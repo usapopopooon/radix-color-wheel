@@ -106,34 +106,45 @@ export const AreaThumb = forwardRef<HTMLDivElement, AreaThumbProps>(({ className
     (e: React.KeyboardEvent) => {
       if (disabled) return
 
+      // Determine step: Shift = 10, otherwise 1
       const step = e.shiftKey ? 10 : 1
 
       switch (e.key) {
         case 'ArrowLeft':
           e.preventDefault()
-          setSaturation(clamp(hsv.s - step, 0, 100))
+          // Alt: jump to minimum saturation (0)
+          if (e.altKey) {
+            setSaturation(0)
+          } else {
+            setSaturation(clamp(hsv.s - step, 0, 100))
+          }
           break
         case 'ArrowRight':
           e.preventDefault()
-          setSaturation(clamp(hsv.s + step, 0, 100))
+          // Alt: jump to maximum saturation (100)
+          if (e.altKey) {
+            setSaturation(100)
+          } else {
+            setSaturation(clamp(hsv.s + step, 0, 100))
+          }
           break
         case 'ArrowUp':
           e.preventDefault()
-          setBrightness(clamp(hsv.v + step, 0, 100))
+          // Alt: jump to maximum brightness (100)
+          if (e.altKey) {
+            setBrightness(100)
+          } else {
+            setBrightness(clamp(hsv.v + step, 0, 100))
+          }
           break
         case 'ArrowDown':
           e.preventDefault()
-          setBrightness(clamp(hsv.v - step, 0, 100))
-          break
-        case 'Home':
-          e.preventDefault()
-          setSaturation(0)
-          setBrightness(100) // White
-          break
-        case 'End':
-          e.preventDefault()
-          setSaturation(100)
-          setBrightness(100) // Pure hue color
+          // Alt: jump to minimum brightness (0)
+          if (e.altKey) {
+            setBrightness(0)
+          } else {
+            setBrightness(clamp(hsv.v - step, 0, 100))
+          }
           break
       }
     },

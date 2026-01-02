@@ -98,26 +98,29 @@ export const HueThumb = forwardRef<HTMLDivElement, HueThumbProps>(({ className, 
     (e: React.KeyboardEvent) => {
       if (disabled) return
 
+      // Determine step: Shift = 10, otherwise 1
       const step = e.shiftKey ? 10 : 1
 
       switch (e.key) {
         case 'ArrowLeft':
         case 'ArrowDown':
           e.preventDefault()
-          setHue((hsv.h - step + 360) % 360)
+          // Alt: jump to minimum (0)
+          if (e.altKey) {
+            setHue(0)
+          } else {
+            setHue((hsv.h - step + 360) % 360)
+          }
           break
         case 'ArrowRight':
         case 'ArrowUp':
           e.preventDefault()
-          setHue((hsv.h + step) % 360)
-          break
-        case 'Home':
-          e.preventDefault()
-          setHue(0)
-          break
-        case 'End':
-          e.preventDefault()
-          setHue(359)
+          // Alt: jump to maximum (359)
+          if (e.altKey) {
+            setHue(359)
+          } else {
+            setHue((hsv.h + step) % 360)
+          }
           break
       }
     },

@@ -210,7 +210,7 @@ describe('ColorWheel', () => {
     expect(onHueChange).toHaveBeenCalledWith(10)
   })
 
-  it('should set hue to 0 when Home is pressed', () => {
+  it('should set hue to 0 when Alt+ArrowLeft is pressed', () => {
     const onHueChange = vi.fn()
 
     render(
@@ -225,12 +225,12 @@ describe('ColorWheel', () => {
     )
 
     const hueThumb = screen.getByRole('slider', { name: /hue/i })
-    fireEvent.keyDown(hueThumb, { key: 'Home' })
+    fireEvent.keyDown(hueThumb, { key: 'ArrowLeft', altKey: true })
 
     expect(onHueChange).toHaveBeenCalledWith(0)
   })
 
-  it('should set hue to 359 when End is pressed', () => {
+  it('should set hue to 359 when Alt+ArrowRight is pressed', () => {
     const onHueChange = vi.fn()
 
     render(
@@ -245,7 +245,7 @@ describe('ColorWheel', () => {
     )
 
     const hueThumb = screen.getByRole('slider', { name: /hue/i })
-    fireEvent.keyDown(hueThumb, { key: 'End' })
+    fireEvent.keyDown(hueThumb, { key: 'ArrowRight', altKey: true })
 
     expect(onHueChange).toHaveBeenCalledWith(359)
   })

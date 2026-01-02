@@ -57,7 +57,7 @@ describe('AlphaSlider', () => {
     expect(onAlphaChange).toHaveBeenCalledWith(90)
   })
 
-  it('should set alpha to 0 when pressing Home', () => {
+  it('should set alpha to 0 when pressing Alt+ArrowLeft', () => {
     const onAlphaChange = vi.fn()
 
     render(
@@ -67,12 +67,12 @@ describe('AlphaSlider', () => {
     )
 
     const slider = screen.getByRole('slider', { name: /opacity/i })
-    fireEvent.keyDown(slider, { key: 'Home' })
+    fireEvent.keyDown(slider, { key: 'ArrowLeft', altKey: true })
 
     expect(onAlphaChange).toHaveBeenCalledWith(0)
   })
 
-  it('should set alpha to 100 when pressing End', () => {
+  it('should set alpha to 100 when pressing Alt+ArrowRight', () => {
     const onAlphaChange = vi.fn()
 
     render(
@@ -82,7 +82,7 @@ describe('AlphaSlider', () => {
     )
 
     const slider = screen.getByRole('slider', { name: /opacity/i })
-    fireEvent.keyDown(slider, { key: 'End' })
+    fireEvent.keyDown(slider, { key: 'ArrowRight', altKey: true })
 
     expect(onAlphaChange).toHaveBeenCalledWith(100)
   })

@@ -104,26 +104,29 @@ export const AlphaSlider = forwardRef<HTMLDivElement, AlphaSliderProps>(
       (e: React.KeyboardEvent) => {
         if (disabled) return
 
+        // Determine step: Shift = 10, otherwise 1
         const step = e.shiftKey ? 10 : 1
 
         switch (e.key) {
           case 'ArrowLeft':
           case 'ArrowDown':
             e.preventDefault()
-            setAlpha(clamp(alpha - step, 0, 100))
+            // Alt: jump to minimum (0)
+            if (e.altKey) {
+              setAlpha(0)
+            } else {
+              setAlpha(clamp(alpha - step, 0, 100))
+            }
             break
           case 'ArrowRight':
           case 'ArrowUp':
             e.preventDefault()
-            setAlpha(clamp(alpha + step, 0, 100))
-            break
-          case 'Home':
-            e.preventDefault()
-            setAlpha(0)
-            break
-          case 'End':
-            e.preventDefault()
-            setAlpha(100)
+            // Alt: jump to maximum (100)
+            if (e.altKey) {
+              setAlpha(100)
+            } else {
+              setAlpha(clamp(alpha + step, 0, 100))
+            }
             break
         }
       },

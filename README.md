@@ -96,8 +96,8 @@ Supports `ref` forwarding and all standard `div` attributes.
 | `ArrowLeft` / `ArrowDown` | Decrease hue by 1° |
 | `ArrowRight` / `ArrowUp` | Increase hue by 1° |
 | `Shift + Arrow` | Change hue by 10° |
-| `Home` | Set hue to 0° |
-| `End` | Set hue to 359° |
+| `Alt + ArrowLeft` / `Alt + ArrowDown` | Set hue to 0° |
+| `Alt + ArrowRight` / `Alt + ArrowUp` | Set hue to 359° |
 
 ### HueThumb
 
@@ -120,10 +120,10 @@ Supports `ref` forwarding and all standard `div` attributes.
 | `ArrowUp` | Increase brightness by 1% |
 | `ArrowDown` | Decrease brightness by 1% |
 | `Shift + Arrow` | Change by 10% |
-| `Home` | Set saturation to 0% |
-| `End` | Set saturation to 100% |
-| `PageUp` | Set brightness to 100% |
-| `PageDown` | Set brightness to 0% |
+| `Alt + ArrowLeft` | Set saturation to 0% |
+| `Alt + ArrowRight` | Set saturation to 100% |
+| `Alt + ArrowUp` | Set brightness to 100% |
+| `Alt + ArrowDown` | Set brightness to 0% |
 
 ### AreaThumb
 
@@ -148,8 +148,8 @@ Supports `ref` forwarding and all standard `div` attributes.
 | `ArrowLeft` / `ArrowDown` | Decrease alpha by 1% |
 | `ArrowRight` / `ArrowUp` | Increase alpha by 1% |
 | `Shift + Arrow` | Change alpha by 10% |
-| `Home` | Set alpha to 0% |
-| `End` | Set alpha to 100% |
+| `Alt + ArrowLeft` / `Alt + ArrowDown` | Set alpha to 0% |
+| `Alt + ArrowRight` / `Alt + ArrowUp` | Set alpha to 100% |
 
 ### HexInput
 
