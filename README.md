@@ -4,6 +4,10 @@
 
 A fully accessible color wheel component for React, following the [Radix UI](https://www.radix-ui.com/) Compound Components pattern.
 
+## Screen Shot Example
+
+<p alt="Screen Shot Example" align="center"><img width="240" src="./docs/img/color-wheel-screen-shot.png" /></p>
+
 ## Features
 
 - **Compound Components** - Compose your own color picker with full control
