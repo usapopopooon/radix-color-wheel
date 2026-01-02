@@ -1,5 +1,8 @@
 /* CSS Variables for customization */
 [data-color-wheel-root] {
+  /* Wheel background (used for inner circle mask) */
+  --cw-wheel-bg: #ffffff;
+
   /* Thumb */
   --cw-thumb-size: 14px;
   --cw-thumb-border-color: #ffffff;

@@ -23,6 +23,9 @@ import type { HueRingProps } from '../types'
 export function HueRing({ className, style }: HueRingProps): JSX.Element {
   const { size, ringWidth } = useWheelContext()
 
+  // Inner mask size (to cut out the center)
+  const innerSize = size - ringWidth * 2
+
   const ringStyle: React.CSSProperties = useMemo(
     () => ({
       position: 'absolute',
@@ -40,21 +43,22 @@ export function HueRing({ className, style }: HueRingProps): JSX.Element {
         hsl(300, 100%, 50%),
         hsl(360, 100%, 50%)
       )`,
-      // Cut out center to create ring shape using CSS mask
-      // Formula: inner radius = (size/2 - ringWidth) / (size/2) * 100%
-      WebkitMask: `radial-gradient(
-        circle,
-        transparent ${((size / 2 - ringWidth) / (size / 2)) * 100}%,
-        black ${((size / 2 - ringWidth) / (size / 2)) * 100}%
-      )`,
-      mask: `radial-gradient(
-        circle,
-        transparent ${((size / 2 - ringWidth) / (size / 2)) * 100}%,
-        black ${((size / 2 - ringWidth) / (size / 2)) * 100}%
-      )`,
       ...style,
     }),
-    [size, ringWidth, style]
+    [style]
+  )
+
+  const maskStyle: React.CSSProperties = useMemo(
+    () => ({
+      position: 'absolute',
+      top: ringWidth,
+      left: ringWidth,
+      width: innerSize,
+      height: innerSize,
+      borderRadius: '50%',
+      background: 'var(--cw-wheel-bg, #ffffff)',
+    }),
+    [ringWidth, innerSize]
   )
 
   return (
@@ -62,7 +66,9 @@ export function HueRing({ className, style }: HueRingProps): JSX.Element {
       data-color-wheel-hue-ring
       className={className}
       style={ringStyle}
-      aria-hidden="true" // Decorative, interaction handled by HueThumb
-    />
+      aria-hidden="true"
+    >
+      <div data-color-wheel-hue-ring-mask style={maskStyle} />
+    </div>
   )
 }
