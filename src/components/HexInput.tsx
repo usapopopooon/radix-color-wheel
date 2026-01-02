@@ -1,4 +1,4 @@
-import { useState, useCallback, useEffect, useMemo, useId } from 'react'
+import { useState, useCallback, useMemo, useId } from 'react'
 import { Primitive } from '@radix-ui/react-primitive'
 import { useColorWheelContext } from '../context/ColorWheelContext'
 import type { HexInputProps } from '../types'
@@ -64,39 +64,32 @@ export function HexInput({
   const { hex, setHex, disabled } = useColorWheelContext()
   const hintId = useId()
 
-  // Local state for input value (allows invalid intermediate states)
-  const [inputValue, setInputValue] = useState(hex)
+  // Local state for editing
   const [isEditing, setIsEditing] = useState(false)
+  const [editingValue, setEditingValue] = useState('')
 
-  // Sync input value with context when not editing
-  useEffect(() => {
-    if (!isEditing) {
-      setInputValue(hex)
-    }
-  }, [hex, isEditing])
+  // Display value: show editing value when editing, otherwise show hex from context
+  const displayValue = isEditing ? editingValue : hex
 
   // Check if current input is valid
-  const isValid = useMemo(() => isValidHex(normalizeHex(inputValue)), [inputValue])
+  const isValid = useMemo(() => isValidHex(normalizeHex(displayValue)), [displayValue])
 
   const handleChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
-    setInputValue(e.target.value)
+    setEditingValue(e.target.value)
   }, [])
 
   const handleFocus = useCallback(() => {
+    setEditingValue(hex)
     setIsEditing(true)
-  }, [])
+  }, [hex])
 
   const commitValue = useCallback(() => {
-    setIsEditing(false)
-    const normalized = normalizeHex(inputValue)
+    const normalized = normalizeHex(editingValue)
     if (isValidHex(normalized)) {
       setHex(normalized)
-      setInputValue(normalized)
-    } else {
-      // Revert to current context value on invalid input
-      setInputValue(hex)
     }
-  }, [inputValue, hex, setHex])
+    setIsEditing(false)
+  }, [editingValue, setHex])
 
   const handleBlur = useCallback(() => {
     commitValue()
@@ -111,11 +104,10 @@ export function HexInput({
       } else if (e.key === 'Escape') {
         e.preventDefault()
         setIsEditing(false)
-        setInputValue(hex)
         ;(e.target as HTMLInputElement).blur()
       }
     },
-    [commitValue, hex]
+    [commitValue]
   )
 
   const inputStyle: React.CSSProperties = useMemo(
@@ -136,7 +128,7 @@ export function HexInput({
         data-color-wheel-hex-input
         className={className}
         style={inputStyle}
-        value={inputValue}
+        value={displayValue}
         placeholder={placeholder}
         disabled={disabled}
         aria-label="Hexadecimal color code"

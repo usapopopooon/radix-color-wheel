@@ -93,23 +93,23 @@ export function Root({
 
   // Live region for screen reader announcements
   const announcementId = useId()
-  const [announcement, setAnnouncement] = useState('')
+  const announcementRef = useRef<HTMLDivElement>(null)
   const announcementTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null)
-
-  // Announce color changes to screen readers
   const prevHexRef = useRef(hex)
+
+  // Announce color changes to screen readers via direct DOM manipulation
   useEffect(() => {
     if (prevHexRef.current !== hex) {
       prevHexRef.current = hex
-      // Only announce when not dragging to avoid excessive announcements
-      if (!isDragging) {
-        setAnnouncement(`Color changed to ${hex}`)
-        // Clear announcement after a short delay
+      if (!isDragging && announcementRef.current) {
+        announcementRef.current.textContent = `Color changed to ${hex}`
         if (announcementTimeoutRef.current) {
           clearTimeout(announcementTimeoutRef.current)
         }
         announcementTimeoutRef.current = setTimeout(() => {
-          setAnnouncement('')
+          if (announcementRef.current) {
+            announcementRef.current.textContent = ''
+          }
         }, 1000)
       }
     }
@@ -226,6 +226,7 @@ export function Root({
         {children}
         {/* Screen reader announcement region */}
         <div
+          ref={announcementRef}
           id={announcementId}
           role="status"
           aria-live="polite"
@@ -241,9 +242,7 @@ export function Root({
             whiteSpace: 'nowrap',
             border: 0,
           }}
-        >
-          {announcement}
-        </div>
+        />
       </div>
     </ColorWheelContext.Provider>
   )
