@@ -1,6 +1,6 @@
 import { useCallback } from 'react'
-import { Primitive } from '@radix-ui/react-primitive'
 import { useColorWheelContext } from '../context/ColorWheelContext'
+import { Button } from './ui/button'
 import type { PasteButtonProps } from '../types'
 
 /**
@@ -69,8 +69,9 @@ export function PasteButton({
   }, [disabled, setHex, onPaste, onError])
 
   return (
-    <Primitive.button
+    <Button
       type="button"
+      variant="outline"
       data-color-wheel-paste-button
       className={className}
       style={style}
@@ -80,6 +81,6 @@ export function PasteButton({
       asChild={asChild}
     >
       {children}
-    </Primitive.button>
+    </Button>
   )
 }

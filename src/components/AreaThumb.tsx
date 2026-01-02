@@ -2,6 +2,7 @@ import { useMemo, useCallback, useRef } from 'react'
 import { useColorWheelContext } from '../context/ColorWheelContext'
 import { useWheelContext } from '../context/WheelContext'
 import { getSVFromPosition, hsvToHex, clamp } from '../utils'
+import { cn } from '@/lib/utils'
 import type { AreaThumbProps } from '../types'
 
 /**
@@ -134,9 +135,8 @@ export function AreaThumb({ className, style }: AreaThumbProps): React.ReactElem
       position: 'absolute',
       width: 14,
       height: 14,
-      borderRadius: '50%',
-      border: '2px solid #fff',
-      boxShadow: '0 0 0 1px rgba(0, 0, 0, 0.3), 0 2px 4px rgba(0, 0, 0, 0.2)',
+      // Structure: color circle -> white inset shadow (as border) -> outer border -> focus ring
+      boxShadow: 'inset 0 0 0 2px white, 0 0 0 1px rgba(0, 0, 0, 0.3), 0 2px 4px rgba(0, 0, 0, 0.2)',
       backgroundColor: currentColor,
       // Position at calculated point, centered on the thumb
       left: thumbPosition.x,
@@ -155,7 +155,7 @@ export function AreaThumb({ className, style }: AreaThumbProps): React.ReactElem
       ref={thumbRef}
       data-color-wheel-area-thumb
       data-color-wheel-thumb
-      className={className}
+      className={cn('rounded-full focus-visible:outline focus-visible:outline-3 focus-visible:outline-gray-500/[.75]', className)}
       style={thumbStyle}
       role="slider"
       tabIndex={disabled ? -1 : 0}

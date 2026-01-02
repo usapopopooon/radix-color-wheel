@@ -1,6 +1,7 @@
 import { useState, useCallback, useMemo, useId } from 'react'
-import { Primitive } from '@radix-ui/react-primitive'
 import { useColorWheelContext } from '../context/ColorWheelContext'
+import { Input } from './ui/input'
+import { cn } from '@/lib/utils'
 import type { HexInputProps } from '../types'
 
 /**
@@ -34,32 +35,21 @@ function normalizeHex(value: string): string {
  *
  * Allows users to type a HEX color code directly.
  * Validates input and updates the color on Enter or blur.
- * Supports asChild pattern for custom input components (e.g., shadcn/ui Input).
  *
  * @param props - Component props
  * @param props.className - Additional CSS class
  * @param props.style - Inline styles
  * @param props.placeholder - Placeholder text
- * @param props.asChild - When true, renders child element instead of default input
- * @param props.children - Child element for asChild mode
  *
  * @example
  * ```tsx
- * // Default usage
- * <ColorWheel.HexInput className="mt-2 px-2 py-1 border rounded" />
- *
- * // With asChild and shadcn/ui Input
- * <ColorWheel.HexInput asChild>
- *   <Input placeholder="#000000" />
- * </ColorWheel.HexInput>
+ * <ColorWheel.HexInput className="w-24" />
  * ```
  */
 export function HexInput({
   className,
   style,
   placeholder = '#000000',
-  asChild = false,
-  children,
 }: HexInputProps): React.ReactElement {
   const { hex, setHex, disabled } = useColorWheelContext()
   const hintId = useId()
@@ -110,24 +100,13 @@ export function HexInput({
     [commitValue]
   )
 
-  const inputStyle: React.CSSProperties = useMemo(
-    () => ({
-      fontFamily: 'monospace',
-      backgroundColor: 'var(--cw-input-bg)',
-      color: 'var(--cw-input-text)',
-      borderColor: 'var(--cw-input-border)',
-      ...style,
-    }),
-    [style]
-  )
-
   return (
     <>
-      <Primitive.input
+      <Input
         type="text"
         data-color-wheel-hex-input
-        className={className}
-        style={inputStyle}
+        className={cn('w-24 font-mono', className)}
+        style={style}
         value={displayValue}
         placeholder={placeholder}
         disabled={disabled}
@@ -138,10 +117,7 @@ export function HexInput({
         onFocus={handleFocus}
         onBlur={handleBlur}
         onKeyDown={handleKeyDown}
-        asChild={asChild}
-      >
-        {asChild ? children : undefined}
-      </Primitive.input>
+      />
       <span
         id={hintId}
         style={{

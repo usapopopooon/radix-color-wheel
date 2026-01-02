@@ -8,6 +8,8 @@ export {
   HexInput,
   Swatch,
   AlphaSlider,
+  CopyButton,
+  PasteButton,
 } from './components'
 
 export type {
@@ -20,7 +22,8 @@ export type {
   HexInputProps,
   SwatchProps,
   AlphaSliderProps,
-  ColorWheelSimpleProps,
+  CopyButtonProps,
+  PasteButtonProps,
   HSV,
 } from './types'
 
@@ -37,6 +40,3 @@ export {
   getColorNameEn,
   clamp,
 } from './utils'
-
-// Presets
-export { ColorWheelSimple } from './presets/Simple'

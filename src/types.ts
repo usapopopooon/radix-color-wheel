@@ -148,13 +148,6 @@ export interface HexInputProps {
   readonly style?: React.CSSProperties
   /** Placeholder text */
   readonly placeholder?: string
-  /**
-   * When true, renders the child element instead of the default input.
-   * The child must accept all input props (value, onChange, etc.)
-   */
-  readonly asChild?: boolean
-  /** Child element for asChild mode */
-  readonly children?: React.ReactNode
 }
 
 /**
@@ -211,34 +204,4 @@ export interface PasteButtonProps {
   readonly asChild?: boolean
   /** Child elements */
   readonly children?: React.ReactNode
-}
-
-/**
- * Props for ColorWheelSimple preset component
- */
-export interface ColorWheelSimpleProps {
-  /** Current color in HEX format */
-  readonly value?: string
-  /** Initial value for uncontrolled mode */
-  readonly defaultValue?: string
-  /** Callback when color changes */
-  readonly onValueChange?: (hex: string) => void
-  /** Size of the wheel in pixels */
-  readonly size?: number
-  /** Whether to show HexInput */
-  readonly showHexInput?: boolean
-  /** Whether to show Swatch */
-  readonly showSwatch?: boolean
-  /** Whether to show copy button */
-  readonly showCopyButton?: boolean
-  /** Whether to show paste button */
-  readonly showPasteButton?: boolean
-  /** If true, disables all interactions */
-  readonly disabled?: boolean
-  /** Callback after copy */
-  readonly onCopy?: (hex: string) => void
-  /** Callback after paste */
-  readonly onPaste?: (hex: string) => void
-  /** Callback when paste fails */
-  readonly onPasteError?: () => void
 }

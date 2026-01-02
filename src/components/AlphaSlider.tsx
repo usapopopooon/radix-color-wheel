@@ -1,6 +1,7 @@
 import { useMemo, useCallback, useRef } from 'react'
 import { useColorWheelContext } from '../context/ColorWheelContext'
 import { clamp } from '../utils'
+import { cn } from '@/lib/utils'
 import type { AlphaSliderProps } from '../types'
 
 /**
@@ -151,13 +152,11 @@ export function AlphaSlider({
       position: 'absolute',
       width: 'var(--cw-slider-thumb-size, 16px)',
       height: 'var(--cw-slider-thumb-size, 16px)',
-      borderRadius: '50%',
-      border: '2px solid #fff',
-      boxShadow: '0 0 0 1px rgba(0, 0, 0, 0.3), 0 2px 4px rgba(0, 0, 0, 0.2)',
+      // Structure: color circle -> white inset shadow (as border) -> outer border -> focus ring
+      boxShadow: 'inset 0 0 0 2px white, 0 0 0 1px rgba(0, 0, 0, 0.3), 0 2px 4px rgba(0, 0, 0, 0.2)',
       backgroundColor: hex,
       opacity: alpha / 100,
       transform: 'translate(-50%, -50%)',
-      outline: 'none',
       ...(isHorizontal ? { left: thumbPosition, top: '50%' } : { top: thumbPosition, left: '50%' }),
     }),
     [isHorizontal, thumbPosition, hex, alpha]
@@ -176,6 +175,7 @@ export function AlphaSlider({
       <div style={gradientStyle} aria-hidden="true" />
       <div
         data-color-wheel-thumb
+        className={cn('rounded-full focus-visible:outline focus-visible:outline-3 focus-visible:outline-gray-500/[.75]')}
         style={thumbStyle}
         role="slider"
         tabIndex={disabled ? -1 : 0}
