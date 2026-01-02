@@ -131,7 +131,6 @@ export function HueThumb({ className, style }: HueThumbProps): React.ReactElemen
       transform: 'translate(-50%, -50%)',
       cursor: disabled ? 'not-allowed' : 'grab',
       touchAction: 'none',
-      outline: 'none',
       ...style,
     }),
     [thumbPosition, hueColor, disabled, style]

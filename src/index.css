@@ -1,40 +1,39 @@
+@import 'tailwindcss';
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+@layer base {
+  body {
+    @apply bg-white text-black;
+  }
+
+  html.dark body {
+    @apply bg-neutral-900 text-white;
+  }
+}
+
 /* CSS Variables for customization */
 [data-color-wheel-root] {
-  /* Wheel background (used for inner circle mask) */
   --cw-wheel-bg: #ffffff;
-
-  /* Thumb */
   --cw-thumb-size: 14px;
   --cw-thumb-border-color: #ffffff;
   --cw-thumb-border-width: 2px;
   --cw-thumb-shadow: 0 0 0 1px rgba(0, 0, 0, 0.3), 0 2px 4px rgba(0, 0, 0, 0.2);
-
-  /* Focus ring */
   --cw-focus-ring-color: #3b82f6;
   --cw-focus-ring-width: 2px;
   --cw-focus-ring-offset: 2px;
-
-  /* AlphaSlider */
   --cw-slider-height: 12px;
   --cw-slider-thumb-size: 16px;
-
-  /* HexInput */
   --cw-input-bg: #ffffff;
   --cw-input-text: #000000;
   --cw-input-border: rgba(0, 0, 0, 0.2);
-
-  /* Swatch */
   --cw-swatch-border: rgba(0, 0, 0, 0.2);
 }
 
 /* Dark mode support */
 .dark [data-color-wheel-root],
-[data-color-wheel-root].dark,
-body.dark [data-color-wheel-root],
 html.dark [data-color-wheel-root] {
   --cw-wheel-bg: #1a1a1a;
-  --cw-thumb-border-color: #ffffff;
-  --cw-thumb-shadow: 0 0 0 1px rgba(255, 255, 255, 0.3), 0 2px 4px rgba(0, 0, 0, 0.4);
   --cw-focus-ring-color: #60a5fa;
   --cw-input-bg: #2d2d2d;
   --cw-input-text: #ffffff;
@@ -54,7 +53,6 @@ html.dark [data-color-wheel-root] {
   cursor: grabbing;
 }
 
-/* Focus styles */
 [data-color-wheel-thumb]:focus {
   outline: none;
 }

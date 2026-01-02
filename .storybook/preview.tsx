@@ -1,65 +1,37 @@
-import React, { useEffect } from 'react'
-import type { Preview, Decorator } from '@storybook/react-vite'
+import * as React from 'react'
+import type { Preview } from '@storybook/react-vite'
+import { DocsContainer } from '@storybook/addon-docs/blocks'
 import { themes } from 'storybook/theming'
-import { addons } from 'storybook/preview-api'
-import { DARK_MODE_EVENT_NAME } from '@vueless/storybook-dark-mode'
-import '../src/styles.css'
+import { useDarkMode } from '@vueless/storybook-dark-mode'
+import '../src/index.css'
 
-// Decorator to handle dark mode background
-const withDarkMode: Decorator = (Story) => {
-  useEffect(() => {
-    const channel = addons.getChannel()
-
-    const handleDarkMode = (isDark: boolean) => {
-      document.body.classList.toggle('dark', isDark)
-      document.body.classList.toggle('light', !isDark)
-      document.body.style.backgroundColor = isDark ? '#1a1a1a' : '#ffffff'
-      document.body.style.color = isDark ? '#ffffff' : '#000000'
-    }
-
-    channel.on(DARK_MODE_EVENT_NAME, handleDarkMode)
-
-    return () => {
-      channel.off(DARK_MODE_EVENT_NAME, handleDarkMode)
-    }
-  }, [])
-
-  return <Story />
+const ThemedDocsContainer: React.FC<React.ComponentProps<typeof DocsContainer>> = (props) => {
+  const isDark = useDarkMode()
+  return (
+    <DocsContainer {...props} theme={isDark ? themes.dark : themes.light}>
+      {props.children}
+    </DocsContainer>
+  )
 }
 
 const preview: Preview = {
-  tags: ['autodocs'],
-  decorators: [withDarkMode],
   parameters: {
-    controls: {
-      matchers: {
-        color: /(background|color)$/i,
-        date: /Date$/i,
-      },
-    },
-    backgrounds: {
-      disable: true,
-    },
+    backgrounds: { disable: true },
     darkMode: {
-      current: 'light',
-      dark: {
-        ...themes.dark,
-        appBg: '#1a1a1a',
-        appContentBg: '#1a1a1a',
-        barBg: '#1a1a1a',
-      },
-      light: {
-        ...themes.light,
-        appBg: '#ffffff',
-        appContentBg: '#ffffff',
-        barBg: '#ffffff',
-      },
+      classTarget: 'html',
+      darkClass: ['dark'],
+      lightClass: ['light'],
       stylePreview: true,
-      darkClass: 'dark',
-      lightClass: 'light',
-      classTarget: 'body',
+    },
+    docs: {
+      container: ThemedDocsContainer,
     },
   },
+  decorators: [
+    (Story) => {
+      return <Story />
+    },
+  ],
 }
 
 export default preview

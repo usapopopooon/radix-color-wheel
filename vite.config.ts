@@ -1,15 +1,11 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
-import { resolve } from 'path'
+import tailwindcss from '@tailwindcss/vite'
 import dts from 'vite-plugin-dts'
+import { resolve } from 'path'
 
 export default defineConfig({
-  plugins: [
-    react(),
-    dts({
-      insertTypesEntry: true,
-    }),
-  ],
+  plugins: [react(), tailwindcss(), dts({ insertTypesEntry: true })],
   build: {
     lib: {
       entry: resolve(__dirname, 'src/index.ts'),
@@ -19,12 +15,6 @@ export default defineConfig({
     },
     rollupOptions: {
       external: ['react', 'react-dom', 'react/jsx-runtime'],
-      output: {
-        globals: {
-          react: 'React',
-          'react-dom': 'ReactDOM',
-        },
-      },
     },
   },
   resolve: {

@@ -60,8 +60,8 @@ export function ColorWheelSimple({
           {showSwatch && (
             <Swatch
               style={{
-                width: 32,
-                height: 32,
+                width: 24,
+                height: 24,
                 borderRadius: 4,
                 border: '1px solid rgba(0, 0, 0, 0.2)',
                 flexShrink: 0,

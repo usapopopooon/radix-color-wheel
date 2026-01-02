@@ -144,7 +144,6 @@ export function AreaThumb({ className, style }: AreaThumbProps): React.ReactElem
       transform: 'translate(-50%, -50%)',
       cursor: disabled ? 'not-allowed' : 'grab',
       touchAction: 'none',
-      outline: 'none',
       zIndex: 1,
       ...style,
     }),
