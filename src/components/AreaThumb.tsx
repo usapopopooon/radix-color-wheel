@@ -130,11 +130,14 @@ export function AreaThumb({ className, style }: AreaThumbProps): React.ReactElem
   // Use the current selected color for the thumb
   const currentColor = useMemo(() => hsvToHex(hsv.h, hsv.s, hsv.v), [hsv.h, hsv.s, hsv.v])
 
+  // Thumb size proportional to wheel size (base: 14px at 200px wheel)
+  const thumbSize = useMemo(() => Math.round(size * 0.07), [size])
+
   const thumbStyle: React.CSSProperties = useMemo(
     () => ({
       position: 'absolute',
-      width: 14,
-      height: 14,
+      width: thumbSize,
+      height: thumbSize,
       // Structure: color circle -> white inset shadow (as border) -> outer border -> focus ring
       boxShadow: 'inset 0 0 0 2px white, 0 0 0 1px rgba(0, 0, 0, 0.3), 0 2px 4px rgba(0, 0, 0, 0.2)',
       backgroundColor: currentColor,
@@ -147,7 +150,7 @@ export function AreaThumb({ className, style }: AreaThumbProps): React.ReactElem
       zIndex: 1,
       ...style,
     }),
-    [thumbPosition, currentColor, disabled, style]
+    [thumbSize, thumbPosition, currentColor, disabled, style]
   )
 
   return (
