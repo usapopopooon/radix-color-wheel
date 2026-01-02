@@ -58,6 +58,11 @@ export interface RootProps {
   readonly onBrightnessChange?: (brightness: number) => void
 
   /**
+   * Callback when alpha changes
+   */
+  readonly onAlphaChange?: (alpha: number) => void
+
+  /**
    * Callback when drag starts
    */
   readonly onDragStart?: () => void
@@ -153,4 +158,36 @@ export interface SwatchProps {
   readonly className?: string
   /** Inline styles */
   readonly style?: React.CSSProperties
+}
+
+/**
+ * Props for ColorWheel.AlphaSlider component
+ */
+export interface AlphaSliderProps {
+  /** Additional CSS class */
+  readonly className?: string
+  /** Inline styles */
+  readonly style?: React.CSSProperties
+  /** Orientation of the slider */
+  readonly orientation?: 'horizontal' | 'vertical'
+}
+
+/**
+ * Props for ColorWheelSimple preset component
+ */
+export interface ColorWheelSimpleProps {
+  /** Current color in HEX format */
+  readonly value?: string
+  /** Initial value for uncontrolled mode */
+  readonly defaultValue?: string
+  /** Callback when color changes */
+  readonly onValueChange?: (hex: string) => void
+  /** Size of the wheel in pixels */
+  readonly size?: number
+  /** Whether to show HexInput */
+  readonly showHexInput?: boolean
+  /** Whether to show Swatch */
+  readonly showSwatch?: boolean
+  /** If true, disables all interactions */
+  readonly disabled?: boolean
 }

@@ -7,8 +7,12 @@ import type { HSV } from '../types'
 export interface ColorWheelContextValue {
   /** Current HSV values (readonly) */
   readonly hsv: HSV
-  /** Current HEX value */
+  /** Current alpha value (0-100) */
+  readonly alpha: number
+  /** Current HEX value (6 digits without alpha) */
   readonly hex: string
+  /** Current HEX value with alpha (8 digits) */
+  readonly hex8: string
 
   /** Set hue value (0-360) */
   readonly setHue: (hue: number) => void
@@ -16,6 +20,8 @@ export interface ColorWheelContextValue {
   readonly setSaturation: (saturation: number) => void
   /** Set brightness/value (0-100) */
   readonly setBrightness: (brightness: number) => void
+  /** Set alpha value (0-100) */
+  readonly setAlpha: (alpha: number) => void
   /** Set hex value directly */
   readonly setHex: (hex: string) => void
 

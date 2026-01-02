@@ -1,4 +1,14 @@
-export { Root, Wheel, HueRing, HueThumb, Area, AreaThumb, HexInput, Swatch } from './components'
+export {
+  Root,
+  Wheel,
+  HueRing,
+  HueThumb,
+  Area,
+  AreaThumb,
+  HexInput,
+  Swatch,
+  AlphaSlider,
+} from './components'
 
 export type {
   RootProps,
@@ -9,6 +19,8 @@ export type {
   AreaThumbProps,
   HexInputProps,
   SwatchProps,
+  AlphaSliderProps,
+  ColorWheelSimpleProps,
   HSV,
 } from './types'
 
@@ -18,3 +30,6 @@ export { useWheelContext } from './context/WheelContext'
 
 // Re-export utility functions
 export { hsvToHex, hexToHsv, getHueFromPosition, getSVFromPosition, clamp } from './utils'
+
+// Presets
+export { ColorWheelSimple } from './presets/Simple'

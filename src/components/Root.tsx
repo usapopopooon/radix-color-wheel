@@ -5,13 +5,35 @@ import { hexToHsv, hsvToHex } from '../utils'
 import type { RootProps } from '../types'
 
 /**
+ * Convert alpha value (0-100) to hex string (00-ff)
+ */
+function alphaToHex(alpha: number): string {
+  return Math.round((alpha / 100) * 255)
+    .toString(16)
+    .padStart(2, '0')
+}
+
+/**
+ * Parse alpha from 8-digit hex string
+ * Returns 100 if hex is 6 digits (no alpha)
+ */
+function parseAlphaFromHex(hex: string): number {
+  if (hex.length === 9) {
+    // #rrggbbaa format
+    const alphaHex = hex.slice(7, 9)
+    return Math.round((parseInt(alphaHex, 16) / 255) * 100)
+  }
+  return 100
+}
+
+/**
  * Root component for ColorWheel
  *
  * Acts as a Context Provider, sharing color state and
  * update functions with all child components.
  *
  * @param props - Component props
- * @param props.value - Current color (HEX format, e.g., "#ff0000")
+ * @param props.value - Current color (HEX format, e.g., "#ff0000" or "#ff000080")
  * @param props.defaultValue - Initial value for uncontrolled mode
  * @param props.onValueChange - Callback when color changes
  * @param props.onValueChangeEnd - Callback when drag ends
@@ -38,20 +60,33 @@ export function Root({
   onHueChange,
   onSaturationChange,
   onBrightnessChange,
+  onAlphaChange,
   onDragStart,
   onDragEnd,
   disabled = false,
   children,
 }: RootProps): JSX.Element {
-  // Controllable hex state
-  const [hex, setHexState] = useControllableState({
+  // Controllable hex state (may include alpha as 8 digits)
+  const [hexWithAlpha, setHexWithAlphaState] = useControllableState({
     prop: value,
     defaultProp: defaultValue,
     onChange: onValueChange,
   })
 
+  // Extract base hex (6 digits) and alpha from the value
+  const hex = useMemo(() => {
+    const h = hexWithAlpha ?? '#ff0000'
+    return h.length === 9 ? h.slice(0, 7) : h
+  }, [hexWithAlpha])
+
   // Derived HSV state from hex
-  const hsv = useMemo(() => hexToHsv(hex ?? '#ff0000'), [hex])
+  const hsv = useMemo(() => hexToHsv(hex), [hex])
+
+  // Alpha state
+  const [alpha, setAlphaState] = useState(() => parseAlphaFromHex(hexWithAlpha ?? '#ff0000'))
+
+  // Generate hex8 (with alpha)
+  const hex8 = useMemo(() => `${hex}${alphaToHex(alpha)}`, [hex, alpha])
 
   // Drag state
   const [isDragging, setIsDragging] = useState(false)
@@ -60,35 +95,57 @@ export function Root({
   const setHue = useCallback(
     (h: number) => {
       const newHex = hsvToHex(h, hsv.s, hsv.v)
-      setHexState(newHex)
+      const newHexWithAlpha = alpha < 100 ? `${newHex}${alphaToHex(alpha)}` : newHex
+      setHexWithAlphaState(newHexWithAlpha)
       onHueChange?.(h)
     },
-    [hsv.s, hsv.v, setHexState, onHueChange]
+    [hsv.s, hsv.v, alpha, setHexWithAlphaState, onHueChange]
   )
 
   const setSaturation = useCallback(
     (s: number) => {
       const newHex = hsvToHex(hsv.h, s, hsv.v)
-      setHexState(newHex)
+      const newHexWithAlpha = alpha < 100 ? `${newHex}${alphaToHex(alpha)}` : newHex
+      setHexWithAlphaState(newHexWithAlpha)
       onSaturationChange?.(s)
     },
-    [hsv.h, hsv.v, setHexState, onSaturationChange]
+    [hsv.h, hsv.v, alpha, setHexWithAlphaState, onSaturationChange]
   )
 
   const setBrightness = useCallback(
     (v: number) => {
       const newHex = hsvToHex(hsv.h, hsv.s, v)
-      setHexState(newHex)
+      const newHexWithAlpha = alpha < 100 ? `${newHex}${alphaToHex(alpha)}` : newHex
+      setHexWithAlphaState(newHexWithAlpha)
       onBrightnessChange?.(v)
     },
-    [hsv.h, hsv.s, setHexState, onBrightnessChange]
+    [hsv.h, hsv.s, alpha, setHexWithAlphaState, onBrightnessChange]
+  )
+
+  const setAlpha = useCallback(
+    (a: number) => {
+      setAlphaState(a)
+      const newHexWithAlpha = a < 100 ? `${hex}${alphaToHex(a)}` : hex
+      setHexWithAlphaState(newHexWithAlpha)
+      onAlphaChange?.(a)
+    },
+    [hex, setHexWithAlphaState, onAlphaChange]
   )
 
   const setHex = useCallback(
     (newHex: string) => {
-      setHexState(newHex)
+      // If setting a 6-digit hex, preserve current alpha
+      if (newHex.length === 7 && alpha < 100) {
+        setHexWithAlphaState(`${newHex}${alphaToHex(alpha)}`)
+      } else {
+        setHexWithAlphaState(newHex)
+        // Update alpha if 8-digit hex was provided
+        if (newHex.length === 9) {
+          setAlphaState(parseAlphaFromHex(newHex))
+        }
+      }
     },
-    [setHexState]
+    [alpha, setHexWithAlphaState]
   )
 
   const handleDragStart = useCallback(() => {
@@ -99,19 +156,22 @@ export function Root({
   const handleDragEnd = useCallback(() => {
     setIsDragging(false)
     onDragEnd?.()
-    if (hex) {
-      onValueChangeEnd?.(hex)
+    if (hexWithAlpha) {
+      onValueChangeEnd?.(hexWithAlpha)
     }
-  }, [hex, onDragEnd, onValueChangeEnd])
+  }, [hexWithAlpha, onDragEnd, onValueChangeEnd])
 
   // Context value
   const contextValue = useMemo<ColorWheelContextValue>(
     () => ({
       hsv,
-      hex: hex ?? '#ff0000',
+      alpha,
+      hex,
+      hex8,
       setHue,
       setSaturation,
       setBrightness,
+      setAlpha,
       setHex,
       disabled,
       isDragging,
@@ -121,10 +181,13 @@ export function Root({
     }),
     [
       hsv,
+      alpha,
       hex,
+      hex8,
       setHue,
       setSaturation,
       setBrightness,
+      setAlpha,
       setHex,
       disabled,
       isDragging,
