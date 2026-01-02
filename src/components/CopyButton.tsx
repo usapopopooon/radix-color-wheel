@@ -1,4 +1,4 @@
-import { useCallback } from 'react'
+import { forwardRef, useCallback } from 'react'
 import { useColorWheelContext } from '../context/ColorWheelContext'
 import { Button } from './ui/button'
 import type { CopyButtonProps } from '../types'
@@ -20,34 +20,34 @@ import type { CopyButtonProps } from '../types'
  * </ColorWheel.CopyButton>
  * ```
  */
-export function CopyButton({
-  className,
-  style,
-  onCopy,
-  asChild = false,
-  children,
-}: CopyButtonProps): React.ReactElement {
-  const { hex, disabled } = useColorWheelContext()
+export const CopyButton = forwardRef<HTMLButtonElement, CopyButtonProps>(
+  ({ className, style, onCopy, asChild = false, children, ...props }, ref) => {
+    const { hex, disabled } = useColorWheelContext()
 
-  const handleClick = useCallback(async () => {
-    if (disabled) return
-    await navigator.clipboard.writeText(hex.toUpperCase())
-    onCopy?.(hex.toUpperCase())
-  }, [hex, disabled, onCopy])
+    const handleClick = useCallback(async () => {
+      if (disabled) return
+      await navigator.clipboard.writeText(hex.toUpperCase())
+      onCopy?.(hex.toUpperCase())
+    }, [hex, disabled, onCopy])
 
-  return (
-    <Button
-      type="button"
-      variant="outline"
-      data-color-wheel-copy-button
-      className={className}
-      style={style}
-      disabled={disabled}
-      onClick={handleClick}
-      aria-label="Copy color"
-      asChild={asChild}
-    >
-      {children}
-    </Button>
-  )
-}
+    return (
+      <Button
+        ref={ref}
+        type="button"
+        variant="outline"
+        data-color-wheel-copy-button
+        className={className}
+        style={style}
+        disabled={disabled}
+        onClick={handleClick}
+        aria-label="Copy color"
+        asChild={asChild}
+        {...props}
+      >
+        {children}
+      </Button>
+    )
+  }
+)
+
+CopyButton.displayName = 'CopyButton'

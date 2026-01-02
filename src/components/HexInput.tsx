@@ -1,4 +1,4 @@
-import { useState, useCallback, useMemo, useId } from 'react'
+import { forwardRef, useState, useCallback, useMemo, useId } from 'react'
 import { useColorWheelContext } from '../context/ColorWheelContext'
 import { Input } from './ui/input'
 import { cn } from '@/lib/utils'
@@ -15,100 +15,104 @@ import type { HexInputProps } from '../types'
  * @param props.className - Additional CSS class
  * @param props.style - Inline styles
  * @param props.placeholder - Placeholder text
+ * @param props.onCommit - Callback when a valid hex value is committed (Enter or blur)
  *
  * @example
  * ```tsx
- * <ColorWheel.HexInput className="w-24" />
+ * <ColorWheel.HexInput className="w-24" onCommit={(hex) => console.log(hex)} />
  * ```
  */
-export function HexInput({
-  className,
-  style,
-  placeholder = '#000000',
-}: HexInputProps): React.ReactElement {
-  const { hex, setHex, disabled } = useColorWheelContext()
-  const hintId = useId()
+export const HexInput = forwardRef<HTMLInputElement, HexInputProps>(
+  ({ className, style, placeholder = '#000000', onCommit, ...props }, ref) => {
+    const { hex, setHex, disabled } = useColorWheelContext()
+    const hintId = useId()
 
-  // Local state for editing
-  const [isEditing, setIsEditing] = useState(false)
-  const [editingValue, setEditingValue] = useState('')
+    // Local state for editing
+    const [isEditing, setIsEditing] = useState(false)
+    const [editingValue, setEditingValue] = useState('')
 
-  // Display value: show editing value when editing, otherwise show hex from context
-  const displayValue = isEditing ? editingValue : hex
+    // Display value: show editing value when editing, otherwise show hex from context
+    const displayValue = isEditing ? editingValue : hex
 
-  // Check if current input is valid
-  const isValid = useMemo(() => isValidHex6(normalizeHex(displayValue)), [displayValue])
+    // Check if current input is valid
+    const isValid = useMemo(() => isValidHex6(normalizeHex(displayValue)), [displayValue])
 
-  const handleChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
-    setEditingValue(e.target.value)
-  }, [])
+    const handleChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+      setEditingValue(e.target.value)
+    }, [])
 
-  const handleFocus = useCallback(() => {
-    setEditingValue(hex)
-    setIsEditing(true)
-  }, [hex])
+    const handleFocus = useCallback(() => {
+      setEditingValue(hex)
+      setIsEditing(true)
+    }, [hex])
 
-  const commitValue = useCallback(() => {
-    const normalized = normalizeHex(editingValue)
-    if (isValidHex6(normalized)) {
-      setHex(normalized)
-    }
-    setIsEditing(false)
-  }, [editingValue, setHex])
-
-  const handleBlur = useCallback(() => {
-    commitValue()
-  }, [commitValue])
-
-  const handleKeyDown = useCallback(
-    (e: React.KeyboardEvent<HTMLInputElement>) => {
-      if (e.key === 'Enter') {
-        e.preventDefault()
-        commitValue()
-        ;(e.target as HTMLInputElement).blur()
-      } else if (e.key === 'Escape') {
-        e.preventDefault()
-        setIsEditing(false)
-        ;(e.target as HTMLInputElement).blur()
+    const commitValue = useCallback(() => {
+      const normalized = normalizeHex(editingValue)
+      if (isValidHex6(normalized)) {
+        setHex(normalized)
+        onCommit?.(normalized)
       }
-    },
-    [commitValue]
-  )
+      setIsEditing(false)
+    }, [editingValue, setHex, onCommit])
 
-  return (
-    <>
-      <Input
-        type="text"
-        data-color-wheel-hex-input
-        className={cn('w-24 font-mono', className)}
-        style={style}
-        value={displayValue}
-        placeholder={placeholder}
-        disabled={disabled}
-        aria-label="Hexadecimal color code"
-        aria-invalid={!isValid}
-        aria-describedby={hintId}
-        onChange={handleChange}
-        onFocus={handleFocus}
-        onBlur={handleBlur}
-        onKeyDown={handleKeyDown}
-      />
-      <span
-        id={hintId}
-        style={{
-          position: 'absolute',
-          width: '1px',
-          height: '1px',
-          padding: 0,
-          margin: '-1px',
-          overflow: 'hidden',
-          clip: 'rect(0, 0, 0, 0)',
-          whiteSpace: 'nowrap',
-          border: 0,
-        }}
-      >
-        Enter a 6-digit hexadecimal color code starting with #
-      </span>
-    </>
-  )
-}
+    const handleBlur = useCallback(() => {
+      commitValue()
+    }, [commitValue])
+
+    const handleKeyDown = useCallback(
+      (e: React.KeyboardEvent<HTMLInputElement>) => {
+        if (e.key === 'Enter') {
+          e.preventDefault()
+          commitValue()
+          ;(e.target as HTMLInputElement).blur()
+        } else if (e.key === 'Escape') {
+          e.preventDefault()
+          setIsEditing(false)
+          ;(e.target as HTMLInputElement).blur()
+        }
+      },
+      [commitValue]
+    )
+
+    return (
+      <>
+        <Input
+          ref={ref}
+          type="text"
+          data-color-wheel-hex-input
+          className={cn('w-24 font-mono', className)}
+          style={style}
+          value={displayValue}
+          placeholder={placeholder}
+          disabled={disabled}
+          aria-label="Hexadecimal color code"
+          aria-invalid={!isValid}
+          aria-describedby={hintId}
+          onChange={handleChange}
+          onFocus={handleFocus}
+          onBlur={handleBlur}
+          onKeyDown={handleKeyDown}
+          {...props}
+        />
+        <span
+          id={hintId}
+          style={{
+            position: 'absolute',
+            width: '1px',
+            height: '1px',
+            padding: 0,
+            margin: '-1px',
+            overflow: 'hidden',
+            clip: 'rect(0, 0, 0, 0)',
+            whiteSpace: 'nowrap',
+            border: 0,
+          }}
+        >
+          Enter a 6-digit hexadecimal color code starting with #
+        </span>
+      </>
+    )
+  }
+)
+
+HexInput.displayName = 'HexInput'

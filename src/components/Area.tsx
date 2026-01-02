@@ -1,4 +1,4 @@
-import { useMemo } from 'react'
+import { forwardRef, useMemo } from 'react'
 import { useColorWheelContext } from '../context/ColorWheelContext'
 import { useWheelContext } from '../context/WheelContext'
 import { hsvToHex } from '../utils'
@@ -24,7 +24,7 @@ import type { AreaProps } from '../types'
  * </ColorWheel.Wheel>
  * ```
  */
-export function Area({ className, style }: AreaProps): React.ReactElement {
+export const Area = forwardRef<HTMLDivElement, AreaProps>(({ className, style, ...props }, ref) => {
   const { hsv } = useColorWheelContext()
   const { areaSize } = useWheelContext()
 
@@ -55,10 +55,14 @@ export function Area({ className, style }: AreaProps): React.ReactElement {
 
   return (
     <div
+      ref={ref}
       data-color-wheel-area
       className={className}
       style={areaStyle}
-      aria-hidden="true" // Decorative, interaction handled by AreaThumb
+      aria-hidden="true"
+      {...props}
     />
   )
-}
+})
+
+Area.displayName = 'Area'

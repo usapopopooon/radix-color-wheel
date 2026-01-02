@@ -1,4 +1,4 @@
-import { useMemo } from 'react'
+import { forwardRef, useMemo } from 'react'
 import {
   WheelContext,
   calculateAreaSize,
@@ -30,41 +30,39 @@ import type { WheelProps } from '../types'
  * </ColorWheel.Wheel>
  * ```
  */
-export function Wheel({
-  size = 200,
-  ringWidth = 20,
-  className,
-  style,
-  children,
-}: WheelProps): React.ReactElement {
-  const areaSize = useMemo(() => calculateAreaSize(size, ringWidth), [size, ringWidth])
-  const thumbSize = useMemo(() => calculateThumbSize(size), [size])
+export const Wheel = forwardRef<HTMLDivElement, WheelProps>(
+  ({ size = 200, ringWidth = 20, className, style, children, ...props }, ref) => {
+    const areaSize = useMemo(() => calculateAreaSize(size, ringWidth), [size, ringWidth])
+    const thumbSize = useMemo(() => calculateThumbSize(size), [size])
 
-  const contextValue = useMemo<WheelContextValue>(
-    () => ({
-      size,
-      ringWidth,
-      areaSize,
-      thumbSize,
-    }),
-    [size, ringWidth, areaSize, thumbSize]
-  )
+    const contextValue = useMemo<WheelContextValue>(
+      () => ({
+        size,
+        ringWidth,
+        areaSize,
+        thumbSize,
+      }),
+      [size, ringWidth, areaSize, thumbSize]
+    )
 
-  const wheelStyle: React.CSSProperties = useMemo(
-    () => ({
-      position: 'relative',
-      width: size,
-      height: size,
-      ...style,
-    }),
-    [size, style]
-  )
+    const wheelStyle: React.CSSProperties = useMemo(
+      () => ({
+        position: 'relative',
+        width: size,
+        height: size,
+        ...style,
+      }),
+      [size, style]
+    )
 
-  return (
-    <WheelContext.Provider value={contextValue}>
-      <div data-color-wheel-wheel className={className} style={wheelStyle}>
-        {children}
-      </div>
-    </WheelContext.Provider>
-  )
-}
+    return (
+      <WheelContext.Provider value={contextValue}>
+        <div ref={ref} data-color-wheel-wheel className={className} style={wheelStyle} {...props}>
+          {children}
+        </div>
+      </WheelContext.Provider>
+    )
+  }
+)
+
+Wheel.displayName = 'Wheel'

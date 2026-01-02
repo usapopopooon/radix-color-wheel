@@ -1,4 +1,4 @@
-import { useMemo, useCallback, useRef } from 'react'
+import { forwardRef, useMemo, useCallback, useRef, useImperativeHandle } from 'react'
 import { useColorWheelContext } from '../context/ColorWheelContext'
 import { useWheelContext } from '../context/WheelContext'
 import { getColorNameEn, getHueFromPosition, hsvToHex } from '../utils'
@@ -23,10 +23,13 @@ import type { HueThumbProps } from '../types'
  * </ColorWheel.Wheel>
  * ```
  */
-export function HueThumb({ className, style }: HueThumbProps): React.ReactElement {
+export const HueThumb = forwardRef<HTMLDivElement, HueThumbProps>(({ className, style }, ref) => {
   const { hsv, setHue, disabled, onDragStart, onDragEnd } = useColorWheelContext()
   const { size, ringWidth, thumbSize } = useWheelContext()
   const thumbRef = useRef<HTMLDivElement>(null)
+
+  // Forward ref to internal thumb element
+  useImperativeHandle(ref, () => thumbRef.current!, [])
 
   // Calculate thumb position on the ring
   // Formula: x = center + radius * cos(angle), y = center + radius * sin(angle)
@@ -147,4 +150,6 @@ export function HueThumb({ className, style }: HueThumbProps): React.ReactElemen
       onKeyDown={handleKeyDown}
     />
   )
-}
+})
+
+HueThumb.displayName = 'HueThumb'

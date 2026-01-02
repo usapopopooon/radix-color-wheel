@@ -85,15 +85,11 @@ export interface RootProps {
 /**
  * Props for ColorWheel.Wheel component
  */
-export interface WheelProps {
+export interface WheelProps extends Omit<React.ComponentPropsWithoutRef<'div'>, 'children'> {
   /** Size of the wheel in pixels */
   readonly size?: number
   /** Width of the hue ring in pixels */
   readonly ringWidth?: number
-  /** Additional CSS class */
-  readonly className?: string
-  /** Inline styles */
-  readonly style?: React.CSSProperties
   /** Child components */
   readonly children: React.ReactNode
 }
@@ -101,73 +97,43 @@ export interface WheelProps {
 /**
  * Props for ColorWheel.HueRing component
  */
-export interface HueRingProps {
-  /** Additional CSS class */
-  readonly className?: string
-  /** Inline styles */
-  readonly style?: React.CSSProperties
-}
+export type HueRingProps = React.ComponentPropsWithoutRef<'div'>
 
 /**
  * Props for ColorWheel.HueThumb component
  */
-export interface HueThumbProps {
-  /** Additional CSS class */
-  readonly className?: string
-  /** Inline styles */
-  readonly style?: React.CSSProperties
-}
+export type HueThumbProps = React.ComponentPropsWithoutRef<'div'>
 
 /**
  * Props for ColorWheel.Area component
  */
-export interface AreaProps {
-  /** Additional CSS class */
-  readonly className?: string
-  /** Inline styles */
-  readonly style?: React.CSSProperties
-}
+export type AreaProps = React.ComponentPropsWithoutRef<'div'>
 
 /**
  * Props for ColorWheel.AreaThumb component
  */
-export interface AreaThumbProps {
-  /** Additional CSS class */
-  readonly className?: string
-  /** Inline styles */
-  readonly style?: React.CSSProperties
-}
+export type AreaThumbProps = React.ComponentPropsWithoutRef<'div'>
 
 /**
  * Props for ColorWheel.HexInput component
  */
-export interface HexInputProps {
-  /** Additional CSS class */
-  readonly className?: string
-  /** Inline styles */
-  readonly style?: React.CSSProperties
-  /** Placeholder text */
-  readonly placeholder?: string
+export interface HexInputProps extends Omit<
+  React.ComponentPropsWithoutRef<'input'>,
+  'value' | 'onChange'
+> {
+  /** Callback when a valid hex value is committed (Enter or blur) */
+  readonly onCommit?: (hex: string) => void
 }
 
 /**
  * Props for ColorWheel.Swatch component
  */
-export interface SwatchProps {
-  /** Additional CSS class */
-  readonly className?: string
-  /** Inline styles */
-  readonly style?: React.CSSProperties
-}
+export type SwatchProps = React.ComponentPropsWithoutRef<'div'>
 
 /**
  * Props for ColorWheel.AlphaSlider component
  */
-export interface AlphaSliderProps {
-  /** Additional CSS class */
-  readonly className?: string
-  /** Inline styles */
-  readonly style?: React.CSSProperties
+export interface AlphaSliderProps extends React.ComponentPropsWithoutRef<'div'> {
   /** Orientation of the slider */
   readonly orientation?: 'horizontal' | 'vertical'
 }
@@ -175,11 +141,10 @@ export interface AlphaSliderProps {
 /**
  * Props for ColorWheel.CopyButton component
  */
-export interface CopyButtonProps {
-  /** Additional CSS class */
-  readonly className?: string
-  /** Inline styles */
-  readonly style?: React.CSSProperties
+export interface CopyButtonProps extends Omit<
+  React.ComponentPropsWithoutRef<'button'>,
+  'children' | 'onCopy'
+> {
   /** Callback after copy (receives the copied hex value) */
   readonly onCopy?: (hex: string) => void
   /** When true, renders child element instead of default button */
@@ -191,11 +156,10 @@ export interface CopyButtonProps {
 /**
  * Props for ColorWheel.PasteButton component
  */
-export interface PasteButtonProps {
-  /** Additional CSS class */
-  readonly className?: string
-  /** Inline styles */
-  readonly style?: React.CSSProperties
+export interface PasteButtonProps extends Omit<
+  React.ComponentPropsWithoutRef<'button'>,
+  'children' | 'onPaste'
+> {
   /** Callback after successful paste (receives the pasted hex value) */
   readonly onPaste?: (hex: string) => void
   /** Callback when paste fails (invalid format) */

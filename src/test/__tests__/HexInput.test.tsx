@@ -155,4 +155,55 @@ describe('HexInput', () => {
 
     expect(input).toHaveValue('#00ff00')
   })
+
+  it('should call onCommit callback when valid hex is committed via Enter', () => {
+    const onCommit = vi.fn()
+
+    render(
+      <ColorWheel.Root value="#ff0000" onValueChange={() => {}}>
+        <ColorWheel.HexInput onCommit={onCommit} />
+      </ColorWheel.Root>
+    )
+
+    const input = screen.getByRole('textbox', { name: /hexadecimal color code/i })
+    fireEvent.focus(input)
+    fireEvent.change(input, { target: { value: '#00ff00' } })
+    fireEvent.keyDown(input, { key: 'Enter' })
+
+    expect(onCommit).toHaveBeenCalledWith('#00ff00')
+  })
+
+  it('should call onCommit callback when valid hex is committed via blur', () => {
+    const onCommit = vi.fn()
+
+    render(
+      <ColorWheel.Root value="#ff0000" onValueChange={() => {}}>
+        <ColorWheel.HexInput onCommit={onCommit} />
+      </ColorWheel.Root>
+    )
+
+    const input = screen.getByRole('textbox', { name: /hexadecimal color code/i })
+    fireEvent.focus(input)
+    fireEvent.change(input, { target: { value: '#0000ff' } })
+    fireEvent.blur(input)
+
+    expect(onCommit).toHaveBeenCalledWith('#0000ff')
+  })
+
+  it('should not call onCommit callback when hex is invalid', () => {
+    const onCommit = vi.fn()
+
+    render(
+      <ColorWheel.Root value="#ff0000" onValueChange={() => {}}>
+        <ColorWheel.HexInput onCommit={onCommit} />
+      </ColorWheel.Root>
+    )
+
+    const input = screen.getByRole('textbox', { name: /hexadecimal color code/i })
+    fireEvent.focus(input)
+    fireEvent.change(input, { target: { value: 'invalid' } })
+    fireEvent.blur(input)
+
+    expect(onCommit).not.toHaveBeenCalled()
+  })
 })

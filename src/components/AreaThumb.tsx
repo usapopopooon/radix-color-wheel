@@ -1,4 +1,4 @@
-import { useMemo, useCallback, useRef } from 'react'
+import { forwardRef, useMemo, useCallback, useRef, useImperativeHandle } from 'react'
 import { useColorWheelContext } from '../context/ColorWheelContext'
 import { useWheelContext } from '../context/WheelContext'
 import { getSVFromPosition, hsvToHex, clamp } from '../utils'
@@ -23,11 +23,14 @@ import type { AreaThumbProps } from '../types'
  * </ColorWheel.Wheel>
  * ```
  */
-export function AreaThumb({ className, style }: AreaThumbProps): React.ReactElement {
+export const AreaThumb = forwardRef<HTMLDivElement, AreaThumbProps>(({ className, style }, ref) => {
   const { hsv, setSaturation, setBrightness, disabled, onDragStart, onDragEnd } =
     useColorWheelContext()
   const { size, areaSize, thumbSize } = useWheelContext()
   const thumbRef = useRef<HTMLDivElement>(null)
+
+  // Forward ref to internal thumb element
+  useImperativeHandle(ref, () => thumbRef.current!, [])
 
   // Calculate area offset from wheel center
   const areaOffset = useMemo(() => {
@@ -154,4 +157,6 @@ export function AreaThumb({ className, style }: AreaThumbProps): React.ReactElem
       onKeyDown={handleKeyDown}
     />
   )
-}
+})
+
+AreaThumb.displayName = 'AreaThumb'

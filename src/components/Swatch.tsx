@@ -1,4 +1,4 @@
-import { useMemo } from 'react'
+import { forwardRef, useMemo } from 'react'
 import { useColorWheelContext } from '../context/ColorWheelContext'
 import type { SwatchProps } from '../types'
 
@@ -23,35 +23,41 @@ import type { SwatchProps } from '../types'
  * </ColorWheel.Root>
  * ```
  */
-export function Swatch({ className, style }: SwatchProps): React.ReactElement {
-  const { hex } = useColorWheelContext()
+export const Swatch = forwardRef<HTMLDivElement, SwatchProps>(
+  ({ className, style, ...props }, ref) => {
+    const { hex } = useColorWheelContext()
 
-  const swatchStyle: React.CSSProperties = useMemo(
-    () => ({
-      borderRadius: 4,
-      backgroundColor: hex,
-      // Checkerboard pattern for transparency (future alpha support)
-      backgroundImage: `
+    const swatchStyle: React.CSSProperties = useMemo(
+      () => ({
+        borderRadius: 4,
+        backgroundColor: hex,
+        // Checkerboard pattern for transparency (future alpha support)
+        backgroundImage: `
         linear-gradient(${hex}, ${hex}),
         linear-gradient(45deg, #ccc 25%, transparent 25%),
         linear-gradient(-45deg, #ccc 25%, transparent 25%),
         linear-gradient(45deg, transparent 75%, #ccc 75%),
         linear-gradient(-45deg, transparent 75%, #ccc 75%)
       `,
-      backgroundSize: '100% 100%, 8px 8px, 8px 8px, 8px 8px, 8px 8px',
-      backgroundPosition: '0 0, 0 0, 4px 0, 4px -4px, 0 4px',
-      ...style,
-    }),
-    [hex, style]
-  )
+        backgroundSize: '100% 100%, 8px 8px, 8px 8px, 8px 8px, 8px 8px',
+        backgroundPosition: '0 0, 0 0, 4px 0, 4px -4px, 0 4px',
+        ...style,
+      }),
+      [hex, style]
+    )
 
-  return (
-    <div
-      data-color-wheel-swatch
-      className={className}
-      style={swatchStyle}
-      role="img"
-      aria-label={`Current color: ${hex}`}
-    />
-  )
-}
+    return (
+      <div
+        ref={ref}
+        data-color-wheel-swatch
+        className={className}
+        style={swatchStyle}
+        role="img"
+        aria-label={`Current color: ${hex}`}
+        {...props}
+      />
+    )
+  }
+)
+
+Swatch.displayName = 'Swatch'

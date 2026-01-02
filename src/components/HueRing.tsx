@@ -1,4 +1,4 @@
-import { useMemo } from 'react'
+import { forwardRef, useMemo } from 'react'
 import { useWheelContext } from '../context/WheelContext'
 import type { HueRingProps } from '../types'
 
@@ -20,18 +20,19 @@ import type { HueRingProps } from '../types'
  * </ColorWheel.Wheel>
  * ```
  */
-export function HueRing({ className, style }: HueRingProps): React.ReactElement {
-  const { ringWidth } = useWheelContext()
+export const HueRing = forwardRef<HTMLDivElement, HueRingProps>(
+  ({ className, style, ...props }, ref) => {
+    const { ringWidth } = useWheelContext()
 
-  const ringStyle: React.CSSProperties = useMemo(
-    () => ({
-      position: 'absolute',
-      inset: 0,
-      borderRadius: '50%',
-      // Use border with conic-gradient for hue ring
-      // This creates a transparent center naturally
-      border: `${ringWidth}px solid transparent`,
-      backgroundImage: `conic-gradient(
+    const ringStyle: React.CSSProperties = useMemo(
+      () => ({
+        position: 'absolute',
+        inset: 0,
+        borderRadius: '50%',
+        // Use border with conic-gradient for hue ring
+        // This creates a transparent center naturally
+        border: `${ringWidth}px solid transparent`,
+        backgroundImage: `conic-gradient(
         from -90deg,
         hsl(0, 100%, 50%),
         hsl(60, 100%, 50%),
@@ -41,19 +42,29 @@ export function HueRing({ className, style }: HueRingProps): React.ReactElement 
         hsl(300, 100%, 50%),
         hsl(360, 100%, 50%)
       )`,
-      backgroundOrigin: 'border-box',
-      backgroundClip: 'border-box',
-      // Mask to show only the border area (ring)
-      // Add 1px gradient transition for anti-aliasing (smoother edge)
-      mask: `radial-gradient(farthest-side, transparent calc(100% - ${ringWidth}px - 1px), black calc(100% - ${ringWidth}px))`,
-      WebkitMask: `radial-gradient(farthest-side, transparent calc(100% - ${ringWidth}px - 1px), black calc(100% - ${ringWidth}px))`,
-      boxSizing: 'border-box',
-      ...style,
-    }),
-    [ringWidth, style]
-  )
+        backgroundOrigin: 'border-box',
+        backgroundClip: 'border-box',
+        // Mask to show only the border area (ring)
+        // Add 1px gradient transition for anti-aliasing (smoother edge)
+        mask: `radial-gradient(farthest-side, transparent calc(100% - ${ringWidth}px - 1px), black calc(100% - ${ringWidth}px))`,
+        WebkitMask: `radial-gradient(farthest-side, transparent calc(100% - ${ringWidth}px - 1px), black calc(100% - ${ringWidth}px))`,
+        boxSizing: 'border-box',
+        ...style,
+      }),
+      [ringWidth, style]
+    )
 
-  return (
-    <div data-color-wheel-hue-ring className={className} style={ringStyle} aria-hidden="true" />
-  )
-}
+    return (
+      <div
+        ref={ref}
+        data-color-wheel-hue-ring
+        className={className}
+        style={ringStyle}
+        aria-hidden="true"
+        {...props}
+      />
+    )
+  }
+)
+
+HueRing.displayName = 'HueRing'
