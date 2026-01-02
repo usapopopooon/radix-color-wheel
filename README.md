@@ -1,5 +1,7 @@
 # @usapopo/radix-color-wheel
 
+[![CI](https://github.com/usapopopooon/radix-color-wheel/actions/workflows/ci.yml/badge.svg)](https://github.com/usapopopooon/radix-color-wheel/actions/workflows/ci.yml) ![coverage](https://usapopopooon.github.io/radix-color-wheel/coverage-badge.svg) [![Storybook](https://img.shields.io/badge/Storybook-open-ff4785?logo=storybook&logoColor=white)](https://usapopopooon.github.io/radix-color-wheel/storybook/)
+
 A fully accessible color wheel component library for React, built with Radix UI design philosophy. Uses the Compound Components pattern for maximum flexibility.
 
 ## Features
