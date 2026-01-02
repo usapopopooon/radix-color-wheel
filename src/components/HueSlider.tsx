@@ -1,6 +1,7 @@
-import { forwardRef, useMemo, useCallback, useRef, useImperativeHandle } from 'react'
+import { forwardRef, useMemo, useCallback, useImperativeHandle } from 'react'
 import { useColorWheelContext } from '../context/ColorWheelContext'
-import { clamp, hsvToHex, getColorNameEn } from '../utils'
+import { hsvToHex, getColorNameEn } from '../utils'
+import { useSliderBase } from '../hooks/useSliderBase'
 import { Thumb } from './Thumb'
 import type { HueSliderProps } from '../types'
 
@@ -42,71 +43,40 @@ export const HueSlider = forwardRef<HTMLDivElement, HueSliderProps>(
   ) => {
     const { hsv, hex, setHue, disabled, onDragStart, onDrag, onDragEnd, onFocus, onBlur } =
       useColorWheelContext()
-    const sliderRef = useRef<HTMLDivElement>(null)
+
+    const handleChange = useCallback(
+      (ratio: number) => {
+        setHue(Math.round(ratio * 360) % 360)
+        onDrag?.(hex)
+      },
+      [setHue, onDrag, hex]
+    )
+
+    const {
+      sliderRef,
+      borderRadius,
+      sliderStyle: baseSliderStyle,
+      thumbPositionStyle,
+      gradientDirection,
+      handlePointerDown,
+      handlePointerMove,
+      handlePointerUp,
+    } = useSliderBase({
+      value: hsv.h / 360,
+      onChange: handleChange,
+      disabled,
+      orientation,
+      inverted,
+      trackSize,
+      onDragStart,
+      onDragEnd,
+    })
 
     // Forward ref to internal slider element
-    useImperativeHandle(ref, () => sliderRef.current!, [])
-
-    const isHorizontal = orientation === 'horizontal'
-
-    // Calculate thumb position based on hue value (0-360)
-    // When inverted, 360 is at 0% position and 0 is at 100% position
-    const thumbPosition = useMemo(() => {
-      const ratio = hsv.h / 360
-      return `${inverted ? (1 - ratio) * 100 : ratio * 100}%`
-    }, [hsv.h, inverted])
+    useImperativeHandle(ref, () => sliderRef.current!, [sliderRef])
 
     // Current hue color for thumb background (full saturation and brightness)
     const thumbColor = useMemo(() => hsvToHex(hsv.h, 100, 100), [hsv.h])
-
-    const handlePointerDown = useCallback(
-      (e: React.PointerEvent) => {
-        if (disabled) return
-        e.preventDefault()
-        // Capture pointer on the slider container
-        sliderRef.current?.setPointerCapture(e.pointerId)
-        onDragStart?.()
-
-        // Calculate hue from click position
-        if (sliderRef.current) {
-          const rect = sliderRef.current.getBoundingClientRect()
-          const position = isHorizontal ? e.clientX - rect.left : e.clientY - rect.top
-          const size = isHorizontal ? rect.width : rect.height
-          const ratio = clamp(position / size, 0, 1)
-          // When inverted, flip the ratio
-          const newHue = (inverted ? 1 - ratio : ratio) * 360
-          setHue(Math.round(newHue) % 360)
-        }
-      },
-      [disabled, isHorizontal, inverted, setHue, onDragStart]
-    )
-
-    const handlePointerMove = useCallback(
-      (e: React.PointerEvent) => {
-        if (disabled) return
-        if (!sliderRef.current?.hasPointerCapture(e.pointerId)) return
-
-        const rect = sliderRef.current.getBoundingClientRect()
-        const position = isHorizontal ? e.clientX - rect.left : e.clientY - rect.top
-        const size = isHorizontal ? rect.width : rect.height
-        const ratio = clamp(position / size, 0, 1)
-        // When inverted, flip the ratio
-        const newHue = (inverted ? 1 - ratio : ratio) * 360
-        setHue(Math.round(newHue) % 360)
-
-        // Call onDrag with current hex
-        onDrag?.(hex)
-      },
-      [disabled, isHorizontal, inverted, setHue, onDrag, hex]
-    )
-
-    const handlePointerUp = useCallback(
-      (e: React.PointerEvent) => {
-        sliderRef.current?.releasePointerCapture(e.pointerId)
-        onDragEnd?.()
-      },
-      [onDragEnd]
-    )
 
     const handleKeyDown = useCallback(
       (e: React.KeyboardEvent) => {
@@ -145,35 +115,13 @@ export const HueSlider = forwardRef<HTMLDivElement, HueSliderProps>(
       [disabled, hsv.h, setHue]
     )
 
-    const borderRadius = trackSize / 2
-
     const sliderStyle: React.CSSProperties = useMemo(
-      () => ({
-        position: 'relative',
-        width: isHorizontal ? '100%' : trackSize,
-        height: isHorizontal ? trackSize : '100%',
-        minHeight: isHorizontal ? undefined : 100,
-        borderRadius,
-        cursor: disabled ? 'not-allowed' : 'pointer',
-        touchAction: 'none',
-        ...style,
-      }),
-      [isHorizontal, trackSize, borderRadius, disabled, style]
+      () => ({ ...baseSliderStyle, ...style }),
+      [baseSliderStyle, style]
     )
 
-    const gradientStyle: React.CSSProperties = useMemo(() => {
-      // Hue gradient from 0 (red) to 360 (red)
-      // Default: 0 on left/top, 360 on right/bottom
-      // Inverted: 360 on left/top, 0 on right/bottom
-      const gradientDirection = isHorizontal
-        ? inverted
-          ? 'to left'
-          : 'to right'
-        : inverted
-          ? 'to top'
-          : 'to bottom'
-
-      return {
+    const gradientStyle: React.CSSProperties = useMemo(
+      () => ({
         position: 'absolute',
         inset: 0,
         borderRadius,
@@ -186,13 +134,8 @@ export const HueSlider = forwardRef<HTMLDivElement, HueSliderProps>(
           hsl(300, 100%, 50%),
           hsl(360, 100%, 50%)
         )`,
-      }
-    }, [isHorizontal, inverted, borderRadius])
-
-    const thumbPositionStyle: React.CSSProperties = useMemo(
-      () =>
-        isHorizontal ? { left: thumbPosition, top: '50%' } : { top: thumbPosition, left: '50%' },
-      [isHorizontal, thumbPosition]
+      }),
+      [borderRadius, gradientDirection]
     )
 
     return (

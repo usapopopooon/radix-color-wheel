@@ -1,6 +1,7 @@
-import { forwardRef, useMemo, useCallback, useRef, useImperativeHandle } from 'react'
+import { forwardRef, useMemo, useCallback, useImperativeHandle } from 'react'
 import { useColorWheelContext } from '../context/ColorWheelContext'
 import { clamp } from '../utils'
+import { useSliderBase } from '../hooks/useSliderBase'
 import { Thumb } from './Thumb'
 import type { AlphaSliderProps } from '../types'
 
@@ -51,16 +52,37 @@ export const AlphaSlider = forwardRef<HTMLDivElement, AlphaSliderProps>(
       onFocus,
       onBlur,
     } = useColorWheelContext()
-    const sliderRef = useRef<HTMLDivElement>(null)
+
+    const handleChange = useCallback(
+      (ratio: number) => {
+        setAlpha(Math.round(ratio * 100))
+        onDrag?.(hex8)
+      },
+      [setAlpha, onDrag, hex8]
+    )
+
+    const {
+      sliderRef,
+      borderRadius,
+      sliderStyle: baseSliderStyle,
+      thumbPositionStyle,
+      gradientDirection,
+      handlePointerDown,
+      handlePointerMove,
+      handlePointerUp,
+    } = useSliderBase({
+      value: alpha / 100,
+      onChange: handleChange,
+      disabled,
+      orientation,
+      inverted,
+      trackSize,
+      onDragStart,
+      onDragEnd,
+    })
 
     // Forward ref to internal slider element
-    useImperativeHandle(ref, () => sliderRef.current!, [])
-
-    const isHorizontal = orientation === 'horizontal'
-
-    // Calculate thumb position based on alpha value
-    // When inverted, 100% alpha is at 0% position and 0% alpha is at 100% position
-    const thumbPosition = useMemo(() => `${inverted ? 100 - alpha : alpha}%`, [alpha, inverted])
+    useImperativeHandle(ref, () => sliderRef.current!, [sliderRef])
 
     // Convert hex to rgba with current alpha for thumb background
     const thumbColor = useMemo(() => {
@@ -69,55 +91,6 @@ export const AlphaSlider = forwardRef<HTMLDivElement, AlphaSliderProps>(
       const b = parseInt(hex.slice(5, 7), 16)
       return `rgba(${r}, ${g}, ${b}, ${alpha / 100})`
     }, [hex, alpha])
-
-    const handlePointerDown = useCallback(
-      (e: React.PointerEvent) => {
-        if (disabled) return
-        e.preventDefault()
-        // Capture pointer on the slider container, not the clicked element
-        sliderRef.current?.setPointerCapture(e.pointerId)
-        onDragStart?.()
-
-        // Calculate alpha from click position
-        if (sliderRef.current) {
-          const rect = sliderRef.current.getBoundingClientRect()
-          const position = isHorizontal ? e.clientX - rect.left : e.clientY - rect.top
-          const size = isHorizontal ? rect.width : rect.height
-          const ratio = clamp(position / size, 0, 1)
-          // When inverted, flip the ratio
-          const newAlpha = (inverted ? 1 - ratio : ratio) * 100
-          setAlpha(Math.round(newAlpha))
-        }
-      },
-      [disabled, isHorizontal, inverted, setAlpha, onDragStart]
-    )
-
-    const handlePointerMove = useCallback(
-      (e: React.PointerEvent) => {
-        if (disabled) return
-        if (!sliderRef.current?.hasPointerCapture(e.pointerId)) return
-
-        const rect = sliderRef.current.getBoundingClientRect()
-        const position = isHorizontal ? e.clientX - rect.left : e.clientY - rect.top
-        const size = isHorizontal ? rect.width : rect.height
-        const ratio = clamp(position / size, 0, 1)
-        // When inverted, flip the ratio
-        const newAlpha = (inverted ? 1 - ratio : ratio) * 100
-        setAlpha(Math.round(newAlpha))
-
-        // Call onDrag with current hex8
-        onDrag?.(hex8)
-      },
-      [disabled, isHorizontal, inverted, setAlpha, onDrag, hex8]
-    )
-
-    const handlePointerUp = useCallback(
-      (e: React.PointerEvent) => {
-        sliderRef.current?.releasePointerCapture(e.pointerId)
-        onDragEnd?.()
-      },
-      [onDragEnd]
-    )
 
     const handleKeyDown = useCallback(
       (e: React.KeyboardEvent) => {
@@ -156,16 +129,10 @@ export const AlphaSlider = forwardRef<HTMLDivElement, AlphaSliderProps>(
       [disabled, alpha, setAlpha]
     )
 
-    const borderRadius = trackSize / 2
-
+    // AlphaSlider needs checkerboard background, so we extend the base style
     const sliderStyle: React.CSSProperties = useMemo(
       () => ({
-        position: 'relative',
-        width: isHorizontal ? '100%' : trackSize,
-        height: isHorizontal ? trackSize : '100%',
-        minHeight: isHorizontal ? undefined : 100,
-        borderRadius,
-        // Checkerboard pattern
+        ...baseSliderStyle,
         backgroundImage: `
           linear-gradient(45deg, #ccc 25%, transparent 25%),
           linear-gradient(-45deg, #ccc 25%, transparent 25%),
@@ -174,36 +141,19 @@ export const AlphaSlider = forwardRef<HTMLDivElement, AlphaSliderProps>(
         `,
         backgroundSize: '8px 8px',
         backgroundPosition: '0 0, 0 4px, 4px -4px, -4px 0',
-        cursor: disabled ? 'not-allowed' : 'pointer',
-        touchAction: 'none',
         ...style,
       }),
-      [isHorizontal, trackSize, borderRadius, disabled, style]
+      [baseSliderStyle, style]
     )
 
-    const gradientStyle: React.CSSProperties = useMemo(() => {
-      // Default: transparent on left/top, opaque on right/bottom
-      // Inverted: opaque on left/top, transparent on right/bottom
-      const gradientDirection = isHorizontal
-        ? inverted
-          ? 'to left'
-          : 'to right'
-        : inverted
-          ? 'to top'
-          : 'to bottom'
-
-      return {
+    const gradientStyle: React.CSSProperties = useMemo(
+      () => ({
         position: 'absolute',
         inset: 0,
         borderRadius,
         background: `linear-gradient(${gradientDirection}, transparent, ${hex})`,
-      }
-    }, [isHorizontal, inverted, borderRadius, hex])
-
-    const thumbPositionStyle: React.CSSProperties = useMemo(
-      () =>
-        isHorizontal ? { left: thumbPosition, top: '50%' } : { top: thumbPosition, left: '50%' },
-      [isHorizontal, thumbPosition]
+      }),
+      [borderRadius, gradientDirection, hex]
     )
 
     return (

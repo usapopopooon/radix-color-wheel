@@ -114,10 +114,13 @@ export const GammaSlider = forwardRef<HTMLDivElement, GammaSliderProps>(
 
     // Thumb color based on gamma: darker for <1, lighter for >1
     const thumbColor = useMemo(() => {
-      // Create a grayscale color representing gamma effect
-      // gamma 1.0 = 50% gray, <1 = darker, >1 = lighter
+      // Grayscale range for thumb: darkest (min gamma) to lightest (max gamma)
+      const GRAY_MIN = 28
+      const GRAY_MAX = 228
+      const GRAY_RANGE = GRAY_MAX - GRAY_MIN
+
       const normalized = (gamma - min) / (max - min)
-      const gray = Math.round(normalized * 200 + 28) // Range 28-228
+      const gray = Math.round(normalized * GRAY_RANGE + GRAY_MIN)
       return `rgb(${gray}, ${gray}, ${gray})`
     }, [gamma, min, max])
 

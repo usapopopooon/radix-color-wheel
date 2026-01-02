@@ -22,7 +22,7 @@ export interface UseSliderBaseOptions {
 
 export interface SliderBaseResult {
   /** Ref to attach to the slider container */
-  sliderRef: React.RefObject<HTMLDivElement>
+  sliderRef: React.RefObject<HTMLDivElement | null>
   /** Whether orientation is horizontal */
   isHorizontal: boolean
   /** Thumb position as percentage string (e.g., "50%") */
