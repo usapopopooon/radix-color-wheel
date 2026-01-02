@@ -1,6 +1,6 @@
 # react-hsv-ring
 
-[![CI](https://github.com/usapopopooon/react-hsv-ring/actions/workflows/ci.yml/badge.svg)](https://github.com/usapopopooon/react-hsv-ring/actions/workflows/ci.yml) ![coverage](https://usapopopooon.github.io/react-hsv-ring/coverage-badge.svg) [![Storybook](https://img.shields.io/badge/Storybook-open-ff4785?logo=storybook&logoColor=white)](https://usapopopooon.github.io/react-hsv-ring/storybook/?path=/docs/components-colorwheel--docs) [![npm](https://img.shields.io/npm/v/react-hsv-ring)](https://www.npmjs.com/package/react-hsv-ring) [![license](https://img.shields.io/npm/l/react-hsv-ring)](./LICENSE)
+[![CI](https://github.com/usapopopooon/react-hsv-ring/actions/workflows/ci.yml/badge.svg)](https://github.com/usapopopooon/react-hsv-ring/actions/workflows/ci.yml) ![coverage](https://usapopopooon.github.io/react-hsv-ring/coverage-badge.svg) [![Storybook](https://img.shields.io/badge/Storybook-open-ff4785?logo=storybook&logoColor=white)](https://usapopopooon.github.io/react-hsv-ring/storybook/?path=/docs/components-colorwheel--docs) [![npm](https://img.shields.io/npm/v/react-hsv-ring)](https://www.npmjs.com/package/react-hsv-ring) [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 A fully accessible color wheel component for React, following the [Radix UI](https://www.radix-ui.com/) Compound Components pattern.
 
