@@ -25,7 +25,8 @@ import type { AlphaSliderProps } from '../types'
  */
 export const AlphaSlider = forwardRef<HTMLDivElement, AlphaSliderProps>(
   ({ className, style, orientation = 'horizontal', ...props }, ref) => {
-    const { hex, alpha, setAlpha, disabled, onDragStart, onDragEnd } = useColorWheelContext()
+    const { hex, hex8, alpha, setAlpha, disabled, onDragStart, onDrag, onDragEnd, onFocus, onBlur } =
+      useColorWheelContext()
     const sliderRef = useRef<HTMLDivElement>(null)
 
     // Forward ref to internal slider element
@@ -74,8 +75,11 @@ export const AlphaSlider = forwardRef<HTMLDivElement, AlphaSliderProps>(
         const size = isHorizontal ? rect.width : rect.height
         const newAlpha = clamp((position / size) * 100, 0, 100)
         setAlpha(Math.round(newAlpha))
+
+        // Call onDrag with current hex8
+        onDrag?.(hex8)
       },
-      [disabled, isHorizontal, setAlpha]
+      [disabled, isHorizontal, setAlpha, onDrag, hex8]
     )
 
     const handlePointerUp = useCallback(
@@ -181,6 +185,8 @@ export const AlphaSlider = forwardRef<HTMLDivElement, AlphaSliderProps>(
           aria-orientation={orientation}
           disabled={disabled}
           onKeyDown={handleKeyDown}
+          onFocus={onFocus}
+          onBlur={onBlur}
         />
       </div>
     )

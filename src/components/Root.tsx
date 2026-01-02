@@ -40,7 +40,10 @@ export function Root({
   onBrightnessChange,
   onAlphaChange,
   onDragStart,
+  onDrag,
   onDragEnd,
+  onFocus,
+  onBlur,
   disabled = false,
   children,
 }: RootProps): React.ReactElement {
@@ -151,6 +154,13 @@ export function Root({
     onDragStart?.()
   }, [onDragStart])
 
+  const handleDrag = useCallback(
+    (currentHex: string) => {
+      onDrag?.(currentHex)
+    },
+    [onDrag]
+  )
+
   const handleDragEnd = useCallback(() => {
     setIsDragging(false)
     onDragEnd?.()
@@ -158,6 +168,14 @@ export function Root({
       onValueChangeEnd?.(hexWithAlpha)
     }
   }, [hexWithAlpha, onDragEnd, onValueChangeEnd])
+
+  const handleFocus = useCallback(() => {
+    onFocus?.()
+  }, [onFocus])
+
+  const handleBlur = useCallback(() => {
+    onBlur?.()
+  }, [onBlur])
 
   // Context value
   const contextValue = useMemo<ColorWheelContextValue>(
@@ -175,7 +193,10 @@ export function Root({
       isDragging,
       setIsDragging,
       onDragStart: handleDragStart,
+      onDrag: handleDrag,
       onDragEnd: handleDragEnd,
+      onFocus: handleFocus,
+      onBlur: handleBlur,
     }),
     [
       hsv,
@@ -190,7 +211,10 @@ export function Root({
       disabled,
       isDragging,
       handleDragStart,
+      handleDrag,
       handleDragEnd,
+      handleFocus,
+      handleBlur,
     ]
   )
 

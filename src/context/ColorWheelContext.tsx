@@ -34,8 +34,14 @@ export interface ColorWheelContextValue {
 
   /** Callback when drag starts */
   readonly onDragStart?: () => void
+  /** Callback called continuously during drag */
+  readonly onDrag?: (hex: string) => void
   /** Callback when drag ends */
   readonly onDragEnd?: () => void
+  /** Callback when focus is received */
+  readonly onFocus?: () => void
+  /** Callback when focus is lost */
+  readonly onBlur?: () => void
 }
 
 /**

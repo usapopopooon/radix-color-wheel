@@ -249,4 +249,181 @@ describe('ColorWheel', () => {
 
     expect(onHueChange).toHaveBeenCalledWith(359)
   })
+
+  it('should call onDragStart when pointer down on HueThumb', () => {
+    const onDragStart = vi.fn()
+
+    render(
+      <ColorWheel.Root value="#ff0000" onValueChange={() => {}} onDragStart={onDragStart}>
+        <ColorWheel.Wheel>
+          <ColorWheel.HueRing />
+          <ColorWheel.HueThumb />
+          <ColorWheel.Area />
+          <ColorWheel.AreaThumb />
+        </ColorWheel.Wheel>
+      </ColorWheel.Root>
+    )
+
+    const hueThumb = screen.getByRole('slider', { name: /hue/i })
+    fireEvent.pointerDown(hueThumb)
+
+    expect(onDragStart).toHaveBeenCalled()
+  })
+
+  it('should call onDragEnd when pointer up on HueThumb', () => {
+    const onDragEnd = vi.fn()
+
+    render(
+      <ColorWheel.Root value="#ff0000" onValueChange={() => {}} onDragEnd={onDragEnd}>
+        <ColorWheel.Wheel>
+          <ColorWheel.HueRing />
+          <ColorWheel.HueThumb />
+          <ColorWheel.Area />
+          <ColorWheel.AreaThumb />
+        </ColorWheel.Wheel>
+      </ColorWheel.Root>
+    )
+
+    const hueThumb = screen.getByRole('slider', { name: /hue/i })
+    fireEvent.pointerDown(hueThumb)
+    fireEvent.pointerUp(hueThumb)
+
+    expect(onDragEnd).toHaveBeenCalled()
+  })
+
+  it('should call onDrag during pointer move on HueThumb', () => {
+    const onDrag = vi.fn()
+
+    render(
+      <ColorWheel.Root value="#ff0000" onValueChange={() => {}} onDrag={onDrag}>
+        <ColorWheel.Wheel>
+          <ColorWheel.HueRing />
+          <ColorWheel.HueThumb />
+          <ColorWheel.Area />
+          <ColorWheel.AreaThumb />
+        </ColorWheel.Wheel>
+      </ColorWheel.Root>
+    )
+
+    const hueThumb = screen.getByRole('slider', { name: /hue/i })
+
+    // Mock setPointerCapture and hasPointerCapture
+    hueThumb.setPointerCapture = vi.fn()
+    hueThumb.hasPointerCapture = vi.fn().mockReturnValue(true)
+    hueThumb.releasePointerCapture = vi.fn()
+
+    fireEvent.pointerDown(hueThumb, { pointerId: 1 })
+    fireEvent.pointerMove(hueThumb, { pointerId: 1, clientX: 150, clientY: 100 })
+
+    expect(onDrag).toHaveBeenCalledWith(expect.stringMatching(/^#[0-9a-f]{6}$/i))
+  })
+
+  it('should call onDrag during pointer move on AreaThumb', () => {
+    const onDrag = vi.fn()
+
+    render(
+      <ColorWheel.Root value="#ff0000" onValueChange={() => {}} onDrag={onDrag}>
+        <ColorWheel.Wheel>
+          <ColorWheel.HueRing />
+          <ColorWheel.HueThumb />
+          <ColorWheel.Area />
+          <ColorWheel.AreaThumb />
+        </ColorWheel.Wheel>
+      </ColorWheel.Root>
+    )
+
+    const areaThumb = screen.getByRole('slider', { name: /saturation and brightness/i })
+
+    // Mock setPointerCapture and hasPointerCapture
+    areaThumb.setPointerCapture = vi.fn()
+    areaThumb.hasPointerCapture = vi.fn().mockReturnValue(true)
+    areaThumb.releasePointerCapture = vi.fn()
+
+    fireEvent.pointerDown(areaThumb, { pointerId: 1 })
+    fireEvent.pointerMove(areaThumb, { pointerId: 1, clientX: 150, clientY: 100 })
+
+    expect(onDrag).toHaveBeenCalledWith(expect.stringMatching(/^#[0-9a-f]{6}$/i))
+  })
+
+  it('should call onFocus when HueThumb receives focus', () => {
+    const onFocus = vi.fn()
+
+    render(
+      <ColorWheel.Root value="#ff0000" onValueChange={() => {}} onFocus={onFocus}>
+        <ColorWheel.Wheel>
+          <ColorWheel.HueRing />
+          <ColorWheel.HueThumb />
+          <ColorWheel.Area />
+          <ColorWheel.AreaThumb />
+        </ColorWheel.Wheel>
+      </ColorWheel.Root>
+    )
+
+    const hueThumb = screen.getByRole('slider', { name: /hue/i })
+    fireEvent.focus(hueThumb)
+
+    expect(onFocus).toHaveBeenCalled()
+  })
+
+  it('should call onBlur when HueThumb loses focus', () => {
+    const onBlur = vi.fn()
+
+    render(
+      <ColorWheel.Root value="#ff0000" onValueChange={() => {}} onBlur={onBlur}>
+        <ColorWheel.Wheel>
+          <ColorWheel.HueRing />
+          <ColorWheel.HueThumb />
+          <ColorWheel.Area />
+          <ColorWheel.AreaThumb />
+        </ColorWheel.Wheel>
+      </ColorWheel.Root>
+    )
+
+    const hueThumb = screen.getByRole('slider', { name: /hue/i })
+    fireEvent.focus(hueThumb)
+    fireEvent.blur(hueThumb)
+
+    expect(onBlur).toHaveBeenCalled()
+  })
+
+  it('should call onFocus when AreaThumb receives focus', () => {
+    const onFocus = vi.fn()
+
+    render(
+      <ColorWheel.Root value="#ff0000" onValueChange={() => {}} onFocus={onFocus}>
+        <ColorWheel.Wheel>
+          <ColorWheel.HueRing />
+          <ColorWheel.HueThumb />
+          <ColorWheel.Area />
+          <ColorWheel.AreaThumb />
+        </ColorWheel.Wheel>
+      </ColorWheel.Root>
+    )
+
+    const areaThumb = screen.getByRole('slider', { name: /saturation and brightness/i })
+    fireEvent.focus(areaThumb)
+
+    expect(onFocus).toHaveBeenCalled()
+  })
+
+  it('should call onBlur when AreaThumb loses focus', () => {
+    const onBlur = vi.fn()
+
+    render(
+      <ColorWheel.Root value="#ff0000" onValueChange={() => {}} onBlur={onBlur}>
+        <ColorWheel.Wheel>
+          <ColorWheel.HueRing />
+          <ColorWheel.HueThumb />
+          <ColorWheel.Area />
+          <ColorWheel.AreaThumb />
+        </ColorWheel.Wheel>
+      </ColorWheel.Root>
+    )
+
+    const areaThumb = screen.getByRole('slider', { name: /saturation and brightness/i })
+    fireEvent.focus(areaThumb)
+    fireEvent.blur(areaThumb)
+
+    expect(onBlur).toHaveBeenCalled()
+  })
 })

@@ -68,9 +68,25 @@ export interface RootProps {
   readonly onDragStart?: () => void
 
   /**
+   * Callback called continuously during drag
+   * Receives current hex value
+   */
+  readonly onDrag?: (hex: string) => void
+
+  /**
    * Callback when drag ends
    */
   readonly onDragEnd?: () => void
+
+  /**
+   * Callback when any interactive element receives focus
+   */
+  readonly onFocus?: () => void
+
+  /**
+   * Callback when focus leaves all interactive elements
+   */
+  readonly onBlur?: () => void
 
   /**
    * If true, disables all interactions

@@ -62,7 +62,10 @@ Context provider that manages color state.
 | `onBrightnessChange` | `(brightness: number) => void` | - | Called when brightness changes (0-100) |
 | `onAlphaChange` | `(alpha: number) => void` | - | Called when alpha changes (0-100) |
 | `onDragStart` | `() => void` | - | Called when drag interaction starts |
+| `onDrag` | `(hex: string) => void` | - | Called continuously during drag |
 | `onDragEnd` | `() => void` | - | Called when drag interaction ends |
+| `onFocus` | `() => void` | - | Called when any interactive element receives focus |
+| `onBlur` | `() => void` | - | Called when focus leaves an interactive element |
 | `disabled` | `boolean` | `false` | Disable all interactions |
 | `children` | `ReactNode` | - | Child components |
 

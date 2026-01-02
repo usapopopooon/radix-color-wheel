@@ -24,7 +24,7 @@ import type { AreaThumbProps } from '../types'
  * ```
  */
 export const AreaThumb = forwardRef<HTMLDivElement, AreaThumbProps>(({ className, style }, ref) => {
-  const { hsv, setSaturation, setBrightness, disabled, onDragStart, onDragEnd } =
+  const { hsv, hex, setSaturation, setBrightness, disabled, onDragStart, onDrag, onDragEnd, onFocus, onBlur } =
     useColorWheelContext()
   const { size, areaSize, thumbSize } = useWheelContext()
   const thumbRef = useRef<HTMLDivElement>(null)
@@ -77,8 +77,11 @@ export const AreaThumb = forwardRef<HTMLDivElement, AreaThumbProps>(({ className
       const { s, v } = getSVFromPosition(x, y, areaSize)
       setSaturation(Math.round(s))
       setBrightness(Math.round(v))
+
+      // Call onDrag with current hex
+      onDrag?.(hex)
     },
-    [disabled, areaOffset, areaSize, setSaturation, setBrightness]
+    [disabled, areaOffset, areaSize, setSaturation, setBrightness, onDrag, hex]
   )
 
   const handlePointerUp = useCallback(
@@ -155,6 +158,8 @@ export const AreaThumb = forwardRef<HTMLDivElement, AreaThumbProps>(({ className
       onPointerMove={handlePointerMove}
       onPointerUp={handlePointerUp}
       onKeyDown={handleKeyDown}
+      onFocus={onFocus}
+      onBlur={onBlur}
     />
   )
 })

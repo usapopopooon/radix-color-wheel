@@ -24,7 +24,8 @@ import type { HueThumbProps } from '../types'
  * ```
  */
 export const HueThumb = forwardRef<HTMLDivElement, HueThumbProps>(({ className, style }, ref) => {
-  const { hsv, setHue, disabled, onDragStart, onDragEnd } = useColorWheelContext()
+  const { hsv, hex, setHue, disabled, onDragStart, onDrag, onDragEnd, onFocus, onBlur } =
+    useColorWheelContext()
   const { size, ringWidth, thumbSize } = useWheelContext()
   const thumbRef = useRef<HTMLDivElement>(null)
 
@@ -78,8 +79,11 @@ export const HueThumb = forwardRef<HTMLDivElement, HueThumbProps>(({ className, 
       // Calculate hue from position
       const newHue = getHueFromPosition(x, y, center, center)
       setHue(Math.round(newHue))
+
+      // Call onDrag with current hex
+      onDrag?.(hex)
     },
-    [disabled, size, setHue]
+    [disabled, size, setHue, onDrag, hex]
   )
 
   const handlePointerUp = useCallback(
@@ -148,6 +152,8 @@ export const HueThumb = forwardRef<HTMLDivElement, HueThumbProps>(({ className, 
       onPointerMove={handlePointerMove}
       onPointerUp={handlePointerUp}
       onKeyDown={handleKeyDown}
+      onFocus={onFocus}
+      onBlur={onBlur}
     />
   )
 })

@@ -42,6 +42,10 @@ export interface ThumbProps {
   readonly onPointerUp?: (e: React.PointerEvent) => void
   /** Key down handler */
   readonly onKeyDown?: (e: React.KeyboardEvent) => void
+  /** Focus handler */
+  readonly onFocus?: (e: React.FocusEvent) => void
+  /** Blur handler */
+  readonly onBlur?: (e: React.FocusEvent) => void
 }
 
 /**
@@ -69,6 +73,8 @@ export const Thumb = forwardRef<HTMLDivElement, ThumbProps>(
       onPointerMove,
       onPointerUp,
       onKeyDown,
+      onFocus,
+      onBlur,
     },
     ref
   ) => {
@@ -110,6 +116,8 @@ export const Thumb = forwardRef<HTMLDivElement, ThumbProps>(
         onPointerMove={onPointerMove}
         onPointerUp={onPointerUp}
         onKeyDown={onKeyDown}
+        onFocus={onFocus}
+        onBlur={onBlur}
       />
     )
   }
