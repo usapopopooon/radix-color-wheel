@@ -29,7 +29,8 @@
     "Chroma",
     "Vitest",
     "jsdom",
-    "autodocs"
+    "autodocs",
+    "unstub"
   ],
   "ignorePaths": [
     "node_modules",
