@@ -5,7 +5,7 @@ export { getHueFromPosition } from './getHueFromPosition'
 export { getSVFromPosition } from './getSVFromPosition'
 export { hexToHsv } from './hexToHsv'
 export { hsvToHex } from './hsvToHex'
-export { isValidHex, isValidHex6, normalizeHex } from './hexValidation'
+export { isValidHex, isValidHex6, normalizeHex, isHex8, stripAlphaFromHex } from './hexValidation'
 
 // RGB conversions
 export { hexToRgb } from './hexToRgb'

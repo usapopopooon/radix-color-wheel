@@ -17,6 +17,8 @@ import {
   combineHexWithAlpha,
   alphaToHex,
   validateRootProps,
+  isHex8,
+  stripAlphaFromHex,
 } from '../utils'
 import type { RootProps, ColorWheelRef, HSV } from '../types'
 
@@ -86,10 +88,9 @@ export const Root = forwardRef<ColorWheelRef, RootProps>(function Root(
     onChange: onValueChange,
   })
 
-  // Extract base hex (6 digits) and alpha from the value
+  // Extract base hex (6 digits) from potentially 8-digit hex
   const hex = useMemo(() => {
-    const h = hexWithAlpha ?? '#ff0000'
-    return h.length === 9 ? h.slice(0, 7) : h
+    return stripAlphaFromHex(hexWithAlpha ?? '#ff0000')
   }, [hexWithAlpha])
 
   // Derived HSV state from hex
@@ -192,15 +193,13 @@ export const Root = forwardRef<ColorWheelRef, RootProps>(function Root(
 
   const setHex = useCallback(
     (newHex: string) => {
-      // If setting a 6-digit hex, preserve current alpha
-      if (newHex.length === 7) {
-        setHexWithAlphaState(combineHexWithAlpha(newHex, alpha))
-      } else {
+      if (isHex8(newHex)) {
+        // 8-digit hex: use as-is and update alpha
         setHexWithAlphaState(newHex)
-        // Update alpha if 8-digit hex was provided
-        if (newHex.length === 9) {
-          setAlphaState(parseAlphaFromHex(newHex))
-        }
+        setAlphaState(parseAlphaFromHex(newHex))
+      } else {
+        // 6-digit hex: preserve current alpha
+        setHexWithAlphaState(combineHexWithAlpha(newHex, alpha))
       }
     },
     [alpha, setHexWithAlphaState, setAlphaState]

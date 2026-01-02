@@ -1,6 +1,6 @@
 import { forwardRef, useMemo, useCallback, useImperativeHandle } from 'react'
 import { useColorWheelContext } from '../context/ColorWheelContext'
-import { getCheckerboardStyle } from '../utils'
+import { getCheckerboardStyle, hexToRgb } from '../utils'
 import { useSliderBase } from '../hooks/useSliderBase'
 import { useSliderKeyboard } from '../hooks/useSliderKeyboard'
 import { Thumb } from './Thumb'
@@ -87,9 +87,7 @@ export const AlphaSlider = forwardRef<HTMLDivElement, AlphaSliderProps>(
 
     // Convert hex to rgba with current alpha for thumb background
     const thumbColor = useMemo(() => {
-      const r = parseInt(hex.slice(1, 3), 16)
-      const g = parseInt(hex.slice(3, 5), 16)
-      const b = parseInt(hex.slice(5, 7), 16)
+      const { r, g, b } = hexToRgb(hex)
       return `rgba(${r}, ${g}, ${b}, ${alpha / 100})`
     }, [hex, alpha])
 
