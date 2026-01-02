@@ -93,14 +93,19 @@ export const Thumb = forwardRef<HTMLDivElement, ThumbProps>(
       [size, color, disabled, style]
     )
 
+    // Memoize data attributes transformation to avoid recreating on every render
+    const dataAttributeProps = useMemo(() => {
+      if (!dataAttributes) return undefined
+      return Object.fromEntries(
+        Object.entries(dataAttributes).map(([key, value]) => [`data-${key}`, value])
+      )
+    }, [dataAttributes])
+
     return (
       <div
         ref={ref}
         data-color-wheel-thumb
-        {...(dataAttributes &&
-          Object.fromEntries(
-            Object.entries(dataAttributes).map(([key, value]) => [`data-${key}`, value])
-          ))}
+        {...dataAttributeProps}
         className={cn(THUMB_CLASS_NAME, className)}
         style={thumbStyle}
         role="slider"
