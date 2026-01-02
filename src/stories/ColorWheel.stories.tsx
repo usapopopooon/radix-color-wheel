@@ -10,29 +10,10 @@ const meta: Meta = {
 
 export default meta
 
-export const Default: StoryObj = {
-  render: () => {
-    const [color, setColor] = useState('#3b82f6')
-    return (
-      <div>
-        <ColorWheel.Root value={color} onValueChange={setColor}>
-          <ColorWheel.Wheel>
-            <ColorWheel.HueRing />
-            <ColorWheel.HueThumb />
-            <ColorWheel.Area />
-            <ColorWheel.AreaThumb />
-          </ColorWheel.Wheel>
-        </ColorWheel.Root>
-        <p style={{ marginTop: 16 }}>Selected color: {color}</p>
-      </div>
-    )
-  },
-}
-
-export const WithHexInput: StoryObj = {
-  render: () => {
-    const [color, setColor] = useState('#ef4444')
-    return (
+function DefaultStory(): JSX.Element {
+  const [color, setColor] = useState('#3b82f6')
+  return (
+    <div>
       <ColorWheel.Root value={color} onValueChange={setColor}>
         <ColorWheel.Wheel>
           <ColorWheel.HueRing />
@@ -40,34 +21,67 @@ export const WithHexInput: StoryObj = {
           <ColorWheel.Area />
           <ColorWheel.AreaThumb />
         </ColorWheel.Wheel>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginTop: 16 }}>
-          <ColorWheel.Swatch style={{ width: 40, height: 40, borderRadius: 4, border: '1px solid #ccc' }} />
-          <ColorWheel.HexInput style={{ flex: 1, padding: '4px 8px', border: '1px solid #ccc', borderRadius: 4 }} />
-        </div>
       </ColorWheel.Root>
-    )
-  },
+      <p style={{ marginTop: 16 }}>Selected color: {color}</p>
+    </div>
+  )
+}
+
+export const Default: StoryObj = {
+  render: () => <DefaultStory />,
+}
+
+function WithHexInputStory(): JSX.Element {
+  const [color, setColor] = useState('#ef4444')
+  return (
+    <ColorWheel.Root value={color} onValueChange={setColor}>
+      <ColorWheel.Wheel>
+        <ColorWheel.HueRing />
+        <ColorWheel.HueThumb />
+        <ColorWheel.Area />
+        <ColorWheel.AreaThumb />
+      </ColorWheel.Wheel>
+      <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginTop: 16 }}>
+        <ColorWheel.Swatch
+          style={{ width: 40, height: 40, borderRadius: 4, border: '1px solid #ccc' }}
+        />
+        <ColorWheel.HexInput
+          style={{ flex: 1, padding: '4px 8px', border: '1px solid #ccc', borderRadius: 4 }}
+        />
+      </div>
+    </ColorWheel.Root>
+  )
+}
+
+export const WithHexInput: StoryObj = {
+  render: () => <WithHexInputStory />,
+}
+
+function WithAlphaSliderStory(): JSX.Element {
+  const [color, setColor] = useState('#22c55e')
+  return (
+    <ColorWheel.Root value={color} onValueChange={setColor}>
+      <ColorWheel.Wheel size={250}>
+        <ColorWheel.HueRing />
+        <ColorWheel.HueThumb />
+        <ColorWheel.Area />
+        <ColorWheel.AreaThumb />
+      </ColorWheel.Wheel>
+      <ColorWheel.AlphaSlider style={{ marginTop: 16 }} />
+      <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginTop: 8 }}>
+        <ColorWheel.Swatch
+          style={{ width: 40, height: 40, borderRadius: 4, border: '1px solid #ccc' }}
+        />
+        <ColorWheel.HexInput
+          style={{ flex: 1, padding: '4px 8px', border: '1px solid #ccc', borderRadius: 4 }}
+        />
+      </div>
+    </ColorWheel.Root>
+  )
 }
 
 export const WithAlphaSlider: StoryObj = {
-  render: () => {
-    const [color, setColor] = useState('#22c55e')
-    return (
-      <ColorWheel.Root value={color} onValueChange={setColor}>
-        <ColorWheel.Wheel size={250}>
-          <ColorWheel.HueRing />
-          <ColorWheel.HueThumb />
-          <ColorWheel.Area />
-          <ColorWheel.AreaThumb />
-        </ColorWheel.Wheel>
-        <ColorWheel.AlphaSlider style={{ marginTop: 16 }} />
-        <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginTop: 8 }}>
-          <ColorWheel.Swatch style={{ width: 40, height: 40, borderRadius: 4, border: '1px solid #ccc' }} />
-          <ColorWheel.HexInput style={{ flex: 1, padding: '4px 8px', border: '1px solid #ccc', borderRadius: 4 }} />
-        </div>
-      </ColorWheel.Root>
-    )
-  },
+  render: () => <WithAlphaSliderStory />,
 }
 
 export const Disabled: StoryObj = {
@@ -83,58 +97,54 @@ export const Disabled: StoryObj = {
   ),
 }
 
-export const CustomSize: StoryObj = {
-  render: () => {
-    const [color, setColor] = useState('#f97316')
-    return (
-      <div style={{ display: 'flex', gap: 32, alignItems: 'flex-start' }}>
-        <div>
-          <p style={{ marginBottom: 8 }}>Small (150px)</p>
-          <ColorWheel.Root value={color} onValueChange={setColor}>
-            <ColorWheel.Wheel size={150} ringWidth={16}>
-              <ColorWheel.HueRing />
-              <ColorWheel.HueThumb />
-              <ColorWheel.Area />
-              <ColorWheel.AreaThumb />
-            </ColorWheel.Wheel>
-          </ColorWheel.Root>
-        </div>
-        <div>
-          <p style={{ marginBottom: 8 }}>Large (300px)</p>
-          <ColorWheel.Root value={color} onValueChange={setColor}>
-            <ColorWheel.Wheel size={300} ringWidth={28}>
-              <ColorWheel.HueRing />
-              <ColorWheel.HueThumb />
-              <ColorWheel.Area />
-              <ColorWheel.AreaThumb />
-            </ColorWheel.Wheel>
-          </ColorWheel.Root>
-        </div>
+function CustomSizeStory(): JSX.Element {
+  const [color, setColor] = useState('#f97316')
+  return (
+    <div style={{ display: 'flex', gap: 32, alignItems: 'flex-start' }}>
+      <div>
+        <p style={{ marginBottom: 8 }}>Small (150px)</p>
+        <ColorWheel.Root value={color} onValueChange={setColor}>
+          <ColorWheel.Wheel size={150} ringWidth={16}>
+            <ColorWheel.HueRing />
+            <ColorWheel.HueThumb />
+            <ColorWheel.Area />
+            <ColorWheel.AreaThumb />
+          </ColorWheel.Wheel>
+        </ColorWheel.Root>
       </div>
-    )
-  },
+      <div>
+        <p style={{ marginBottom: 8 }}>Large (300px)</p>
+        <ColorWheel.Root value={color} onValueChange={setColor}>
+          <ColorWheel.Wheel size={300} ringWidth={28}>
+            <ColorWheel.HueRing />
+            <ColorWheel.HueThumb />
+            <ColorWheel.Area />
+            <ColorWheel.AreaThumb />
+          </ColorWheel.Wheel>
+        </ColorWheel.Root>
+      </div>
+    </div>
+  )
+}
+
+export const CustomSize: StoryObj = {
+  render: () => <CustomSizeStory />,
+}
+
+function SimplePresetStory(): JSX.Element {
+  const [color, setColor] = useState('#06b6d4')
+  return (
+    <div>
+      <ColorWheelSimple value={color} onValueChange={setColor} size={200} showHexInput showSwatch />
+      <p style={{ marginTop: 16 }}>Selected color: {color}</p>
+    </div>
+  )
 }
 
 export const SimplePreset: StoryObj = {
-  render: () => {
-    const [color, setColor] = useState('#06b6d4')
-    return (
-      <div>
-        <ColorWheelSimple
-          value={color}
-          onValueChange={setColor}
-          size={200}
-          showHexInput
-          showSwatch
-        />
-        <p style={{ marginTop: 16 }}>Selected color: {color}</p>
-      </div>
-    )
-  },
+  render: () => <SimplePresetStory />,
 }
 
 export const UncontrolledMode: StoryObj = {
-  render: () => (
-    <ColorWheelSimple defaultValue="#8b5cf6" showHexInput showSwatch />
-  ),
+  render: () => <ColorWheelSimple defaultValue="#8b5cf6" showHexInput showSwatch />,
 }
