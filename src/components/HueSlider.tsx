@@ -2,6 +2,7 @@ import { forwardRef, useMemo, useCallback, useImperativeHandle } from 'react'
 import { useColorWheelContext } from '../context/ColorWheelContext'
 import { hsvToHex, getColorNameEn } from '../utils'
 import { useSliderBase } from '../hooks/useSliderBase'
+import { useSliderKeyboard } from '../hooks/useSliderKeyboard'
 import { Thumb } from './Thumb'
 import type { HueSliderProps } from '../types'
 
@@ -78,42 +79,14 @@ export const HueSlider = forwardRef<HTMLDivElement, HueSliderProps>(
     // Current hue color for thumb background (full saturation and brightness)
     const thumbColor = useMemo(() => hsvToHex(hsv.h, 100, 100), [hsv.h])
 
-    const handleKeyDown = useCallback(
-      (e: React.KeyboardEvent) => {
-        if (disabled) return
-
-        // Determine step: Shift = 10, otherwise 1
-        const step = e.shiftKey ? 10 : 1
-
-        switch (e.key) {
-          case 'ArrowLeft':
-          case 'ArrowDown':
-          case 'a':
-          case 's':
-            e.preventDefault()
-            // Alt: jump to minimum (0)
-            if (e.altKey) {
-              setHue(0)
-            } else {
-              setHue((hsv.h - step + 360) % 360)
-            }
-            break
-          case 'ArrowRight':
-          case 'ArrowUp':
-          case 'd':
-          case 'w':
-            e.preventDefault()
-            // Alt: jump to maximum (359)
-            if (e.altKey) {
-              setHue(359)
-            } else {
-              setHue((hsv.h + step) % 360)
-            }
-            break
-        }
-      },
-      [disabled, hsv.h, setHue]
-    )
+    const handleKeyDown = useSliderKeyboard({
+      value: hsv.h,
+      min: 0,
+      max: 360,
+      disabled,
+      onChange: setHue,
+      wrap: true,
+    })
 
     const sliderStyle: React.CSSProperties = useMemo(
       () => ({ ...baseSliderStyle, ...style }),

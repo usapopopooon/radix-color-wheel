@@ -2,6 +2,7 @@ import { forwardRef, useMemo, useCallback, useImperativeHandle } from 'react'
 import { useColorWheelContext } from '../context/ColorWheelContext'
 import { hsvToHex } from '../utils'
 import { useSliderBase } from '../hooks/useSliderBase'
+import { useSliderKeyboard } from '../hooks/useSliderKeyboard'
 import { Thumb } from './Thumb'
 import type { BrightnessSliderProps } from '../types'
 
@@ -95,39 +96,13 @@ export const BrightnessSlider = forwardRef<HTMLDivElement, BrightnessSliderProps
       [borderRadius, gradientDirection, brightColor]
     )
 
-    const handleKeyDown = useCallback(
-      (e: React.KeyboardEvent) => {
-        if (disabled) return
-
-        const step = e.shiftKey ? 10 : 1
-
-        switch (e.key) {
-          case 'ArrowLeft':
-          case 'ArrowDown':
-          case 'a':
-          case 's':
-            e.preventDefault()
-            if (e.altKey) {
-              setBrightness(0)
-            } else {
-              setBrightness(Math.max(0, hsv.v - step))
-            }
-            break
-          case 'ArrowRight':
-          case 'ArrowUp':
-          case 'd':
-          case 'w':
-            e.preventDefault()
-            if (e.altKey) {
-              setBrightness(100)
-            } else {
-              setBrightness(Math.min(100, hsv.v + step))
-            }
-            break
-        }
-      },
-      [disabled, hsv.v, setBrightness]
-    )
+    const handleKeyDown = useSliderKeyboard({
+      value: hsv.v,
+      min: 0,
+      max: 100,
+      disabled,
+      onChange: setBrightness,
+    })
 
     return (
       <div

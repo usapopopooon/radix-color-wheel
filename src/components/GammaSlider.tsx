@@ -2,6 +2,7 @@ import { forwardRef, useMemo, useCallback, useImperativeHandle, useState } from 
 import { useColorWheelContext } from '../context/ColorWheelContext'
 import { clamp } from '../utils'
 import { useSliderBase } from '../hooks/useSliderBase'
+import { useSliderKeyboard } from '../hooks/useSliderKeyboard'
 import { Thumb } from './Thumb'
 import type { GammaSliderProps } from '../types'
 
@@ -140,47 +141,15 @@ export const GammaSlider = forwardRef<HTMLDivElement, GammaSliderProps>(
       [borderRadius, gradientDirection]
     )
 
-    const handleKeyDown = useCallback(
-      (e: React.KeyboardEvent) => {
-        if (disabled) return
-
-        const bigStep = step * 10
-
-        switch (e.key) {
-          case 'ArrowLeft':
-          case 'ArrowDown':
-          case 'a':
-          case 's':
-            e.preventDefault()
-            if (e.altKey) {
-              setGamma(min)
-            } else if (e.shiftKey) {
-              setGamma(gamma - bigStep)
-            } else {
-              setGamma(gamma - step)
-            }
-            break
-          case 'ArrowRight':
-          case 'ArrowUp':
-          case 'd':
-          case 'w':
-            e.preventDefault()
-            if (e.altKey) {
-              setGamma(max)
-            } else if (e.shiftKey) {
-              setGamma(gamma + bigStep)
-            } else {
-              setGamma(gamma + step)
-            }
-            break
-          case 'Home':
-            e.preventDefault()
-            setGamma(1.0) // Reset to neutral
-            break
-        }
-      },
-      [disabled, gamma, min, max, step, setGamma]
-    )
+    const handleKeyDown = useSliderKeyboard({
+      value: gamma,
+      min,
+      max,
+      step,
+      disabled,
+      onChange: setGamma,
+      resetValue: 1.0,
+    })
 
     return (
       <div

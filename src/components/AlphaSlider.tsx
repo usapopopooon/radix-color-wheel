@@ -1,7 +1,7 @@
 import { forwardRef, useMemo, useCallback, useImperativeHandle } from 'react'
 import { useColorWheelContext } from '../context/ColorWheelContext'
-import { clamp } from '../utils'
 import { useSliderBase } from '../hooks/useSliderBase'
+import { useSliderKeyboard } from '../hooks/useSliderKeyboard'
 import { Thumb } from './Thumb'
 import type { AlphaSliderProps } from '../types'
 
@@ -92,42 +92,13 @@ export const AlphaSlider = forwardRef<HTMLDivElement, AlphaSliderProps>(
       return `rgba(${r}, ${g}, ${b}, ${alpha / 100})`
     }, [hex, alpha])
 
-    const handleKeyDown = useCallback(
-      (e: React.KeyboardEvent) => {
-        if (disabled) return
-
-        // Determine step: Shift = 10, otherwise 1
-        const step = e.shiftKey ? 10 : 1
-
-        switch (e.key) {
-          case 'ArrowLeft':
-          case 'ArrowDown':
-          case 'a':
-          case 's':
-            e.preventDefault()
-            // Alt: jump to minimum (0)
-            if (e.altKey) {
-              setAlpha(0)
-            } else {
-              setAlpha(clamp(alpha - step, 0, 100))
-            }
-            break
-          case 'ArrowRight':
-          case 'ArrowUp':
-          case 'd':
-          case 'w':
-            e.preventDefault()
-            // Alt: jump to maximum (100)
-            if (e.altKey) {
-              setAlpha(100)
-            } else {
-              setAlpha(clamp(alpha + step, 0, 100))
-            }
-            break
-        }
-      },
-      [disabled, alpha, setAlpha]
-    )
+    const handleKeyDown = useSliderKeyboard({
+      value: alpha,
+      min: 0,
+      max: 100,
+      disabled,
+      onChange: setAlpha,
+    })
 
     // AlphaSlider needs checkerboard background, so we extend the base style
     const sliderStyle: React.CSSProperties = useMemo(
