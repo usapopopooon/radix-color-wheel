@@ -14,7 +14,7 @@ describe('Swatch', () => {
     expect(swatch).toBeInTheDocument()
   })
 
-  it('should have aria-label with current hex value', () => {
+  it('should have aria-label with current hex and RGB values', () => {
     render(
       <ColorWheel.Root value="#ff0000" onValueChange={() => {}}>
         <ColorWheel.Swatch />
@@ -22,7 +22,7 @@ describe('Swatch', () => {
     )
 
     const swatch = screen.getByRole('img')
-    expect(swatch).toHaveAttribute('aria-label', 'Current color: #ff0000')
+    expect(swatch).toHaveAttribute('aria-label', 'Current color: #ff0000, RGB 255, 0, 0')
   })
 
   it('should update aria-label when color changes', () => {
@@ -33,7 +33,7 @@ describe('Swatch', () => {
     )
 
     const swatch = screen.getByRole('img')
-    expect(swatch).toHaveAttribute('aria-label', 'Current color: #ff0000')
+    expect(swatch).toHaveAttribute('aria-label', 'Current color: #ff0000, RGB 255, 0, 0')
 
     rerender(
       <ColorWheel.Root value="#00ff00" onValueChange={() => {}}>
@@ -41,7 +41,7 @@ describe('Swatch', () => {
       </ColorWheel.Root>
     )
 
-    expect(swatch).toHaveAttribute('aria-label', 'Current color: #00ff00')
+    expect(swatch).toHaveAttribute('aria-label', 'Current color: #00ff00, RGB 0, 255, 0')
   })
 
   it('should have backgroundColor style matching current color', () => {

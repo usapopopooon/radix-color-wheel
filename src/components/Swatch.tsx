@@ -1,6 +1,6 @@
 import { forwardRef, useMemo } from 'react'
 import { useColorWheelContext } from '../context/ColorWheelContext'
-import { CHECKERBOARD } from '../utils'
+import { CHECKERBOARD, hexToRgb } from '../utils'
 import type { SwatchProps } from '../types'
 
 /**
@@ -41,6 +41,12 @@ export const Swatch = forwardRef<HTMLDivElement, SwatchProps>(
       [hex, style]
     )
 
+    // Provide detailed color info for screen readers
+    const ariaLabel = useMemo(() => {
+      const { r, g, b } = hexToRgb(hex)
+      return `Current color: ${hex}, RGB ${r}, ${g}, ${b}`
+    }, [hex])
+
     return (
       <div
         ref={ref}
@@ -48,7 +54,7 @@ export const Swatch = forwardRef<HTMLDivElement, SwatchProps>(
         className={className}
         style={swatchStyle}
         role="img"
-        aria-label={`Current color: ${hex}`}
+        aria-label={ariaLabel}
         {...props}
       />
     )

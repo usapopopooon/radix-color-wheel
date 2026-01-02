@@ -73,7 +73,15 @@ export const Wheel = forwardRef<HTMLDivElement, WheelProps>(
 
     return (
       <WheelContext.Provider value={contextValue}>
-        <div ref={ref} data-color-wheel-wheel className={className} style={wheelStyle} {...props}>
+        <div
+          ref={ref}
+          data-color-wheel-wheel
+          role="group"
+          aria-label="Color wheel"
+          {...props}
+          className={className}
+          style={wheelStyle}
+        >
           {children}
         </div>
       </WheelContext.Provider>
