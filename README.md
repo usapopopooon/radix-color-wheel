@@ -1,17 +1,17 @@
 # @usapopo/radix-color-wheel
 
-[![CI](https://github.com/usapopopooon/radix-color-wheel/actions/workflows/ci.yml/badge.svg)](https://github.com/usapopopooon/radix-color-wheel/actions/workflows/ci.yml) ![coverage](https://usapopopooon.github.io/radix-color-wheel/coverage-badge.svg) [![Storybook](https://img.shields.io/badge/Storybook-open-ff4785?logo=storybook&logoColor=white)](https://usapopopooon.github.io/radix-color-wheel/storybook/)
+[![CI](https://github.com/usapopopooon/radix-color-wheel/actions/workflows/ci.yml/badge.svg)](https://github.com/usapopopooon/radix-color-wheel/actions/workflows/ci.yml) ![coverage](https://usapopopooon.github.io/radix-color-wheel/coverage-badge.svg) [![Storybook](https://img.shields.io/badge/Storybook-open-ff4785?logo=storybook&logoColor=white)](https://usapopopooon.github.io/radix-color-wheel/storybook/) [![npm](https://img.shields.io/npm/v/@usapopo/radix-color-wheel)](https://www.npmjs.com/package/@usapopo/radix-color-wheel) [![license](https://img.shields.io/npm/l/@usapopo/radix-color-wheel)](./LICENSE)
 
-A fully accessible color wheel component library for React, built with Radix UI design philosophy. Uses the Compound Components pattern for maximum flexibility.
+A fully accessible color wheel component for React, following the [Radix UI](https://www.radix-ui.com/) Compound Components pattern.
 
 ## Features
 
-- **Compound Components**: Mix and match components to build your perfect color picker
-- **Full Accessibility**: Complete keyboard navigation and screen reader support
-- **Alpha Support**: Optional transparency slider with 8-digit hex support
-- **Customizable**: CSS variables for easy styling
-- **TypeScript**: Full type safety with exported types
-- **Lightweight**: Only depends on `@radix-ui/react-use-controllable-state`
+- **Compound Components** - Compose your own color picker with full control
+- **Accessible** - Keyboard navigation, ARIA attributes, screen reader support
+- **Alpha Support** - Optional transparency slider
+- **Copy/Paste** - Built-in clipboard functionality
+- **TypeScript** - Full type definitions included
+- **Unstyled** - Bring your own styles or use with Tailwind CSS
 
 ## Installation
 
@@ -19,53 +19,25 @@ A fully accessible color wheel component library for React, built with Radix UI 
 npm install @usapopo/radix-color-wheel
 ```
 
+**Peer Dependencies:** React 18 or 19
+
 ## Quick Start
 
-### Using the Simple Preset
-
-For a quick start, use the pre-built `ColorWheelSimple` component:
-
 ```tsx
-import { ColorWheelSimple } from '@usapopo/radix-color-wheel'
-
-function App() {
-  const [color, setColor] = useState('#ff0000')
-
-  return (
-    <ColorWheelSimple
-      value={color}
-      onValueChange={setColor}
-      size={200}
-      showHexInput
-      showSwatch
-    />
-  )
-}
-```
-
-### Using Compound Components
-
-For full control, use the individual components:
-
-```tsx
+import { useState } from 'react'
 import * as ColorWheel from '@usapopo/radix-color-wheel'
 
 function App() {
-  const [color, setColor] = useState('#ff0000')
+  const [color, setColor] = useState('#3b82f6')
 
   return (
     <ColorWheel.Root value={color} onValueChange={setColor}>
-      <ColorWheel.Wheel size={200}>
+      <ColorWheel.Wheel size={200} ringWidth={20}>
         <ColorWheel.HueRing />
         <ColorWheel.HueThumb />
         <ColorWheel.Area />
         <ColorWheel.AreaThumb />
       </ColorWheel.Wheel>
-      <div style={{ display: 'flex', gap: 8, marginTop: 8 }}>
-        <ColorWheel.Swatch />
-        <ColorWheel.HexInput />
-      </div>
-      <ColorWheel.AlphaSlider />
     </ColorWheel.Root>
   )
 }
@@ -73,175 +45,118 @@ function App() {
 
 ## Components
 
-### ColorWheel.Root
+### Root
 
-The context provider that manages color state.
+Context provider that manages color state.
 
-```tsx
-<ColorWheel.Root
-  value={color}              // Controlled value (#rrggbb or #rrggbbaa)
-  defaultValue="#ff0000"     // Uncontrolled initial value
-  onValueChange={setColor}   // Called on every change
-  onValueChangeEnd={save}    // Called when drag ends
-  onHueChange={fn}           // Called when hue changes (0-360)
-  onSaturationChange={fn}    // Called when saturation changes (0-100)
-  onBrightnessChange={fn}    // Called when brightness changes (0-100)
-  onAlphaChange={fn}         // Called when alpha changes (0-100)
-  onDragStart={fn}           // Called when drag starts
-  onDragEnd={fn}             // Called when drag ends
-  disabled={false}           // Disable all interactions
->
-  {children}
-</ColorWheel.Root>
-```
+| Prop | Type | Description |
+|------|------|-------------|
+| `value` | `string` | Controlled color value (`#rrggbb` or `#rrggbbaa`) |
+| `defaultValue` | `string` | Initial value for uncontrolled mode |
+| `onValueChange` | `(hex: string) => void` | Called on every change |
+| `onValueChangeEnd` | `(hex: string) => void` | Called when drag ends |
+| `disabled` | `boolean` | Disable all interactions |
 
-### ColorWheel.Wheel
+### Wheel
 
 Container for the hue ring and saturation/brightness area.
 
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `size` | `number` | `200` | Wheel diameter in pixels |
+| `ringWidth` | `number` | `20` | Hue ring width in pixels |
+
+### HueRing / HueThumb
+
+The circular hue gradient and its draggable thumb.
+
+**Keyboard:** Arrow keys (±1), Shift+Arrow (±10), Home (0°), End (359°)
+
+### Area / AreaThumb
+
+The saturation/brightness selection area and its draggable thumb.
+
+**Keyboard:** Left/Right (saturation), Up/Down (brightness), Shift (±10)
+
+### AlphaSlider
+
+Optional transparency slider.
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `orientation` | `'horizontal' \| 'vertical'` | `'horizontal'` | Slider orientation |
+
+### HexInput
+
+Text input for direct hex color entry. Validates on Enter, reverts on Escape.
+
+### Swatch
+
+Displays the current color with alpha transparency support.
+
+### CopyButton / PasteButton
+
+Clipboard operations for the current color.
+
 ```tsx
-<ColorWheel.Wheel
-  size={200}        // Wheel diameter in pixels
-  ringWidth={20}    // Hue ring width in pixels
-  className=""
-  style={{}}
+<ColorWheel.CopyButton onCopy={(hex) => toast('Copied!')}>
+  Copy
+</ColorWheel.CopyButton>
+
+<ColorWheel.PasteButton
+  onPaste={(hex) => toast('Pasted!')}
+  onError={() => toast.error('Invalid color')}
 >
-  {children}
-</ColorWheel.Wheel>
+  Paste
+</ColorWheel.PasteButton>
 ```
 
-### ColorWheel.HueRing
-
-The circular hue gradient ring (decorative, interaction handled by HueThumb).
-
-### ColorWheel.HueThumb
-
-Draggable thumb on the hue ring.
-
-**Keyboard Controls:**
-- `ArrowLeft` / `ArrowDown`: Decrease hue by 1
-- `ArrowRight` / `ArrowUp`: Increase hue by 1
-- `Shift + Arrow`: Change by 10
-- `Home`: Set to 0 (red)
-- `End`: Set to 359
-
-### ColorWheel.Area
-
-The saturation/brightness selection area.
-
-### ColorWheel.AreaThumb
-
-Draggable thumb in the saturation/brightness area.
-
-**Keyboard Controls:**
-- `ArrowLeft`: Decrease saturation by 1
-- `ArrowRight`: Increase saturation by 1
-- `ArrowUp`: Increase brightness by 1
-- `ArrowDown`: Decrease brightness by 1
-- `Shift + Arrow`: Change by 10
-- `Home`: White (saturation 0, brightness 100)
-- `End`: Pure hue color (saturation 100, brightness 100)
-
-### ColorWheel.AlphaSlider
-
-Optional slider for transparency.
+## Full Example
 
 ```tsx
-<ColorWheel.AlphaSlider
-  orientation="horizontal"  // or "vertical"
-  className=""
-  style={{}}
-/>
-```
+<ColorWheel.Root value={color} onValueChange={setColor}>
+  <ColorWheel.Wheel size={240} ringWidth={24}>
+    <ColorWheel.HueRing />
+    <ColorWheel.HueThumb />
+    <ColorWheel.Area />
+    <ColorWheel.AreaThumb />
+  </ColorWheel.Wheel>
 
-### ColorWheel.HexInput
+  <div className="flex items-center gap-2 mt-3">
+    <ColorWheel.Swatch className="w-8 h-8 rounded" />
+    <ColorWheel.HexInput className="w-20 px-2 py-1 border rounded" />
+    <ColorWheel.CopyButton>Copy</ColorWheel.CopyButton>
+    <ColorWheel.PasteButton>Paste</ColorWheel.PasteButton>
+  </div>
 
-Text input for direct hex color entry.
-
-```tsx
-<ColorWheel.HexInput
-  placeholder="#000000"
-  className=""
-  style={{}}
-/>
-```
-
-**Keyboard Controls:**
-- `Enter`: Confirm value
-- `Escape`: Cancel edit
-
-### ColorWheel.Swatch
-
-Displays the current color.
-
-```tsx
-<ColorWheel.Swatch
-  className=""
-  style={{}}
-/>
-```
-
-## CSS Variables
-
-Customize the appearance using CSS variables:
-
-```css
-[data-color-wheel-root] {
-  /* Thumb */
-  --cw-thumb-size: 14px;
-  --cw-thumb-border-color: #ffffff;
-  --cw-thumb-border-width: 2px;
-  --cw-thumb-shadow: 0 0 0 1px rgba(0, 0, 0, 0.3), 0 2px 4px rgba(0, 0, 0, 0.2);
-
-  /* Focus ring */
-  --cw-focus-ring-color: #3b82f6;
-  --cw-focus-ring-width: 2px;
-  --cw-focus-ring-offset: 2px;
-
-  /* Alpha slider */
-  --cw-slider-height: 12px;
-  --cw-slider-thumb-size: 16px;
-}
-```
-
-## Accessibility
-
-This library is built with accessibility in mind:
-
-- **ARIA roles**: All interactive elements have appropriate `role="slider"` attributes
-- **Keyboard navigation**: Full keyboard support for all components
-- **Screen reader support**:
-  - `aria-valuetext` provides human-readable color names (e.g., "red, 0 degrees")
-  - `aria-describedby` on HexInput provides usage hints
-  - Live region announces color changes
-- **Focus management**: Visible focus indicators on all interactive elements
-
-## Utility Functions
-
-Export utility functions for advanced use:
-
-```tsx
-import {
-  hsvToHex,         // (h, s, v) => "#rrggbb"
-  hexToHsv,         // "#rrggbb" => { h, s, v }
-  getColorNameEn,   // (hue) => "red" | "orange" | ...
-  clamp,            // (value, min, max) => number
-} from '@usapopo/radix-color-wheel'
+  <ColorWheel.AlphaSlider className="mt-3" />
+</ColorWheel.Root>
 ```
 
 ## Context Hooks
 
-Access color state from nested components:
+Access color state from custom components:
 
 ```tsx
 import { useColorWheelContext, useWheelContext } from '@usapopo/radix-color-wheel'
 
-function CustomComponent() {
-  const { hsv, hex, setHue, disabled } = useColorWheelContext()
+function CustomDisplay() {
+  const { hsv, hex, alpha } = useColorWheelContext()
   const { size, ringWidth } = useWheelContext()
 
-  return <div>Current color: {hex}</div>
+  return <div>H: {hsv.h}° S: {hsv.s}% V: {hsv.v}%</div>
 }
+```
+
+## Utilities
+
+```tsx
+import {
+  hsvToHex,        // (h, s, v) => "#rrggbb"
+  hexToHsv,        // "#rrggbb" => { h, s, v }
+  getColorNameEn,  // (hue) => "red" | "orange" | ...
+  clamp,           // (value, min, max) => number
+} from '@usapopo/radix-color-wheel'
 ```
 
 ## TypeScript
@@ -252,17 +167,18 @@ All types are exported:
 import type {
   RootProps,
   WheelProps,
-  HueRingProps,
-  HueThumbProps,
-  AreaProps,
-  AreaThumbProps,
   HexInputProps,
-  SwatchProps,
   AlphaSliderProps,
-  ColorWheelSimpleProps,
+  CopyButtonProps,
+  PasteButtonProps,
   HSV,
 } from '@usapopo/radix-color-wheel'
 ```
+
+## Browser Support
+
+- Chrome, Edge, Firefox, Safari (latest)
+- React 18.x, 19.x
 
 ## License
 
