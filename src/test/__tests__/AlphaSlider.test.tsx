@@ -204,4 +204,113 @@ describe('AlphaSlider', () => {
 
     expect(onAlphaChange).toHaveBeenCalledWith(51)
   })
+
+  describe('inverted prop', () => {
+    it('should position thumb at 0% when alpha is 100 with inverted=true', () => {
+      render(
+        <ColorWheel.Root value="#ff0000" alpha={100} onValueChange={() => {}}>
+          <ColorWheel.AlphaSlider inverted />
+        </ColorWheel.Root>
+      )
+
+      const slider = screen.getByRole('slider', { name: /opacity/i })
+      // With inverted=true and alpha=100, thumb should be at 0% (left side)
+      expect(slider.style.left).toBe('0%')
+    })
+
+    it('should position thumb at 100% when alpha is 0 with inverted=true', () => {
+      render(
+        <ColorWheel.Root value="#ff0000" alpha={0} onValueChange={() => {}}>
+          <ColorWheel.AlphaSlider inverted />
+        </ColorWheel.Root>
+      )
+
+      const slider = screen.getByRole('slider', { name: /opacity/i })
+      // With inverted=true and alpha=0, thumb should be at 100% (right side)
+      expect(slider.style.left).toBe('100%')
+    })
+
+    it('should position thumb at 50% when alpha is 50 with inverted=true', () => {
+      render(
+        <ColorWheel.Root value="#ff0000" alpha={50} onValueChange={() => {}}>
+          <ColorWheel.AlphaSlider inverted />
+        </ColorWheel.Root>
+      )
+
+      const slider = screen.getByRole('slider', { name: /opacity/i })
+      expect(slider.style.left).toBe('50%')
+    })
+
+    it('should update alpha correctly when clicking on inverted horizontal slider', () => {
+      const onAlphaChange = vi.fn()
+
+      render(
+        <ColorWheel.Root
+          value="#ff0000"
+          alpha={100}
+          onValueChange={() => {}}
+          onAlphaChange={onAlphaChange}
+        >
+          <ColorWheel.AlphaSlider inverted />
+        </ColorWheel.Root>
+      )
+
+      const sliderContainer = document.querySelector(
+        '[data-color-wheel-alpha-slider]'
+      ) as HTMLElement
+
+      // Mock getBoundingClientRect
+      sliderContainer.getBoundingClientRect = vi.fn().mockReturnValue({
+        left: 0,
+        top: 0,
+        width: 100,
+        height: 12,
+      })
+
+      // Mock setPointerCapture
+      sliderContainer.setPointerCapture = vi.fn()
+
+      // Click at position 75 (75% from left)
+      // With inverted=true, this should result in alpha = 100 - 75 = 25
+      fireEvent.pointerDown(sliderContainer, { clientX: 75, clientY: 6, pointerId: 1 })
+
+      expect(onAlphaChange).toHaveBeenCalledWith(25)
+    })
+
+    it('should update alpha correctly when clicking on inverted vertical slider', () => {
+      const onAlphaChange = vi.fn()
+
+      render(
+        <ColorWheel.Root
+          value="#ff0000"
+          alpha={100}
+          onValueChange={() => {}}
+          onAlphaChange={onAlphaChange}
+        >
+          <ColorWheel.AlphaSlider orientation="vertical" inverted />
+        </ColorWheel.Root>
+      )
+
+      const sliderContainer = document.querySelector(
+        '[data-color-wheel-alpha-slider]'
+      ) as HTMLElement
+
+      // Mock getBoundingClientRect
+      sliderContainer.getBoundingClientRect = vi.fn().mockReturnValue({
+        left: 0,
+        top: 0,
+        width: 12,
+        height: 100,
+      })
+
+      // Mock setPointerCapture
+      sliderContainer.setPointerCapture = vi.fn()
+
+      // Click at position 25 from top (25% from top)
+      // With inverted=true, this should result in alpha = 100 - 25 = 75
+      fireEvent.pointerDown(sliderContainer, { clientX: 6, clientY: 25, pointerId: 1 })
+
+      expect(onAlphaChange).toHaveBeenCalledWith(75)
+    })
+  })
 })

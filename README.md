@@ -70,6 +70,7 @@ Context provider that manages color state.
 | `onFocus` | `() => void` | - | Called when any interactive element receives focus |
 | `onBlur` | `() => void` | - | Called when focus leaves an interactive element |
 | `disabled` | `boolean` | `false` | Disable all interactions |
+| `jumpOnClick` | `boolean` | `true` | When true, clicking on hue ring or area jumps thumb to position |
 | `children` | `ReactNode` | - | Child components |
 
 ### Wheel
@@ -139,6 +140,7 @@ Optional transparency slider.
 | Prop | Type | Default | Description |
 |------|------|---------|-------------|
 | `orientation` | `'horizontal' \| 'vertical'` | `'horizontal'` | Slider orientation |
+| `inverted` | `boolean` | `false` | Inverts slider direction (opaque on left/top) |
 
 Supports `ref` forwarding and all standard `div` attributes.
 
@@ -261,6 +263,7 @@ function ColorPicker() {
       onValueChange={setColor}
       onValueChangeEnd={(hex) => console.log('Final:', hex)}
       onHueChange={(hue) => console.log('Hue:', hue)}
+      jumpOnClick={true} // Default: click on ring/area jumps thumb to position
     >
       <ColorWheel.Wheel size={240} ringWidth={24}>
         <ColorWheel.HueRing />
@@ -287,6 +290,8 @@ function ColorPicker() {
       </div>
 
       <ColorWheel.AlphaSlider className="mt-3" />
+      {/* Inverted: opaque on left, transparent on right */}
+      <ColorWheel.AlphaSlider className="mt-3" inverted />
     </ColorWheel.Root>
   )
 }

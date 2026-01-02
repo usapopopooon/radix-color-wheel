@@ -14,17 +14,20 @@ import type { AlphaSliderProps } from '../types'
  * @param props.className - Additional CSS class
  * @param props.style - Inline styles
  * @param props.orientation - 'horizontal' or 'vertical' (default: 'horizontal')
+ * @param props.inverted - If true, inverts the slider direction (default: false)
  *
  * @example
  * ```tsx
  * <ColorWheel.Root value={color} onValueChange={setColor}>
  *   <ColorWheel.Wheel>...</ColorWheel.Wheel>
  *   <ColorWheel.AlphaSlider className="mt-4" />
+ *   {/* Inverted: opaque on left, transparent on right *\/}
+ *   <ColorWheel.AlphaSlider inverted />
  * </ColorWheel.Root>
  * ```
  */
 export const AlphaSlider = forwardRef<HTMLDivElement, AlphaSliderProps>(
-  ({ className, style, orientation = 'horizontal', ...props }, ref) => {
+  ({ className, style, orientation = 'horizontal', inverted = false, ...props }, ref) => {
     const {
       hex,
       hex8,
@@ -45,7 +48,8 @@ export const AlphaSlider = forwardRef<HTMLDivElement, AlphaSliderProps>(
     const isHorizontal = orientation === 'horizontal'
 
     // Calculate thumb position based on alpha value
-    const thumbPosition = useMemo(() => `${alpha}%`, [alpha])
+    // When inverted, 100% alpha is at 0% position and 0% alpha is at 100% position
+    const thumbPosition = useMemo(() => `${inverted ? 100 - alpha : alpha}%`, [alpha, inverted])
 
     // Convert hex to rgba with current alpha for thumb background
     const thumbColor = useMemo(() => {
@@ -68,11 +72,13 @@ export const AlphaSlider = forwardRef<HTMLDivElement, AlphaSliderProps>(
           const rect = sliderRef.current.getBoundingClientRect()
           const position = isHorizontal ? e.clientX - rect.left : e.clientY - rect.top
           const size = isHorizontal ? rect.width : rect.height
-          const newAlpha = clamp((position / size) * 100, 0, 100)
+          const ratio = clamp(position / size, 0, 1)
+          // When inverted, flip the ratio
+          const newAlpha = (inverted ? 1 - ratio : ratio) * 100
           setAlpha(Math.round(newAlpha))
         }
       },
-      [disabled, isHorizontal, setAlpha, onDragStart]
+      [disabled, isHorizontal, inverted, setAlpha, onDragStart]
     )
 
     const handlePointerMove = useCallback(
@@ -83,13 +89,15 @@ export const AlphaSlider = forwardRef<HTMLDivElement, AlphaSliderProps>(
         const rect = sliderRef.current.getBoundingClientRect()
         const position = isHorizontal ? e.clientX - rect.left : e.clientY - rect.top
         const size = isHorizontal ? rect.width : rect.height
-        const newAlpha = clamp((position / size) * 100, 0, 100)
+        const ratio = clamp(position / size, 0, 1)
+        // When inverted, flip the ratio
+        const newAlpha = (inverted ? 1 - ratio : ratio) * 100
         setAlpha(Math.round(newAlpha))
 
         // Call onDrag with current hex8
         onDrag?.(hex8)
       },
-      [disabled, isHorizontal, setAlpha, onDrag, hex8]
+      [disabled, isHorizontal, inverted, setAlpha, onDrag, hex8]
     )
 
     const handlePointerUp = useCallback(
@@ -160,17 +168,24 @@ export const AlphaSlider = forwardRef<HTMLDivElement, AlphaSliderProps>(
       [isHorizontal, disabled, style]
     )
 
-    const gradientStyle: React.CSSProperties = useMemo(
-      () => ({
+    const gradientStyle: React.CSSProperties = useMemo(() => {
+      // Default: transparent on left/top, opaque on right/bottom
+      // Inverted: opaque on left/top, transparent on right/bottom
+      const gradientDirection = isHorizontal
+        ? inverted
+          ? 'to left'
+          : 'to right'
+        : inverted
+          ? 'to top'
+          : 'to bottom'
+
+      return {
         position: 'absolute',
         inset: 0,
         borderRadius: 6,
-        background: isHorizontal
-          ? `linear-gradient(to right, transparent, ${hex})`
-          : `linear-gradient(to bottom, transparent, ${hex})`,
-      }),
-      [isHorizontal, hex]
-    )
+        background: `linear-gradient(${gradientDirection}, transparent, ${hex})`,
+      }
+    }, [isHorizontal, inverted, hex])
 
     const thumbPositionStyle: React.CSSProperties = useMemo(
       () =>

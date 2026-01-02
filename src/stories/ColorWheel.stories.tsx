@@ -253,3 +253,73 @@ export const JumpOnClickEnabled: StoryFn = () => {
     </div>
   )
 }
+
+/**
+ * Alpha slider with inverted direction.
+ * Opaque (100%) on left, transparent (0%) on right.
+ */
+export const AlphaSliderInverted: StoryFn = () => {
+  const [color, setColor] = useState('#3b82f6')
+  return (
+    <div style={{ width: 300 }}>
+      <p style={{ marginBottom: 12, color: '#666' }}>
+        Inverted: opaque on left, transparent on right
+      </p>
+      <ColorWheel.Root value={color} onValueChange={setColor}>
+        <ColorWheel.Wheel size={200} ringWidth={20}>
+          <ColorWheel.HueRing />
+          <ColorWheel.HueThumb />
+          <ColorWheel.Area />
+          <ColorWheel.AreaThumb />
+        </ColorWheel.Wheel>
+        <div style={{ marginTop: 16 }}>
+          <p style={{ fontSize: 12, color: '#666', marginBottom: 4 }}>Normal:</p>
+          <ColorWheel.AlphaSlider />
+        </div>
+        <div style={{ marginTop: 12 }}>
+          <p style={{ fontSize: 12, color: '#666', marginBottom: 4 }}>Inverted:</p>
+          <ColorWheel.AlphaSlider inverted />
+        </div>
+      </ColorWheel.Root>
+      <p style={{ marginTop: 16, fontFamily: 'monospace' }}>Selected: {color}</p>
+    </div>
+  )
+}
+
+/**
+ * Vertical alpha slider with inverted direction.
+ * Opaque (100%) on top, transparent (0%) on bottom.
+ */
+export const AlphaSliderVerticalInverted: StoryFn = () => {
+  const [color, setColor] = useState('#8b5cf6')
+  return (
+    <div>
+      <p style={{ marginBottom: 12, color: '#666' }}>
+        Vertical inverted: opaque on top, transparent on bottom
+      </p>
+      <div style={{ display: 'flex', gap: 24 }}>
+        <ColorWheel.Root value={color} onValueChange={setColor}>
+          <ColorWheel.Wheel size={200} ringWidth={20}>
+            <ColorWheel.HueRing />
+            <ColorWheel.HueThumb />
+            <ColorWheel.Area />
+            <ColorWheel.AreaThumb />
+          </ColorWheel.Wheel>
+        </ColorWheel.Root>
+        <ColorWheel.Root value={color} onValueChange={setColor}>
+          <div style={{ display: 'flex', gap: 12, height: 200 }}>
+            <div style={{ textAlign: 'center' }}>
+              <p style={{ fontSize: 12, color: '#666', marginBottom: 4 }}>Normal</p>
+              <ColorWheel.AlphaSlider orientation="vertical" />
+            </div>
+            <div style={{ textAlign: 'center' }}>
+              <p style={{ fontSize: 12, color: '#666', marginBottom: 4 }}>Inverted</p>
+              <ColorWheel.AlphaSlider orientation="vertical" inverted />
+            </div>
+          </div>
+        </ColorWheel.Root>
+      </div>
+      <p style={{ marginTop: 16, fontFamily: 'monospace' }}>Selected: {color}</p>
+    </div>
+  )
+}

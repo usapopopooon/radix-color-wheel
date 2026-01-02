@@ -274,6 +274,13 @@ export type SwatchProps = React.ComponentPropsWithoutRef<'div'>
 export interface AlphaSliderProps extends React.ComponentPropsWithoutRef<'div'> {
   /** Orientation of the slider */
   readonly orientation?: 'horizontal' | 'vertical'
+  /**
+   * If true, inverts the slider direction.
+   * - horizontal: opaque on left, transparent on right
+   * - vertical: opaque on top, transparent on bottom
+   * @default false
+   */
+  readonly inverted?: boolean
 }
 
 /**
