@@ -161,6 +161,9 @@ export function AreaThumb({ className, style }: AreaThumbProps): JSX.Element {
       role="slider"
       tabIndex={disabled ? -1 : 0}
       aria-label="Saturation and brightness"
+      aria-valuemin={0}
+      aria-valuemax={100}
+      aria-valuenow={hsv.s}
       aria-valuetext={`Saturation ${hsv.s}%, brightness ${hsv.v}%`}
       aria-disabled={disabled}
       onPointerDown={handlePointerDown}
