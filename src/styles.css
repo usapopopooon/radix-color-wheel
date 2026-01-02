@@ -1,0 +1,49 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* CSS Variables for customization */
+[data-color-wheel-root] {
+  /* Thumb */
+  --cw-thumb-size: 14px;
+  --cw-thumb-border-color: #ffffff;
+  --cw-thumb-border-width: 2px;
+  --cw-thumb-shadow: 0 0 0 1px rgba(0, 0, 0, 0.3), 0 2px 4px rgba(0, 0, 0, 0.2);
+
+  /* Focus ring */
+  --cw-focus-ring-color: #3b82f6;
+  --cw-focus-ring-width: 2px;
+  --cw-focus-ring-offset: 2px;
+}
+
+/* Thumb styles */
+[data-color-wheel-thumb] {
+  width: var(--cw-thumb-size);
+  height: var(--cw-thumb-size);
+  border: var(--cw-thumb-border-width) solid var(--cw-thumb-border-color);
+  box-shadow: var(--cw-thumb-shadow);
+}
+
+[data-color-wheel-thumb]:active {
+  cursor: grabbing;
+}
+
+/* Focus styles */
+[data-color-wheel-thumb]:focus {
+  outline: none;
+}
+
+[data-color-wheel-thumb]:focus-visible {
+  outline: var(--cw-focus-ring-width) solid var(--cw-focus-ring-color);
+  outline-offset: var(--cw-focus-ring-offset);
+}
+
+/* Disabled state */
+[data-color-wheel-root][data-disabled] {
+  opacity: 0.5;
+  pointer-events: none;
+}
+
+[data-color-wheel-root][data-disabled] [data-color-wheel-thumb] {
+  cursor: not-allowed;
+}

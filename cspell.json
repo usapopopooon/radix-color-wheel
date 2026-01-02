@@ -1,0 +1,40 @@
+{
+  "version": "0.2",
+  "language": "en",
+  "words": [
+    "radix",
+    "usapopo",
+    "tanstack",
+    "colorwheel",
+    "hsv",
+    "hsl",
+    "rgba",
+    "hexa",
+    "conic",
+    "saturation",
+    "lightness",
+    "tabindex",
+    "focusable",
+    "valuetext",
+    "valuemin",
+    "valuemax",
+    "valuenow",
+    "pointerdown",
+    "pointermove",
+    "pointerup",
+    "controllable",
+    "immutable",
+    "readonly",
+    "clamp",
+    "Chroma",
+    "Vitest",
+    "jsdom"
+  ],
+  "ignorePaths": [
+    "node_modules",
+    "dist",
+    "coverage",
+    "*.min.js",
+    "package-lock.json"
+  ]
+}
