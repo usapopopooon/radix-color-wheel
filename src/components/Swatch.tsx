@@ -23,7 +23,7 @@ import type { SwatchProps } from '../types'
  * </ColorWheel.Root>
  * ```
  */
-export function Swatch({ className, style }: SwatchProps): JSX.Element {
+export function Swatch({ className, style }: SwatchProps): React.ReactElement {
   const { hex } = useColorWheelContext()
 
   const swatchStyle: React.CSSProperties = useMemo(

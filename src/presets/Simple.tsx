@@ -41,7 +41,7 @@ export function ColorWheelSimple({
   showHexInput = true,
   showSwatch = true,
   disabled,
-}: ColorWheelSimpleProps): JSX.Element {
+}: ColorWheelSimpleProps): React.ReactElement {
   return (
     <Root
       value={value}

@@ -51,7 +51,7 @@ export function HexInput({
   className,
   style,
   placeholder = '#000000',
-}: HexInputProps): JSX.Element {
+}: HexInputProps): React.ReactElement {
   const { hex, setHex, disabled } = useColorWheelContext()
   const hintId = useId()
 

@@ -22,7 +22,7 @@ import type { HueThumbProps } from '../types'
  * </ColorWheel.Wheel>
  * ```
  */
-export function HueThumb({ className, style }: HueThumbProps): JSX.Element {
+export function HueThumb({ className, style }: HueThumbProps): React.ReactElement {
   const { hsv, setHue, disabled, onDragStart, onDragEnd } = useColorWheelContext()
   const { size, ringWidth } = useWheelContext()
   const thumbRef = useRef<HTMLDivElement>(null)

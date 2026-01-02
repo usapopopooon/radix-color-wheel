@@ -24,7 +24,7 @@ import type { AreaProps } from '../types'
  * </ColorWheel.Wheel>
  * ```
  */
-export function Area({ className, style }: AreaProps): JSX.Element {
+export function Area({ className, style }: AreaProps): React.ReactElement {
   const { hsv } = useColorWheelContext()
   const { size, ringWidth } = useWheelContext()
 

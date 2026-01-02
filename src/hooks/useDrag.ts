@@ -5,7 +5,7 @@ import { useState, useRef, useCallback } from 'react'
  */
 export interface UseDragReturn {
   /** Ref to container element */
-  readonly containerRef: React.RefObject<HTMLDivElement>
+  readonly containerRef: React.RefObject<HTMLDivElement | null>
   /** Whether currently dragging */
   readonly isDragging: boolean
   /** Event handlers */

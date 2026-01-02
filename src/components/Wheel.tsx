@@ -31,7 +31,7 @@ export function Wheel({
   className,
   style,
   children,
-}: WheelProps): JSX.Element {
+}: WheelProps): React.ReactElement {
   const contextValue = useMemo<WheelContextValue>(
     () => ({
       size,

@@ -20,7 +20,7 @@ import type { HueRingProps } from '../types'
  * </ColorWheel.Wheel>
  * ```
  */
-export function HueRing({ className, style }: HueRingProps): JSX.Element {
+export function HueRing({ className, style }: HueRingProps): React.ReactElement {
   const { size, ringWidth } = useWheelContext()
 
   // Inner mask size (to cut out the center)
@@ -62,12 +62,7 @@ export function HueRing({ className, style }: HueRingProps): JSX.Element {
   )
 
   return (
-    <div
-      data-color-wheel-hue-ring
-      className={className}
-      style={ringStyle}
-      aria-hidden="true"
-    >
+    <div data-color-wheel-hue-ring className={className} style={ringStyle} aria-hidden="true">
       <div data-color-wheel-hue-ring-mask style={maskStyle} />
     </div>
   )

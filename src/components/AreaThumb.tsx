@@ -22,7 +22,7 @@ import type { AreaThumbProps } from '../types'
  * </ColorWheel.Wheel>
  * ```
  */
-export function AreaThumb({ className, style }: AreaThumbProps): JSX.Element {
+export function AreaThumb({ className, style }: AreaThumbProps): React.ReactElement {
   const { hsv, setSaturation, setBrightness, disabled, onDragStart, onDragEnd } =
     useColorWheelContext()
   const { size, ringWidth } = useWheelContext()

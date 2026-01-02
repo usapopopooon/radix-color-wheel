@@ -1,3 +1,14 @@
+/* Storybook preview background for dark mode */
+body.dark {
+  background-color: #1a1a1a;
+  color: #ffffff;
+}
+
+body.light {
+  background-color: #ffffff;
+  color: #000000;
+}
+
 /* CSS Variables for customization */
 [data-color-wheel-root] {
   /* Wheel background (used for inner circle mask) */
@@ -17,6 +28,17 @@
   /* AlphaSlider */
   --cw-slider-height: 12px;
   --cw-slider-thumb-size: 16px;
+}
+
+/* Dark mode support */
+.dark [data-color-wheel-root],
+[data-color-wheel-root].dark,
+body.dark [data-color-wheel-root],
+html.dark [data-color-wheel-root] {
+  --cw-wheel-bg: #1a1a1a;
+  --cw-thumb-border-color: #ffffff;
+  --cw-thumb-shadow: 0 0 0 1px rgba(255, 255, 255, 0.3), 0 2px 4px rgba(0, 0, 0, 0.4);
+  --cw-focus-ring-color: #60a5fa;
 }
 
 /* Thumb styles */

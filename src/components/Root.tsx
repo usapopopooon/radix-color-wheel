@@ -65,7 +65,7 @@ export function Root({
   onDragEnd,
   disabled = false,
   children,
-}: RootProps): JSX.Element {
+}: RootProps): React.ReactElement {
   // Controllable hex state (may include alpha as 8 digits)
   const [hexWithAlpha, setHexWithAlphaState] = useControllableState({
     prop: value,

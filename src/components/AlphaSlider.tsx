@@ -26,7 +26,7 @@ export function AlphaSlider({
   className,
   style,
   orientation = 'horizontal',
-}: AlphaSliderProps): JSX.Element {
+}: AlphaSliderProps): React.ReactElement {
   const { hex, alpha, setAlpha, disabled, onDragStart, onDragEnd } = useColorWheelContext()
   const sliderRef = useRef<HTMLDivElement>(null)
 
