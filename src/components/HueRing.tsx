@@ -29,9 +29,9 @@ export function HueRing({ className, style }: HueRingProps): JSX.Element {
       inset: 0,
       borderRadius: '50%',
       // Conic gradient for hue wheel
-      // Start from top (0deg) and go clockwise through all hues
+      // Start from top (-90deg) and go clockwise through all hues
       background: `conic-gradient(
-        from 0deg,
+        from -90deg,
         hsl(0, 100%, 50%),
         hsl(60, 100%, 50%),
         hsl(120, 100%, 50%),
