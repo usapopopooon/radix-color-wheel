@@ -10,7 +10,14 @@ import {
 } from 'react'
 import { useControllableState } from '@radix-ui/react-use-controllable-state'
 import { ColorWheelContext, type ColorWheelContextValue } from '../context/ColorWheelContext'
-import { hexToHsv, hsvToHex, parseAlphaFromHex, combineHexWithAlpha, alphaToHex } from '../utils'
+import {
+  hexToHsv,
+  hsvToHex,
+  parseAlphaFromHex,
+  combineHexWithAlpha,
+  alphaToHex,
+  validateRootProps,
+} from '../utils'
 import type { RootProps, ColorWheelRef, HSV } from '../types'
 
 /**
@@ -68,6 +75,9 @@ export const Root = forwardRef<ColorWheelRef, RootProps>(function Root(
   },
   ref
 ) {
+  // Validate props in development mode
+  validateRootProps({ value, defaultValue, alpha: alphaProp, defaultAlpha })
+
   // Controllable hex state (may include alpha as 8 digits)
   const [hexWithAlpha, setHexWithAlphaState] = useControllableState({
     prop: value,
@@ -93,7 +103,7 @@ export const Root = forwardRef<ColorWheelRef, RootProps>(function Root(
       return defaultAlpha
     }
     return parseAlphaFromHex(hexWithAlpha ?? '#ff0000')
-  }, []) // Only compute once on mount
+  }, [defaultAlpha, hexWithAlpha])
 
   const [alphaState, setAlphaState] = useControllableState({
     prop: alphaProp,
@@ -181,7 +191,7 @@ export const Root = forwardRef<ColorWheelRef, RootProps>(function Root(
         }
       }
     },
-    [alpha, setHexWithAlphaState]
+    [alpha, setHexWithAlphaState, setAlphaState]
   )
 
   // setHsv - set color by HSV values

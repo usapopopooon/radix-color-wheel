@@ -1,4 +1,6 @@
 import type { HSL } from '../types'
+import { hexOrHex8Schema } from '../schemas'
+import { ColorValidationError } from '../errors'
 
 /**
  * Convert HEX format to HSL color space
@@ -8,6 +10,7 @@ import type { HSL } from '../types'
  *
  * @param hex - HEX color code (e.g., "#ff0000")
  * @returns HSL color object
+ * @throws {ColorValidationError} If hex is not a valid 6 or 8 digit hex color
  *
  * @example
  * ```ts
@@ -18,6 +21,15 @@ import type { HSL } from '../types'
  * ```
  */
 export function hexToHsl(hex: string): HSL {
+  const result = hexOrHex8Schema.safeParse(hex)
+  if (!result.success) {
+    throw new ColorValidationError({
+      functionName: 'hexToHsl',
+      message: result.error.issues[0]?.message ?? 'Invalid hex color',
+      receivedValue: hex,
+      issues: result.error.issues,
+    })
+  }
   // Parse hex to RGB (0-1 range)
   const r = parseInt(hex.slice(1, 3), 16) / 255
   const g = parseInt(hex.slice(3, 5), 16) / 255

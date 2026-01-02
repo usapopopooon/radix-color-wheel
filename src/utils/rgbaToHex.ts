@@ -1,10 +1,13 @@
 import type { RGBA } from '../types'
+import { rgbaSchema } from '../schemas'
+import { ColorValidationError } from '../errors'
 
 /**
  * Convert RGBA color space to HEX format (8 digits)
  *
  * @param rgba - RGBA color object with r,g,b 0-255 and a 0-1
  * @returns HEX8 color code (e.g., "#ff0000ff")
+ * @throws {ColorValidationError} If rgba values are not valid
  *
  * @example
  * ```ts
@@ -14,6 +17,15 @@ import type { RGBA } from '../types'
  * ```
  */
 export function rgbaToHex(rgba: RGBA): string {
+  const result = rgbaSchema.safeParse(rgba)
+  if (!result.success) {
+    throw new ColorValidationError({
+      functionName: 'rgbaToHex',
+      message: result.error.issues[0]?.message ?? 'Invalid RGBA color',
+      receivedValue: rgba,
+      issues: result.error.issues,
+    })
+  }
   const toHex = (n: number) =>
     Math.round(Math.max(0, Math.min(255, n)))
       .toString(16)

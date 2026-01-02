@@ -1,4 +1,6 @@
 import type { HSL } from '../types'
+import { hslSchema } from '../schemas'
+import { ColorValidationError } from '../errors'
 
 /**
  * Convert HSL color space to HEX format
@@ -8,6 +10,7 @@ import type { HSL } from '../types'
  *
  * @param hsl - HSL color object
  * @returns HEX color code (e.g., "#ff0000")
+ * @throws {ColorValidationError} If hsl values are not valid
  *
  * @example
  * ```ts
@@ -18,6 +21,15 @@ import type { HSL } from '../types'
  * ```
  */
 export function hslToHex(hsl: HSL): string {
+  const result = hslSchema.safeParse(hsl)
+  if (!result.success) {
+    throw new ColorValidationError({
+      functionName: 'hslToHex',
+      message: result.error.issues[0]?.message ?? 'Invalid HSL color',
+      receivedValue: hsl,
+      issues: result.error.issues,
+    })
+  }
   const { h, s, l } = hsl
 
   // Normalize to 0-1

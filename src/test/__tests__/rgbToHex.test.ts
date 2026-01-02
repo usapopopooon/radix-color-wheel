@@ -22,11 +22,11 @@ describe('rgbToHex', () => {
     expect(rgbToHex({ r: 0, g: 0, b: 0 })).toBe('#000000')
   })
 
-  it('should clamp values over 255', () => {
-    expect(rgbToHex({ r: 300, g: 0, b: 0 })).toBe('#ff0000')
+  it('should throw error for values over 255', () => {
+    expect(() => rgbToHex({ r: 300, g: 0, b: 0 })).toThrow()
   })
 
-  it('should clamp values under 0', () => {
-    expect(rgbToHex({ r: -10, g: 0, b: 0 })).toBe('#000000')
+  it('should throw error for values under 0', () => {
+    expect(() => rgbToHex({ r: -10, g: 0, b: 0 })).toThrow()
   })
 })

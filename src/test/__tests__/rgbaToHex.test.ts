@@ -14,12 +14,12 @@ describe('rgbaToHex', () => {
     expect(rgbaToHex({ r: 255, g: 0, b: 0, a: 0 })).toBe('#ff000000')
   })
 
-  it('should clamp alpha over 1', () => {
-    expect(rgbaToHex({ r: 255, g: 0, b: 0, a: 1.5 })).toBe('#ff0000ff')
+  it('should throw error for alpha over 1', () => {
+    expect(() => rgbaToHex({ r: 255, g: 0, b: 0, a: 1.5 })).toThrow()
   })
 
-  it('should clamp alpha under 0', () => {
-    expect(rgbaToHex({ r: 255, g: 0, b: 0, a: -0.5 })).toBe('#ff000000')
+  it('should throw error for alpha under 0', () => {
+    expect(() => rgbaToHex({ r: 255, g: 0, b: 0, a: -0.5 })).toThrow()
   })
 
   it('should handle green with partial alpha', () => {

@@ -1,12 +1,14 @@
 import { hslToHex } from './hslToHex'
 import { hslaToHex } from './hslaToHex'
+import { cssHslSchema } from '../schemas'
+import { ColorValidationError } from '../errors'
 
 /**
  * Convert CSS hsl() or hsla() string to HEX format
  *
  * @param cssHsl - CSS color string (e.g., "hsl(0, 100%, 50%)" or "hsla(0, 100%, 50%, 0.5)")
  * @returns HEX color code (6 or 8 digits)
- * @throws Error if the input format is invalid
+ * @throws {ColorValidationError} If the input format is invalid
  *
  * @example
  * ```ts
@@ -16,6 +18,16 @@ import { hslaToHex } from './hslaToHex'
  * ```
  */
 export function cssHslToHex(cssHsl: string): string {
+  const schemaResult = cssHslSchema.safeParse(cssHsl)
+  if (!schemaResult.success) {
+    throw new ColorValidationError({
+      functionName: 'cssHslToHex',
+      message: schemaResult.error.issues[0]?.message ?? 'Invalid CSS HSL color',
+      receivedValue: cssHsl,
+      issues: schemaResult.error.issues,
+    })
+  }
+
   // Match hsl(h, s%, l%) or hsla(h, s%, l%, a)
   // Also support modern syntax: hsl(h s% l%) or hsl(h s% l% / a)
   const hslaMatch = cssHsl.match(
@@ -23,7 +35,7 @@ export function cssHslToHex(cssHsl: string): string {
   )
 
   if (!hslaMatch) {
-    throw new Error(`Invalid CSS HSL format: ${cssHsl}`)
+    throw new Error(`[cssHslToHex] Invalid CSS HSL format. Received: "${cssHsl}"`)
   }
 
   const h = parseInt(hslaMatch[1], 10)

@@ -24,3 +24,89 @@ export { hexToCssRgb } from './hexToCssRgb'
 export { cssRgbToHex } from './cssRgbToHex'
 export { hexToCssHsl } from './hexToCssHsl'
 export { cssHslToHex } from './cssHslToHex'
+
+// Safe versions (return Result instead of throwing)
+export {
+  hexToRgbSafe,
+  rgbToHexSafe,
+  hexToHslSafe,
+  hslToHexSafe,
+  hexToRgbaSafe,
+  rgbaToHexSafe,
+  hexToHslaSafe,
+  hslaToHexSafe,
+  hexToCssRgbSafe,
+  cssRgbToHexSafe,
+  hexToCssHslSafe,
+  cssHslToHexSafe,
+} from './safe'
+export type { SafeResult } from './safe'
+
+// Validation
+export { validateRootProps } from './validateProps'
+
+// Color manipulation
+export {
+  lighten,
+  darken,
+  saturate,
+  desaturate,
+  mix,
+  complement,
+  invert,
+  grayscale,
+  rotateHue,
+  setAlpha,
+} from './colorManipulation'
+
+// Accessibility
+export {
+  getLuminance,
+  getContrastRatio,
+  isReadable,
+  suggestTextColor,
+  getBestContrast,
+  isLight,
+  isDark,
+} from './accessibility'
+export type { WCAGLevel, TextSize } from './accessibility'
+
+// Palette generation
+export {
+  generateAnalogous,
+  generateComplementary,
+  generateSplitComplementary,
+  generateTriadic,
+  generateTetradic,
+  generateShades,
+  generateTints,
+  generateScale,
+  generateMonochromatic,
+} from './paletteGeneration'
+
+// Additional color spaces
+export {
+  hexToLab,
+  labToHex,
+  hexToOklch,
+  oklchToHex,
+  hexToCmyk,
+  cmykToHex,
+  getDeltaE,
+  labSchema,
+  oklchSchema,
+  cmykSchema,
+} from './colorSpaces'
+export type { Lab, Oklch, CMYK } from './colorSpaces'
+
+// Color parsing and formatting
+export {
+  parseColor,
+  parseColorFull,
+  formatColor,
+  detectColorFormat,
+  isValidColor,
+  getNamedColor,
+  getNamedColors,
+} from './colorParser'
+export type { ColorFormat, ParsedColor } from './colorParser'

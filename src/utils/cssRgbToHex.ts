@@ -1,12 +1,14 @@
 import { rgbToHex } from './rgbToHex'
 import { rgbaToHex } from './rgbaToHex'
+import { cssRgbSchema } from '../schemas'
+import { ColorValidationError } from '../errors'
 
 /**
  * Convert CSS rgb() or rgba() string to HEX format
  *
  * @param cssRgb - CSS color string (e.g., "rgb(255, 0, 0)" or "rgba(255, 0, 0, 0.5)")
  * @returns HEX color code (6 or 8 digits)
- * @throws Error if the input format is invalid
+ * @throws {ColorValidationError} If the input format is invalid
  *
  * @example
  * ```ts
@@ -16,6 +18,16 @@ import { rgbaToHex } from './rgbaToHex'
  * ```
  */
 export function cssRgbToHex(cssRgb: string): string {
+  const schemaResult = cssRgbSchema.safeParse(cssRgb)
+  if (!schemaResult.success) {
+    throw new ColorValidationError({
+      functionName: 'cssRgbToHex',
+      message: schemaResult.error.issues[0]?.message ?? 'Invalid CSS RGB color',
+      receivedValue: cssRgb,
+      issues: schemaResult.error.issues,
+    })
+  }
+
   // Match rgb(r, g, b) or rgba(r, g, b, a)
   // Also support modern syntax: rgb(r g b) or rgb(r g b / a)
   const rgbaMatch = cssRgb.match(
@@ -23,7 +35,7 @@ export function cssRgbToHex(cssRgb: string): string {
   )
 
   if (!rgbaMatch) {
-    throw new Error(`Invalid CSS RGB format: ${cssRgb}`)
+    throw new Error(`[cssRgbToHex] Invalid CSS RGB format. Received: "${cssRgb}"`)
   }
 
   const r = parseInt(rgbaMatch[1], 10)
