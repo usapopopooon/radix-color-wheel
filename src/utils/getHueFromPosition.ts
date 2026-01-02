@@ -18,12 +18,7 @@
  * getHueFromPosition(200, 100, 100, 100) // => 90
  * ```
  */
-export function getHueFromPosition(
-  x: number,
-  y: number,
-  centerX: number,
-  centerY: number
-): number {
+export function getHueFromPosition(x: number, y: number, centerX: number, centerY: number): number {
   // Formula: theta = atan2(y - cy, x - cx)
   // atan2 returns -pi to pi, so convert to 0-360
   // Add 90 degrees to make 12 o'clock position as 0 degrees (clockwise)

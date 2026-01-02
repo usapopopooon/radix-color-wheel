@@ -63,7 +63,7 @@
   outline-offset: var(--cw-focus-ring-offset);
 }
 
-[data-color-wheel-hex-input][aria-invalid="true"] {
+[data-color-wheel-hex-input][aria-invalid='true'] {
   outline-color: #ef4444;
 }
 

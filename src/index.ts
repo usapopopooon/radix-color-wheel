@@ -29,7 +29,14 @@ export { useColorWheelContext } from './context/ColorWheelContext'
 export { useWheelContext } from './context/WheelContext'
 
 // Re-export utility functions
-export { hsvToHex, hexToHsv, getHueFromPosition, getSVFromPosition, clamp } from './utils'
+export {
+  hsvToHex,
+  hexToHsv,
+  getHueFromPosition,
+  getSVFromPosition,
+  getColorNameEn,
+  clamp,
+} from './utils'
 
 // Presets
 export { ColorWheelSimple } from './presets/Simple'

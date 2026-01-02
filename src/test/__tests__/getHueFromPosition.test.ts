@@ -4,25 +4,25 @@ import { getHueFromPosition } from '../../utils/getHueFromPosition'
 describe('getHueFromPosition', () => {
   const center = 100
 
-  it('should return 0 degrees at 12 o\'clock position (top center)', () => {
+  it("should return 0 degrees at 12 o'clock position (top center)", () => {
     // Top center: x = center, y = 0 (above center)
     const hue = getHueFromPosition(center, 0, center, center)
     expect(Math.round(hue)).toBe(0)
   })
 
-  it('should return 90 degrees at 3 o\'clock position (right center)', () => {
+  it("should return 90 degrees at 3 o'clock position (right center)", () => {
     // Right center: x = 200 (right of center), y = center
     const hue = getHueFromPosition(200, center, center, center)
     expect(Math.round(hue)).toBe(90)
   })
 
-  it('should return 180 degrees at 6 o\'clock position (bottom center)', () => {
+  it("should return 180 degrees at 6 o'clock position (bottom center)", () => {
     // Bottom center: x = center, y = 200 (below center)
     const hue = getHueFromPosition(center, 200, center, center)
     expect(Math.round(hue)).toBe(180)
   })
 
-  it('should return 270 degrees at 9 o\'clock position (left center)', () => {
+  it("should return 270 degrees at 9 o'clock position (left center)", () => {
     // Left center: x = 0 (left of center), y = center
     const hue = getHueFromPosition(0, center, center, center)
     expect(Math.round(hue)).toBe(270)

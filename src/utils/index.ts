@@ -1,4 +1,5 @@
 export { clamp } from './clamp'
+export { getColorNameEn } from './getColorNameEn'
 export { getHueFromPosition } from './getHueFromPosition'
 export { getSVFromPosition } from './getSVFromPosition'
 export { hexToHsv } from './hexToHsv'

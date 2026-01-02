@@ -158,9 +158,7 @@ export function AlphaSlider({
       opacity: alpha / 100,
       transform: 'translate(-50%, -50%)',
       outline: 'none',
-      ...(isHorizontal
-        ? { left: thumbPosition, top: '50%' }
-        : { top: thumbPosition, left: '50%' }),
+      ...(isHorizontal ? { left: thumbPosition, top: '50%' } : { top: thumbPosition, left: '50%' }),
     }),
     [isHorizontal, thumbPosition, hex, alpha]
   )

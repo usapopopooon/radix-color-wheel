@@ -25,7 +25,9 @@ describe('ColorWheelSimple', () => {
   it('should hide hex input when showHexInput is false', () => {
     render(<ColorWheelSimple value="#ff0000" onValueChange={() => {}} showHexInput={false} />)
 
-    expect(screen.queryByRole('textbox', { name: /hexadecimal color code/i })).not.toBeInTheDocument()
+    expect(
+      screen.queryByRole('textbox', { name: /hexadecimal color code/i })
+    ).not.toBeInTheDocument()
   })
 
   it('should hide both swatch and hex input', () => {
@@ -39,7 +41,9 @@ describe('ColorWheelSimple', () => {
     )
 
     expect(screen.queryByRole('img', { name: /current color/i })).not.toBeInTheDocument()
-    expect(screen.queryByRole('textbox', { name: /hexadecimal color code/i })).not.toBeInTheDocument()
+    expect(
+      screen.queryByRole('textbox', { name: /hexadecimal color code/i })
+    ).not.toBeInTheDocument()
   })
 
   it('should call onValueChange when color changes', () => {

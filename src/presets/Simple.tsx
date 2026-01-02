@@ -43,7 +43,12 @@ export function ColorWheelSimple({
   disabled,
 }: ColorWheelSimpleProps): JSX.Element {
   return (
-    <Root value={value} defaultValue={defaultValue} onValueChange={onValueChange} disabled={disabled}>
+    <Root
+      value={value}
+      defaultValue={defaultValue}
+      onValueChange={onValueChange}
+      disabled={disabled}
+    >
       <Wheel size={size}>
         <HueRing />
         <HueThumb />

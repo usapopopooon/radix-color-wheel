@@ -1,4 +1,4 @@
-import { useState, useCallback, useMemo } from 'react'
+import { useState, useCallback, useMemo, useRef, useEffect, useId } from 'react'
 import { useControllableState } from '@radix-ui/react-use-controllable-state'
 import { ColorWheelContext, type ColorWheelContextValue } from '../context/ColorWheelContext'
 import { hexToHsv, hsvToHex } from '../utils'
@@ -90,6 +90,30 @@ export function Root({
 
   // Drag state
   const [isDragging, setIsDragging] = useState(false)
+
+  // Live region for screen reader announcements
+  const announcementId = useId()
+  const [announcement, setAnnouncement] = useState('')
+  const announcementTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+
+  // Announce color changes to screen readers
+  const prevHexRef = useRef(hex)
+  useEffect(() => {
+    if (prevHexRef.current !== hex) {
+      prevHexRef.current = hex
+      // Only announce when not dragging to avoid excessive announcements
+      if (!isDragging) {
+        setAnnouncement(`Color changed to ${hex}`)
+        // Clear announcement after a short delay
+        if (announcementTimeoutRef.current) {
+          clearTimeout(announcementTimeoutRef.current)
+        }
+        announcementTimeoutRef.current = setTimeout(() => {
+          setAnnouncement('')
+        }, 1000)
+      }
+    }
+  }, [hex, isDragging])
 
   // Update handlers
   const setHue = useCallback(
@@ -200,6 +224,26 @@ export function Root({
     <ColorWheelContext.Provider value={contextValue}>
       <div data-color-wheel-root data-disabled={disabled || undefined}>
         {children}
+        {/* Screen reader announcement region */}
+        <div
+          id={announcementId}
+          role="status"
+          aria-live="polite"
+          aria-atomic="true"
+          style={{
+            position: 'absolute',
+            width: '1px',
+            height: '1px',
+            padding: 0,
+            margin: '-1px',
+            overflow: 'hidden',
+            clip: 'rect(0, 0, 0, 0)',
+            whiteSpace: 'nowrap',
+            border: 0,
+          }}
+        >
+          {announcement}
+        </div>
       </div>
     </ColorWheelContext.Provider>
   )

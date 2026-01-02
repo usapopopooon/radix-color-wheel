@@ -1,4 +1,4 @@
-import { useState, useCallback, useEffect, useMemo } from 'react'
+import { useState, useCallback, useEffect, useMemo, useId } from 'react'
 import { useColorWheelContext } from '../context/ColorWheelContext'
 import type { HexInputProps } from '../types'
 
@@ -47,8 +47,13 @@ function normalizeHex(value: string): string {
  * </ColorWheel.Root>
  * ```
  */
-export function HexInput({ className, style, placeholder = '#000000' }: HexInputProps): JSX.Element {
+export function HexInput({
+  className,
+  style,
+  placeholder = '#000000',
+}: HexInputProps): JSX.Element {
   const { hex, setHex, disabled } = useColorWheelContext()
+  const hintId = useId()
 
   // Local state for input value (allows invalid intermediate states)
   const [inputValue, setInputValue] = useState(hex)
@@ -113,20 +118,39 @@ export function HexInput({ className, style, placeholder = '#000000' }: HexInput
   )
 
   return (
-    <input
-      type="text"
-      data-color-wheel-hex-input
-      className={className}
-      style={inputStyle}
-      value={inputValue}
-      placeholder={placeholder}
-      disabled={disabled}
-      aria-label="Hexadecimal color code"
-      aria-invalid={!isValid}
-      onChange={handleChange}
-      onFocus={handleFocus}
-      onBlur={handleBlur}
-      onKeyDown={handleKeyDown}
-    />
+    <>
+      <input
+        type="text"
+        data-color-wheel-hex-input
+        className={className}
+        style={inputStyle}
+        value={inputValue}
+        placeholder={placeholder}
+        disabled={disabled}
+        aria-label="Hexadecimal color code"
+        aria-invalid={!isValid}
+        aria-describedby={hintId}
+        onChange={handleChange}
+        onFocus={handleFocus}
+        onBlur={handleBlur}
+        onKeyDown={handleKeyDown}
+      />
+      <span
+        id={hintId}
+        style={{
+          position: 'absolute',
+          width: '1px',
+          height: '1px',
+          padding: 0,
+          margin: '-1px',
+          overflow: 'hidden',
+          clip: 'rect(0, 0, 0, 0)',
+          whiteSpace: 'nowrap',
+          border: 0,
+        }}
+      >
+        Enter a 6-digit hexadecimal color code starting with #
+      </span>
+    </>
   )
 }

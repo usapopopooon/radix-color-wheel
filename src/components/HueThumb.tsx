@@ -1,7 +1,7 @@
 import { useMemo, useCallback, useRef } from 'react'
 import { useColorWheelContext } from '../context/ColorWheelContext'
 import { useWheelContext } from '../context/WheelContext'
-import { getHueFromPosition, hsvToHex } from '../utils'
+import { getColorNameEn, getHueFromPosition, hsvToHex } from '../utils'
 import type { HueThumbProps } from '../types'
 
 /**
@@ -150,6 +150,8 @@ export function HueThumb({ className, style }: HueThumbProps): JSX.Element {
       aria-valuemin={0}
       aria-valuemax={360}
       aria-valuenow={hsv.h}
+      aria-valuetext={`${getColorNameEn(hsv.h)}, ${hsv.h} degrees`}
+      aria-orientation="horizontal"
       aria-disabled={disabled}
       onPointerDown={handlePointerDown}
       onPointerMove={handlePointerMove}
