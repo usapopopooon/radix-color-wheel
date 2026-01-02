@@ -1,5 +1,5 @@
 {
-  "name": "@usapopo/radix-color-wheel",
+  "name": "@usapopo/react-color-wheel",
   "version": "0.1.0",
   "description": "Color wheel component based on Radix UI design philosophy",
   "type": "module",
@@ -38,7 +38,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/usapopopooon/radix-color-wheel.git"
+    "url": "git+https://github.com/usapopopooon/react-color-wheel.git"
   },
   "keywords": [
     "react",
@@ -51,9 +51,9 @@
   "author": "",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/usapopopooon/radix-color-wheel/issues"
+    "url": "https://github.com/usapopopooon/react-color-wheel/issues"
   },
-  "homepage": "https://github.com/usapopopooon/radix-color-wheel#readme",
+  "homepage": "https://github.com/usapopopooon/react-color-wheel#readme",
   "peerDependencies": {
     "react": "^18.0.0 || ^19.0.0",
     "react-dom": "^18.0.0 || ^19.0.0"

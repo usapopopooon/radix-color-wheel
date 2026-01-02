@@ -1,6 +1,6 @@
-# @usapopo/radix-color-wheel
+# @usapopo/react-color-wheel
 
-[![CI](https://github.com/usapopopooon/radix-color-wheel/actions/workflows/ci.yml/badge.svg)](https://github.com/usapopopooon/radix-color-wheel/actions/workflows/ci.yml) ![coverage](https://usapopopooon.github.io/radix-color-wheel/coverage-badge.svg) [![Storybook](https://img.shields.io/badge/Storybook-open-ff4785?logo=storybook&logoColor=white)](https://usapopopooon.github.io/radix-color-wheel/storybook/) [![npm](https://img.shields.io/npm/v/@usapopo/radix-color-wheel)](https://www.npmjs.com/package/@usapopo/radix-color-wheel) [![license](https://img.shields.io/npm/l/@usapopo/radix-color-wheel)](./LICENSE)
+[![CI](https://github.com/usapopopooon/react-color-wheel/actions/workflows/ci.yml/badge.svg)](https://github.com/usapopopooon/react-color-wheel/actions/workflows/ci.yml) ![coverage](https://usapopopooon.github.io/react-color-wheel/coverage-badge.svg) [![Storybook](https://img.shields.io/badge/Storybook-open-ff4785?logo=storybook&logoColor=white)](https://usapopopooon.github.io/react-color-wheel/storybook/) [![npm](https://img.shields.io/npm/v/@usapopo/react-color-wheel)](https://www.npmjs.com/package/@usapopo/react-color-wheel) [![license](https://img.shields.io/npm/l/@usapopo/react-color-wheel)](./LICENSE)
 
 A fully accessible color wheel component for React, following the [Radix UI](https://www.radix-ui.com/) Compound Components pattern.
 
@@ -18,7 +18,7 @@ A fully accessible color wheel component for React, following the [Radix UI](htt
 ## Installation
 
 ```bash
-npm install @usapopo/radix-color-wheel
+npm install @usapopo/react-color-wheel
 ```
 
 **Peer Dependencies:** React 18 or 19
@@ -27,7 +27,7 @@ npm install @usapopo/radix-color-wheel
 
 ```tsx
 import { useState } from 'react'
-import * as ColorWheel from '@usapopo/radix-color-wheel'
+import * as ColorWheel from '@usapopo/react-color-wheel'
 
 function App() {
   const [color, setColor] = useState('#3b82f6')
@@ -223,7 +223,7 @@ All components support ref forwarding:
 
 ```tsx
 import { useRef } from 'react'
-import * as ColorWheel from '@usapopo/radix-color-wheel'
+import * as ColorWheel from '@usapopo/react-color-wheel'
 
 function App() {
   const wheelRef = useRef<HTMLDivElement>(null)
@@ -244,7 +244,7 @@ function App() {
 
 ```tsx
 import { useState } from 'react'
-import * as ColorWheel from '@usapopo/radix-color-wheel'
+import * as ColorWheel from '@usapopo/react-color-wheel'
 
 function ColorPicker() {
   const [color, setColor] = useState('#3b82f6')
@@ -293,7 +293,7 @@ Access color state from custom components:
 ### useColorWheelContext
 
 ```tsx
-import { useColorWheelContext } from '@usapopo/radix-color-wheel'
+import { useColorWheelContext } from '@usapopo/react-color-wheel'
 
 function CustomDisplay() {
   const {
@@ -329,7 +329,7 @@ function CustomDisplay() {
 Access wheel dimensions (must be inside `Wheel`):
 
 ```tsx
-import { useWheelContext } from '@usapopo/radix-color-wheel'
+import { useWheelContext } from '@usapopo/react-color-wheel'
 
 function CustomComponent() {
   const {
@@ -355,13 +355,13 @@ import {
   normalizeHex,    // (hex: string) => string (adds # if missing, lowercase)
   getColorNameEn,  // (hue: number) => string ("red" | "orange" | ...)
   clamp,           // (value: number, min: number, max: number) => number
-} from '@usapopo/radix-color-wheel'
+} from '@usapopo/react-color-wheel'
 ```
 
 ### Examples
 
 ```tsx
-import { hsvToHex, hexToHsv, getColorNameEn } from '@usapopo/radix-color-wheel'
+import { hsvToHex, hexToHsv, getColorNameEn } from '@usapopo/react-color-wheel'
 
 // HSV to HEX
 const hex = hsvToHex(0, 100, 100) // "#ff0000"
@@ -394,7 +394,7 @@ import type {
 
   // Data Types
   HSV, // { h: number, s: number, v: number }
-} from '@usapopo/radix-color-wheel'
+} from '@usapopo/react-color-wheel'
 ```
 
 ## Accessibility
@@ -412,8 +412,43 @@ This component follows WAI-ARIA best practices:
 
 ## Browser Support
 
-- Chrome, Edge, Firefox, Safari (latest)
-- React 18.x, 19.x
+### Recommended (Full Support)
+
+| Browser | Desktop | Mobile |
+|---------|---------|--------|
+| Chrome | 86+ | 86+ |
+| Firefox | 85+ | 85+ |
+| Safari | 15.4+ | 15.4+ |
+| Edge | 86+ | - |
+
+### Minimum (Core Features)
+
+| Browser | Desktop | Mobile | Notes |
+|---------|---------|--------|-------|
+| Chrome | 69+ | 69+ | conic-gradient support |
+| Firefox | 83+ | 83+ | conic-gradient support |
+| Safari | 13.1+ | 13.4+ | Clipboard API support |
+| Edge | 79+ | - | Chromium-based |
+
+### Not Supported
+
+- Internet Explorer (all versions)
+- Legacy Edge (pre-Chromium)
+
+### Required Browser Features
+
+| Feature | Usage |
+|---------|-------|
+| Pointer Events | Drag interactions |
+| Clipboard API | Copy/Paste buttons |
+| CSS conic-gradient | Hue ring gradient |
+| CSS Custom Properties | Theming |
+| CSS mask | Ring shape |
+
+### React Compatibility
+
+- React 18.x
+- React 19.x
 
 ## License
 
