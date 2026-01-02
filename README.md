@@ -6,7 +6,7 @@ A fully accessible color wheel component for React, following the [Radix UI](htt
 
 ## Screen Shot Example
 
-<p alt="Screen Shot Example" align="center"><img width="240" src="./docs/img/color-wheel-screen-shot.png" /></p>
+<p alt="Screen Shot Example" align="center"><img width="320" src="./docs/img/color-wheel-screen-shot.png" /></p>
 
 ## Features
 
