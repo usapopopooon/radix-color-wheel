@@ -43,7 +43,8 @@ export function AlphaSlider({
     (e: React.PointerEvent) => {
       if (disabled) return
       e.preventDefault()
-      ;(e.target as HTMLElement).setPointerCapture(e.pointerId)
+      // Capture pointer on the slider container, not the clicked element
+      sliderRef.current?.setPointerCapture(e.pointerId)
       onDragStart?.()
 
       // Calculate alpha from click position
@@ -61,22 +62,20 @@ export function AlphaSlider({
   const handlePointerMove = useCallback(
     (e: React.PointerEvent) => {
       if (disabled) return
-      if (!e.currentTarget.hasPointerCapture(e.pointerId)) return
+      if (!sliderRef.current?.hasPointerCapture(e.pointerId)) return
 
-      if (sliderRef.current) {
-        const rect = sliderRef.current.getBoundingClientRect()
-        const position = isHorizontal ? e.clientX - rect.left : e.clientY - rect.top
-        const size = isHorizontal ? rect.width : rect.height
-        const newAlpha = clamp((position / size) * 100, 0, 100)
-        setAlpha(Math.round(newAlpha))
-      }
+      const rect = sliderRef.current.getBoundingClientRect()
+      const position = isHorizontal ? e.clientX - rect.left : e.clientY - rect.top
+      const size = isHorizontal ? rect.width : rect.height
+      const newAlpha = clamp((position / size) * 100, 0, 100)
+      setAlpha(Math.round(newAlpha))
     },
     [disabled, isHorizontal, setAlpha]
   )
 
   const handlePointerUp = useCallback(
     (e: React.PointerEvent) => {
-      ;(e.target as HTMLElement).releasePointerCapture(e.pointerId)
+      sliderRef.current?.releasePointerCapture(e.pointerId)
       onDragEnd?.()
     },
     [onDragEnd]
@@ -147,6 +146,14 @@ export function AlphaSlider({
     [isHorizontal, hex]
   )
 
+  // Convert hex to rgba with current alpha for thumb background
+  const thumbColor = useMemo(() => {
+    const r = parseInt(hex.slice(1, 3), 16)
+    const g = parseInt(hex.slice(3, 5), 16)
+    const b = parseInt(hex.slice(5, 7), 16)
+    return `rgba(${r}, ${g}, ${b}, ${alpha / 100})`
+  }, [hex, alpha])
+
   const thumbStyle: React.CSSProperties = useMemo(
     () => ({
       position: 'absolute',
@@ -154,12 +161,11 @@ export function AlphaSlider({
       height: 16,
       // Structure: color circle -> white inset shadow (as border) -> outer border -> focus ring
       boxShadow: 'inset 0 0 0 2px white, 0 0 0 1px rgba(0, 0, 0, 0.3), 0 2px 4px rgba(0, 0, 0, 0.2)',
-      backgroundColor: hex,
-      opacity: alpha / 100,
+      backgroundColor: thumbColor,
       transform: 'translate(-50%, -50%)',
       ...(isHorizontal ? { left: thumbPosition, top: '50%' } : { top: thumbPosition, left: '50%' }),
     }),
-    [isHorizontal, thumbPosition, hex, alpha]
+    [isHorizontal, thumbPosition, thumbColor]
   )
 
   return (
