@@ -51,7 +51,9 @@ export const Vertical: StoryFn = () => {
             style={{ width: 40, height: 40, borderRadius: 4, border: '1px solid #ccc' }}
           />
         </ColorWheel.Root>
-        <p style={{ marginTop: 8, fontFamily: 'monospace', fontSize: 12 }}>γ = {gamma.toFixed(1)}</p>
+        <p style={{ marginTop: 8, fontFamily: 'monospace', fontSize: 12 }}>
+          γ = {gamma.toFixed(1)}
+        </p>
       </div>
     </div>
   )

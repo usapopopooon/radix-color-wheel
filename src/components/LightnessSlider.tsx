@@ -1,6 +1,7 @@
-import { forwardRef, useMemo, useCallback, useRef, useImperativeHandle } from 'react'
+import { forwardRef, useMemo, useCallback, useImperativeHandle } from 'react'
 import { useColorWheelContext } from '../context/ColorWheelContext'
-import { clamp, hexToHsl, hslToHex } from '../utils'
+import { hexToHsl, hslToHex } from '../utils'
+import { useSliderBase } from '../hooks/useSliderBase'
 import { Thumb } from './Thumb'
 import type { LightnessSliderProps } from '../types'
 
@@ -42,34 +43,11 @@ export const LightnessSlider = forwardRef<HTMLDivElement, LightnessSliderProps>(
     },
     ref
   ) => {
-    const {
-      hex,
-      setHex,
-      disabled,
-      onDragStart,
-      onDrag,
-      onDragEnd,
-      onFocus,
-      onBlur,
-    } = useColorWheelContext()
-    const sliderRef = useRef<HTMLDivElement>(null)
-
-    // Forward ref to internal slider element
-    useImperativeHandle(ref, () => sliderRef.current!, [])
-
-    const isHorizontal = orientation === 'horizontal'
+    const { hex, setHex, disabled, onDragStart, onDrag, onDragEnd, onFocus, onBlur } =
+      useColorWheelContext()
 
     // Get current HSL values
     const hsl = useMemo(() => hexToHsl(hex), [hex])
-
-    // Calculate thumb position based on lightness value (0-100)
-    const thumbPosition = useMemo(() => {
-      const ratio = hsl.l / 100
-      return `${inverted ? (1 - ratio) * 100 : ratio * 100}%`
-    }, [hsl.l, inverted])
-
-    // Current color for thumb background
-    const thumbColor = hex
 
     const setLightness = useCallback(
       (lightness: number) => {
@@ -79,48 +57,56 @@ export const LightnessSlider = forwardRef<HTMLDivElement, LightnessSliderProps>(
       [hsl.h, hsl.s, setHex]
     )
 
-    const handlePointerDown = useCallback(
-      (e: React.PointerEvent) => {
-        if (disabled) return
-        e.preventDefault()
-        sliderRef.current?.setPointerCapture(e.pointerId)
-        onDragStart?.()
-
-        if (sliderRef.current) {
-          const rect = sliderRef.current.getBoundingClientRect()
-          const position = isHorizontal ? e.clientX - rect.left : e.clientY - rect.top
-          const size = isHorizontal ? rect.width : rect.height
-          const ratio = clamp(position / size, 0, 1)
-          const newLightness = (inverted ? 1 - ratio : ratio) * 100
-          setLightness(Math.round(newLightness))
-        }
-      },
-      [disabled, isHorizontal, inverted, setLightness, onDragStart]
-    )
-
-    const handlePointerMove = useCallback(
-      (e: React.PointerEvent) => {
-        if (disabled) return
-        if (!sliderRef.current?.hasPointerCapture(e.pointerId)) return
-
-        const rect = sliderRef.current.getBoundingClientRect()
-        const position = isHorizontal ? e.clientX - rect.left : e.clientY - rect.top
-        const size = isHorizontal ? rect.width : rect.height
-        const ratio = clamp(position / size, 0, 1)
-        const newLightness = (inverted ? 1 - ratio : ratio) * 100
-        setLightness(Math.round(newLightness))
-
+    const handleChange = useCallback(
+      (ratio: number) => {
+        setLightness(Math.round(ratio * 100))
         onDrag?.(hex)
       },
-      [disabled, isHorizontal, inverted, setLightness, onDrag, hex]
+      [setLightness, onDrag, hex]
     )
 
-    const handlePointerUp = useCallback(
-      (e: React.PointerEvent) => {
-        sliderRef.current?.releasePointerCapture(e.pointerId)
-        onDragEnd?.()
-      },
-      [onDragEnd]
+    const {
+      sliderRef,
+      borderRadius,
+      sliderStyle: baseSliderStyle,
+      thumbPositionStyle,
+      gradientDirection,
+      handlePointerDown,
+      handlePointerMove,
+      handlePointerUp,
+    } = useSliderBase({
+      value: hsl.l / 100,
+      onChange: handleChange,
+      disabled,
+      orientation,
+      inverted,
+      trackSize,
+      onDragStart,
+      onDragEnd,
+    })
+
+    // Forward ref to internal slider element
+    useImperativeHandle(ref, () => sliderRef.current!, [sliderRef])
+
+    // Current color for thumb background
+    const thumbColor = hex
+
+    // Colors for the gradient: black -> pure color at 50% -> white
+    const pureColor = useMemo(() => hslToHex({ h: hsl.h, s: hsl.s, l: 50 }), [hsl.h, hsl.s])
+
+    const sliderStyle: React.CSSProperties = useMemo(
+      () => ({ ...baseSliderStyle, ...style }),
+      [baseSliderStyle, style]
+    )
+
+    const gradientStyle: React.CSSProperties = useMemo(
+      () => ({
+        position: 'absolute',
+        inset: 0,
+        borderRadius,
+        background: `linear-gradient(${gradientDirection}, #000000, ${pureColor} 50%, #ffffff)`,
+      }),
+      [borderRadius, gradientDirection, pureColor]
     )
 
     const handleKeyDown = useCallback(
@@ -138,7 +124,7 @@ export const LightnessSlider = forwardRef<HTMLDivElement, LightnessSliderProps>(
             if (e.altKey) {
               setLightness(0)
             } else {
-              setLightness(clamp(hsl.l - step, 0, 100))
+              setLightness(Math.max(0, hsl.l - step))
             }
             break
           case 'ArrowRight':
@@ -149,54 +135,12 @@ export const LightnessSlider = forwardRef<HTMLDivElement, LightnessSliderProps>(
             if (e.altKey) {
               setLightness(100)
             } else {
-              setLightness(clamp(hsl.l + step, 0, 100))
+              setLightness(Math.min(100, hsl.l + step))
             }
             break
         }
       },
       [disabled, hsl.l, setLightness]
-    )
-
-    const borderRadius = trackSize / 2
-
-    // Colors for the gradient: black -> pure color at 50% -> white
-    const pureColor = useMemo(() => hslToHex({ h: hsl.h, s: hsl.s, l: 50 }), [hsl.h, hsl.s])
-
-    const sliderStyle: React.CSSProperties = useMemo(
-      () => ({
-        position: 'relative',
-        width: isHorizontal ? '100%' : trackSize,
-        height: isHorizontal ? trackSize : '100%',
-        minHeight: isHorizontal ? undefined : 100,
-        borderRadius,
-        cursor: disabled ? 'not-allowed' : 'pointer',
-        touchAction: 'none',
-        ...style,
-      }),
-      [isHorizontal, trackSize, borderRadius, disabled, style]
-    )
-
-    const gradientStyle: React.CSSProperties = useMemo(() => {
-      const gradientDirection = isHorizontal
-        ? inverted
-          ? 'to left'
-          : 'to right'
-        : inverted
-          ? 'to top'
-          : 'to bottom'
-
-      return {
-        position: 'absolute',
-        inset: 0,
-        borderRadius,
-        background: `linear-gradient(${gradientDirection}, #000000, ${pureColor} 50%, #ffffff)`,
-      }
-    }, [isHorizontal, inverted, borderRadius, pureColor])
-
-    const thumbPositionStyle: React.CSSProperties = useMemo(
-      () =>
-        isHorizontal ? { left: thumbPosition, top: '50%' } : { top: thumbPosition, left: '50%' },
-      [isHorizontal, thumbPosition]
     )
 
     return (

@@ -1,6 +1,7 @@
-import { forwardRef, useMemo, useCallback, useRef, useImperativeHandle, useState } from 'react'
+import { forwardRef, useMemo, useCallback, useImperativeHandle, useState } from 'react'
 import { useColorWheelContext } from '../context/ColorWheelContext'
 import { clamp } from '../utils'
+import { useSliderBase } from '../hooks/useSliderBase'
 import { Thumb } from './Thumb'
 import type { GammaSliderProps } from '../types'
 
@@ -59,17 +60,11 @@ export const GammaSlider = forwardRef<HTMLDivElement, GammaSliderProps>(
     ref
   ) => {
     const { disabled, onDragStart, onDragEnd, onFocus, onBlur } = useColorWheelContext()
-    const sliderRef = useRef<HTMLDivElement>(null)
 
     // Internal state for uncontrolled mode
     const [internalValue, setInternalValue] = useState(defaultValue)
     const isControlled = controlledValue !== undefined
     const gamma = isControlled ? controlledValue : internalValue
-
-    // Forward ref to internal slider element
-    useImperativeHandle(ref, () => sliderRef.current!, [])
-
-    const isHorizontal = orientation === 'horizontal'
 
     const setGamma = useCallback(
       (newGamma: number) => {
@@ -86,11 +81,36 @@ export const GammaSlider = forwardRef<HTMLDivElement, GammaSliderProps>(
       [min, max, step, isControlled, onValueChange]
     )
 
-    // Calculate thumb position based on gamma value
-    const thumbPosition = useMemo(() => {
-      const ratio = (gamma - min) / (max - min)
-      return `${inverted ? (1 - ratio) * 100 : ratio * 100}%`
-    }, [gamma, min, max, inverted])
+    const handleChange = useCallback(
+      (ratio: number) => {
+        const newGamma = min + ratio * (max - min)
+        setGamma(newGamma)
+      },
+      [min, max, setGamma]
+    )
+
+    const {
+      sliderRef,
+      borderRadius,
+      sliderStyle: baseSliderStyle,
+      thumbPositionStyle,
+      gradientDirection,
+      handlePointerDown,
+      handlePointerMove,
+      handlePointerUp,
+    } = useSliderBase({
+      value: (gamma - min) / (max - min),
+      onChange: handleChange,
+      disabled,
+      orientation,
+      inverted,
+      trackSize,
+      onDragStart,
+      onDragEnd,
+    })
+
+    // Forward ref to internal slider element
+    useImperativeHandle(ref, () => sliderRef.current!, [sliderRef])
 
     // Thumb color based on gamma: darker for <1, lighter for >1
     const thumbColor = useMemo(() => {
@@ -101,48 +121,20 @@ export const GammaSlider = forwardRef<HTMLDivElement, GammaSliderProps>(
       return `rgb(${gray}, ${gray}, ${gray})`
     }, [gamma, min, max])
 
-    const handlePointerDown = useCallback(
-      (e: React.PointerEvent) => {
-        if (disabled) return
-        e.preventDefault()
-        sliderRef.current?.setPointerCapture(e.pointerId)
-        onDragStart?.()
-
-        if (sliderRef.current) {
-          const rect = sliderRef.current.getBoundingClientRect()
-          const position = isHorizontal ? e.clientX - rect.left : e.clientY - rect.top
-          const size = isHorizontal ? rect.width : rect.height
-          const ratio = clamp(position / size, 0, 1)
-          const adjustedRatio = inverted ? 1 - ratio : ratio
-          const newGamma = min + adjustedRatio * (max - min)
-          setGamma(newGamma)
-        }
-      },
-      [disabled, isHorizontal, inverted, min, max, setGamma, onDragStart]
+    const sliderStyle: React.CSSProperties = useMemo(
+      () => ({ ...baseSliderStyle, ...style }),
+      [baseSliderStyle, style]
     )
 
-    const handlePointerMove = useCallback(
-      (e: React.PointerEvent) => {
-        if (disabled) return
-        if (!sliderRef.current?.hasPointerCapture(e.pointerId)) return
-
-        const rect = sliderRef.current.getBoundingClientRect()
-        const position = isHorizontal ? e.clientX - rect.left : e.clientY - rect.top
-        const size = isHorizontal ? rect.width : rect.height
-        const ratio = clamp(position / size, 0, 1)
-        const adjustedRatio = inverted ? 1 - ratio : ratio
-        const newGamma = min + adjustedRatio * (max - min)
-        setGamma(newGamma)
-      },
-      [disabled, isHorizontal, inverted, min, max, setGamma]
-    )
-
-    const handlePointerUp = useCallback(
-      (e: React.PointerEvent) => {
-        sliderRef.current?.releasePointerCapture(e.pointerId)
-        onDragEnd?.()
-      },
-      [onDragEnd]
+    // Gradient from dark (low gamma) to light (high gamma)
+    const gradientStyle: React.CSSProperties = useMemo(
+      () => ({
+        position: 'absolute',
+        inset: 0,
+        borderRadius,
+        background: `linear-gradient(${gradientDirection}, #1a1a1a, #808080 33%, #e0e0e0)`,
+      }),
+      [borderRadius, gradientDirection]
     )
 
     const handleKeyDown = useCallback(
@@ -185,46 +177,6 @@ export const GammaSlider = forwardRef<HTMLDivElement, GammaSliderProps>(
         }
       },
       [disabled, gamma, min, max, step, setGamma]
-    )
-
-    const borderRadius = trackSize / 2
-
-    const sliderStyle: React.CSSProperties = useMemo(
-      () => ({
-        position: 'relative',
-        width: isHorizontal ? '100%' : trackSize,
-        height: isHorizontal ? trackSize : '100%',
-        minHeight: isHorizontal ? undefined : 100,
-        borderRadius,
-        cursor: disabled ? 'not-allowed' : 'pointer',
-        touchAction: 'none',
-        ...style,
-      }),
-      [isHorizontal, trackSize, borderRadius, disabled, style]
-    )
-
-    const gradientStyle: React.CSSProperties = useMemo(() => {
-      const gradientDirection = isHorizontal
-        ? inverted
-          ? 'to left'
-          : 'to right'
-        : inverted
-          ? 'to top'
-          : 'to bottom'
-
-      // Gradient from dark (low gamma) to light (high gamma)
-      return {
-        position: 'absolute',
-        inset: 0,
-        borderRadius,
-        background: `linear-gradient(${gradientDirection}, #1a1a1a, #808080 33%, #e0e0e0)`,
-      }
-    }, [isHorizontal, inverted, borderRadius])
-
-    const thumbPositionStyle: React.CSSProperties = useMemo(
-      () =>
-        isHorizontal ? { left: thumbPosition, top: '50%' } : { top: thumbPosition, left: '50%' },
-      [isHorizontal, thumbPosition]
     )
 
     return (
