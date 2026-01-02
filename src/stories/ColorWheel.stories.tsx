@@ -373,15 +373,21 @@ export const CustomAlphaSliderSize: StoryFn = () => {
           <ColorWheel.AreaThumb />
         </ColorWheel.Wheel>
         <div style={{ marginTop: 16 }}>
-          <p style={{ fontSize: 12, color: '#666', marginBottom: 4 }}>Default (12px track, 16px thumb):</p>
+          <p style={{ fontSize: 12, color: '#666', marginBottom: 4 }}>
+            Default (12px track, 16px thumb):
+          </p>
           <ColorWheel.AlphaSlider />
         </div>
         <div style={{ marginTop: 12 }}>
-          <p style={{ fontSize: 12, color: '#666', marginBottom: 4 }}>Larger (20px track, 24px thumb):</p>
+          <p style={{ fontSize: 12, color: '#666', marginBottom: 4 }}>
+            Larger (20px track, 24px thumb):
+          </p>
           <ColorWheel.AlphaSlider trackSize={20} thumbSize={24} />
         </div>
         <div style={{ marginTop: 12 }}>
-          <p style={{ fontSize: 12, color: '#666', marginBottom: 4 }}>Slim (8px track, 12px thumb):</p>
+          <p style={{ fontSize: 12, color: '#666', marginBottom: 4 }}>
+            Slim (8px track, 12px thumb):
+          </p>
           <ColorWheel.AlphaSlider trackSize={8} thumbSize={12} />
         </div>
       </ColorWheel.Root>

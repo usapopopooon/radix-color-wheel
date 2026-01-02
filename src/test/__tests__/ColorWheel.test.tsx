@@ -565,6 +565,240 @@ describe('ColorWheel', () => {
     expect(onBlur).toHaveBeenCalled()
   })
 
+  describe('thumbSize prop', () => {
+    it('should apply custom thumbSize to HueThumb', () => {
+      render(
+        <ColorWheel.Root value="#ff0000" onValueChange={() => {}}>
+          <ColorWheel.Wheel thumbSize={24}>
+            <ColorWheel.HueRing />
+            <ColorWheel.HueThumb />
+            <ColorWheel.Area />
+            <ColorWheel.AreaThumb />
+          </ColorWheel.Wheel>
+        </ColorWheel.Root>
+      )
+
+      const hueThumb = screen.getByRole('slider', { name: /hue/i })
+      expect(hueThumb.style.width).toBe('24px')
+      expect(hueThumb.style.height).toBe('24px')
+    })
+
+    it('should apply custom thumbSize to AreaThumb', () => {
+      render(
+        <ColorWheel.Root value="#ff0000" onValueChange={() => {}}>
+          <ColorWheel.Wheel thumbSize={24}>
+            <ColorWheel.HueRing />
+            <ColorWheel.HueThumb />
+            <ColorWheel.Area />
+            <ColorWheel.AreaThumb />
+          </ColorWheel.Wheel>
+        </ColorWheel.Root>
+      )
+
+      const areaThumb = screen.getByRole('slider', { name: /saturation and brightness/i })
+      expect(areaThumb.style.width).toBe('24px')
+      expect(areaThumb.style.height).toBe('24px')
+    })
+
+    it('should use calculated thumbSize when not explicitly set', () => {
+      render(
+        <ColorWheel.Root value="#ff0000" onValueChange={() => {}}>
+          <ColorWheel.Wheel size={200} ringWidth={20}>
+            <ColorWheel.HueRing />
+            <ColorWheel.HueThumb />
+            <ColorWheel.Area />
+            <ColorWheel.AreaThumb />
+          </ColorWheel.Wheel>
+        </ColorWheel.Root>
+      )
+
+      const hueThumb = screen.getByRole('slider', { name: /hue/i })
+      // Default calculation: Math.round(size * 0.07) = Math.round(200 * 0.07) = 14
+      expect(hueThumb.style.width).toBe('14px')
+      expect(hueThumb.style.height).toBe('14px')
+    })
+
+    it('should allow very large thumbSize', () => {
+      render(
+        <ColorWheel.Root value="#ff0000" onValueChange={() => {}}>
+          <ColorWheel.Wheel thumbSize={40}>
+            <ColorWheel.HueRing />
+            <ColorWheel.HueThumb />
+            <ColorWheel.Area />
+            <ColorWheel.AreaThumb />
+          </ColorWheel.Wheel>
+        </ColorWheel.Root>
+      )
+
+      const hueThumb = screen.getByRole('slider', { name: /hue/i })
+      expect(hueThumb.style.width).toBe('40px')
+    })
+
+    it('should allow very small thumbSize', () => {
+      render(
+        <ColorWheel.Root value="#ff0000" onValueChange={() => {}}>
+          <ColorWheel.Wheel thumbSize={8}>
+            <ColorWheel.HueRing />
+            <ColorWheel.HueThumb />
+            <ColorWheel.Area />
+            <ColorWheel.AreaThumb />
+          </ColorWheel.Wheel>
+        </ColorWheel.Root>
+      )
+
+      const hueThumb = screen.getByRole('slider', { name: /hue/i })
+      expect(hueThumb.style.width).toBe('8px')
+    })
+  })
+
+  describe('hueOffset prop', () => {
+    it('should apply hueOffset to HueRing conic-gradient', () => {
+      render(
+        <ColorWheel.Root value="#ff0000" onValueChange={() => {}}>
+          <ColorWheel.Wheel hueOffset={0}>
+            <ColorWheel.HueRing />
+            <ColorWheel.HueThumb />
+            <ColorWheel.Area />
+            <ColorWheel.AreaThumb />
+          </ColorWheel.Wheel>
+        </ColorWheel.Root>
+      )
+
+      const hueRing = document.querySelector('[data-color-wheel-hue-ring]') as HTMLElement
+      // With hueOffset=0, the gradient should start from 0deg
+      expect(hueRing.style.background).toContain('from 0deg')
+    })
+
+    it('should default hueOffset to -90 (red at top)', () => {
+      render(
+        <ColorWheel.Root value="#ff0000" onValueChange={() => {}}>
+          <ColorWheel.Wheel>
+            <ColorWheel.HueRing />
+            <ColorWheel.HueThumb />
+            <ColorWheel.Area />
+            <ColorWheel.AreaThumb />
+          </ColorWheel.Wheel>
+        </ColorWheel.Root>
+      )
+
+      const hueRing = document.querySelector('[data-color-wheel-hue-ring]') as HTMLElement
+      // Default hueOffset=-90 means the gradient starts from -90deg
+      expect(hueRing.style.background).toContain('from -90deg')
+    })
+
+    it('should position HueThumb correctly with hueOffset=0', () => {
+      render(
+        <ColorWheel.Root value="#ff0000" onValueChange={() => {}}>
+          <ColorWheel.Wheel size={200} ringWidth={20} hueOffset={0}>
+            <ColorWheel.HueRing />
+            <ColorWheel.HueThumb />
+            <ColorWheel.Area />
+            <ColorWheel.AreaThumb />
+          </ColorWheel.Wheel>
+        </ColorWheel.Root>
+      )
+
+      const hueThumb = screen.getByRole('slider', { name: /hue/i })
+      // Red (hue=0) with hueOffset=0: angle = 0deg
+      // center = 100, radius = 100 - 20/2 = 90
+      // x = 100 + 90 * cos(0) = 190, y = 100 + 90 * sin(0) = 100
+      expect(hueThumb.style.left).toBe('190px')
+      expect(hueThumb.style.top).toBe('100px')
+    })
+
+    it('should position HueThumb correctly with default hueOffset (-90)', () => {
+      render(
+        <ColorWheel.Root value="#ff0000" onValueChange={() => {}}>
+          <ColorWheel.Wheel size={200} ringWidth={20}>
+            <ColorWheel.HueRing />
+            <ColorWheel.HueThumb />
+            <ColorWheel.Area />
+            <ColorWheel.AreaThumb />
+          </ColorWheel.Wheel>
+        </ColorWheel.Root>
+      )
+
+      const hueThumb = screen.getByRole('slider', { name: /hue/i })
+      // Red (hue=0) with hueOffset=-90: angle = 0 + (-90) = -90deg
+      // center = 100, radius = 90
+      // x = 100 + 90 * cos(-90deg) = 100, y = 100 + 90 * sin(-90deg) = 10
+      expect(hueThumb.style.left).toBe('100px')
+      expect(hueThumb.style.top).toBe('10px')
+    })
+
+    it('should position HueThumb for green (hue=120) correctly with hueOffset', () => {
+      render(
+        <ColorWheel.Root value="#00ff00" onValueChange={() => {}}>
+          <ColorWheel.Wheel size={200} ringWidth={20} hueOffset={0}>
+            <ColorWheel.HueRing />
+            <ColorWheel.HueThumb />
+            <ColorWheel.Area />
+            <ColorWheel.AreaThumb />
+          </ColorWheel.Wheel>
+        </ColorWheel.Root>
+      )
+
+      const hueThumb = screen.getByRole('slider', { name: /hue/i })
+      // Green (hue=120) with hueOffset=0: angle = 120deg
+      // center = 100, radius = 90
+      // x = 100 + 90 * cos(120deg) = 100 + 90 * (-0.5) = 55
+      // y = 100 + 90 * sin(120deg) = 100 + 90 * (sqrt(3)/2) ≈ 100 + 77.94 ≈ 177.94
+      // Allow for floating point precision
+      expect(parseFloat(hueThumb.style.left)).toBeCloseTo(55, 0)
+      expect(parseFloat(hueThumb.style.top)).toBeCloseTo(177.94, 0)
+    })
+
+    it('should calculate hue correctly when clicking on HueRing with hueOffset', () => {
+      const onHueChange = vi.fn()
+
+      render(
+        <ColorWheel.Root value="#ff0000" onValueChange={() => {}} onHueChange={onHueChange}>
+          <ColorWheel.Wheel size={200} ringWidth={20} hueOffset={0}>
+            <ColorWheel.HueRing />
+            <ColorWheel.HueThumb />
+            <ColorWheel.Area />
+            <ColorWheel.AreaThumb />
+          </ColorWheel.Wheel>
+        </ColorWheel.Root>
+      )
+
+      const hueRing = document.querySelector('[data-color-wheel-hue-ring]') as HTMLElement
+
+      // Mock getBoundingClientRect
+      hueRing.getBoundingClientRect = vi.fn().mockReturnValue({
+        left: 0,
+        top: 0,
+        width: 200,
+        height: 200,
+      })
+
+      // Mock setPointerCapture
+      hueRing.setPointerCapture = vi.fn()
+
+      // Click at right edge (100 + 90 = 190, 100) which is angle 0 from center
+      // With hueOffset=0, this should give hue=0
+      fireEvent.pointerDown(hueRing, { clientX: 190, clientY: 100, pointerId: 1 })
+
+      expect(onHueChange).toHaveBeenCalledWith(0)
+    })
+
+    it('should support positive hueOffset values', () => {
+      render(
+        <ColorWheel.Root value="#ff0000" onValueChange={() => {}}>
+          <ColorWheel.Wheel hueOffset={90}>
+            <ColorWheel.HueRing />
+            <ColorWheel.HueThumb />
+            <ColorWheel.Area />
+            <ColorWheel.AreaThumb />
+          </ColorWheel.Wheel>
+        </ColorWheel.Root>
+      )
+
+      const hueRing = document.querySelector('[data-color-wheel-hue-ring]') as HTMLElement
+      expect(hueRing.style.background).toContain('from 90deg')
+    })
+  })
+
   describe('jumpOnClick', () => {
     it('should call onDragStart when clicking on HueRing with jumpOnClick=true (default)', () => {
       const onDragStart = vi.fn()

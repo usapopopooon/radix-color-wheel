@@ -40,17 +40,8 @@ export const HueSlider = forwardRef<HTMLDivElement, HueSliderProps>(
     },
     ref
   ) => {
-    const {
-      hsv,
-      hex,
-      setHue,
-      disabled,
-      onDragStart,
-      onDrag,
-      onDragEnd,
-      onFocus,
-      onBlur,
-    } = useColorWheelContext()
+    const { hsv, hex, setHue, disabled, onDragStart, onDrag, onDragEnd, onFocus, onBlur } =
+      useColorWheelContext()
     const sliderRef = useRef<HTMLDivElement>(null)
 
     // Forward ref to internal slider element

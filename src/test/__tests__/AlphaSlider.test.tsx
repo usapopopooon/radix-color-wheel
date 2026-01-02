@@ -205,6 +205,117 @@ describe('AlphaSlider', () => {
     expect(onAlphaChange).toHaveBeenCalledWith(51)
   })
 
+  describe('trackSize and thumbSize props', () => {
+    it('should apply custom trackSize to horizontal slider', () => {
+      render(
+        <ColorWheel.Root value="#ff0000" onValueChange={() => {}}>
+          <ColorWheel.AlphaSlider trackSize={20} />
+        </ColorWheel.Root>
+      )
+
+      const sliderContainer = document.querySelector(
+        '[data-color-wheel-alpha-slider]'
+      ) as HTMLElement
+      expect(sliderContainer.style.height).toBe('20px')
+    })
+
+    it('should apply custom trackSize to vertical slider', () => {
+      render(
+        <ColorWheel.Root value="#ff0000" onValueChange={() => {}}>
+          <ColorWheel.AlphaSlider orientation="vertical" trackSize={20} />
+        </ColorWheel.Root>
+      )
+
+      const sliderContainer = document.querySelector(
+        '[data-color-wheel-alpha-slider]'
+      ) as HTMLElement
+      expect(sliderContainer.style.width).toBe('20px')
+    })
+
+    it('should apply custom thumbSize', () => {
+      render(
+        <ColorWheel.Root value="#ff0000" onValueChange={() => {}}>
+          <ColorWheel.AlphaSlider thumbSize={24} />
+        </ColorWheel.Root>
+      )
+
+      const slider = screen.getByRole('slider', { name: /opacity/i })
+      expect(slider.style.width).toBe('24px')
+      expect(slider.style.height).toBe('24px')
+    })
+
+    it('should use default trackSize of 12', () => {
+      render(
+        <ColorWheel.Root value="#ff0000" onValueChange={() => {}}>
+          <ColorWheel.AlphaSlider />
+        </ColorWheel.Root>
+      )
+
+      const sliderContainer = document.querySelector(
+        '[data-color-wheel-alpha-slider]'
+      ) as HTMLElement
+      expect(sliderContainer.style.height).toBe('12px')
+    })
+
+    it('should use default thumbSize of 16', () => {
+      render(
+        <ColorWheel.Root value="#ff0000" onValueChange={() => {}}>
+          <ColorWheel.AlphaSlider />
+        </ColorWheel.Root>
+      )
+
+      const slider = screen.getByRole('slider', { name: /opacity/i })
+      expect(slider.style.width).toBe('16px')
+      expect(slider.style.height).toBe('16px')
+    })
+
+    it('should apply borderRadius based on trackSize', () => {
+      render(
+        <ColorWheel.Root value="#ff0000" onValueChange={() => {}}>
+          <ColorWheel.AlphaSlider trackSize={20} />
+        </ColorWheel.Root>
+      )
+
+      const sliderContainer = document.querySelector(
+        '[data-color-wheel-alpha-slider]'
+      ) as HTMLElement
+      // borderRadius = trackSize / 2 = 10
+      expect(sliderContainer.style.borderRadius).toBe('10px')
+    })
+
+    it('should allow very small trackSize and thumbSize', () => {
+      render(
+        <ColorWheel.Root value="#ff0000" onValueChange={() => {}}>
+          <ColorWheel.AlphaSlider trackSize={8} thumbSize={10} />
+        </ColorWheel.Root>
+      )
+
+      const sliderContainer = document.querySelector(
+        '[data-color-wheel-alpha-slider]'
+      ) as HTMLElement
+      const slider = screen.getByRole('slider', { name: /opacity/i })
+
+      expect(sliderContainer.style.height).toBe('8px')
+      expect(slider.style.width).toBe('10px')
+    })
+
+    it('should allow very large trackSize and thumbSize', () => {
+      render(
+        <ColorWheel.Root value="#ff0000" onValueChange={() => {}}>
+          <ColorWheel.AlphaSlider trackSize={32} thumbSize={40} />
+        </ColorWheel.Root>
+      )
+
+      const sliderContainer = document.querySelector(
+        '[data-color-wheel-alpha-slider]'
+      ) as HTMLElement
+      const slider = screen.getByRole('slider', { name: /opacity/i })
+
+      expect(sliderContainer.style.height).toBe('32px')
+      expect(slider.style.width).toBe('40px')
+    })
+  })
+
   describe('inverted prop', () => {
     it('should position thumb at 0% when alpha is 100 with inverted=true', () => {
       render(

@@ -105,15 +105,21 @@ export const CustomSizes: StoryFn = () => {
     <div style={{ width: 300 }}>
       <ColorWheel.Root value={color} onValueChange={setColor}>
         <div style={{ marginBottom: 12 }}>
-          <p style={{ fontSize: 12, color: '#666', marginBottom: 4 }}>Default (12px track, 16px thumb):</p>
+          <p style={{ fontSize: 12, color: '#666', marginBottom: 4 }}>
+            Default (12px track, 16px thumb):
+          </p>
           <ColorWheel.HueSlider />
         </div>
         <div style={{ marginBottom: 12 }}>
-          <p style={{ fontSize: 12, color: '#666', marginBottom: 4 }}>Larger (20px track, 24px thumb):</p>
+          <p style={{ fontSize: 12, color: '#666', marginBottom: 4 }}>
+            Larger (20px track, 24px thumb):
+          </p>
           <ColorWheel.HueSlider trackSize={20} thumbSize={24} />
         </div>
         <div>
-          <p style={{ fontSize: 12, color: '#666', marginBottom: 4 }}>Slim (8px track, 12px thumb):</p>
+          <p style={{ fontSize: 12, color: '#666', marginBottom: 4 }}>
+            Slim (8px track, 12px thumb):
+          </p>
           <ColorWheel.HueSlider trackSize={8} thumbSize={12} />
         </div>
       </ColorWheel.Root>

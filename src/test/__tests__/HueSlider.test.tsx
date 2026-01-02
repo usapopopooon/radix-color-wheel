@@ -257,5 +257,80 @@ describe('HueSlider', () => {
       const sliderContainer = document.querySelector('[data-color-wheel-hue-slider]') as HTMLElement
       expect(sliderContainer.style.width).toBe('20px')
     })
+
+    it('should apply custom thumbSize', () => {
+      render(
+        <ColorWheel.Root value="#ff0000" onValueChange={() => {}}>
+          <ColorWheel.HueSlider thumbSize={24} />
+        </ColorWheel.Root>
+      )
+
+      const slider = screen.getByRole('slider', { name: /hue/i })
+      expect(slider.style.width).toBe('24px')
+      expect(slider.style.height).toBe('24px')
+    })
+
+    it('should use default trackSize of 12', () => {
+      render(
+        <ColorWheel.Root value="#ff0000" onValueChange={() => {}}>
+          <ColorWheel.HueSlider />
+        </ColorWheel.Root>
+      )
+
+      const sliderContainer = document.querySelector('[data-color-wheel-hue-slider]') as HTMLElement
+      expect(sliderContainer.style.height).toBe('12px')
+    })
+
+    it('should use default thumbSize of 16', () => {
+      render(
+        <ColorWheel.Root value="#ff0000" onValueChange={() => {}}>
+          <ColorWheel.HueSlider />
+        </ColorWheel.Root>
+      )
+
+      const slider = screen.getByRole('slider', { name: /hue/i })
+      expect(slider.style.width).toBe('16px')
+      expect(slider.style.height).toBe('16px')
+    })
+
+    it('should apply borderRadius based on trackSize', () => {
+      render(
+        <ColorWheel.Root value="#ff0000" onValueChange={() => {}}>
+          <ColorWheel.HueSlider trackSize={20} />
+        </ColorWheel.Root>
+      )
+
+      const sliderContainer = document.querySelector('[data-color-wheel-hue-slider]') as HTMLElement
+      // borderRadius = trackSize / 2 = 10
+      expect(sliderContainer.style.borderRadius).toBe('10px')
+    })
+
+    it('should allow very small trackSize and thumbSize', () => {
+      render(
+        <ColorWheel.Root value="#ff0000" onValueChange={() => {}}>
+          <ColorWheel.HueSlider trackSize={8} thumbSize={10} />
+        </ColorWheel.Root>
+      )
+
+      const sliderContainer = document.querySelector('[data-color-wheel-hue-slider]') as HTMLElement
+      const slider = screen.getByRole('slider', { name: /hue/i })
+
+      expect(sliderContainer.style.height).toBe('8px')
+      expect(slider.style.width).toBe('10px')
+    })
+
+    it('should allow very large trackSize and thumbSize', () => {
+      render(
+        <ColorWheel.Root value="#ff0000" onValueChange={() => {}}>
+          <ColorWheel.HueSlider trackSize={32} thumbSize={40} />
+        </ColorWheel.Root>
+      )
+
+      const sliderContainer = document.querySelector('[data-color-wheel-hue-slider]') as HTMLElement
+      const slider = screen.getByRole('slider', { name: /hue/i })
+
+      expect(sliderContainer.style.height).toBe('32px')
+      expect(slider.style.width).toBe('40px')
+    })
   })
 })
