@@ -159,7 +159,12 @@ describe('AlphaSlider', () => {
     const onAlphaChange = vi.fn()
 
     render(
-      <ColorWheel.Root value="#ff0000" alpha={50} onValueChange={() => {}} onAlphaChange={onAlphaChange}>
+      <ColorWheel.Root
+        value="#ff0000"
+        alpha={50}
+        onValueChange={() => {}}
+        onAlphaChange={onAlphaChange}
+      >
         <ColorWheel.AlphaSlider />
       </ColorWheel.Root>
     )

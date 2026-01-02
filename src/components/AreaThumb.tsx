@@ -24,8 +24,18 @@ import type { AreaThumbProps } from '../types'
  * ```
  */
 export const AreaThumb = forwardRef<HTMLDivElement, AreaThumbProps>(({ className, style }, ref) => {
-  const { hsv, hex, setSaturation, setBrightness, disabled, onDragStart, onDrag, onDragEnd, onFocus, onBlur } =
-    useColorWheelContext()
+  const {
+    hsv,
+    hex,
+    setSaturation,
+    setBrightness,
+    disabled,
+    onDragStart,
+    onDrag,
+    onDragEnd,
+    onFocus,
+    onBlur,
+  } = useColorWheelContext()
   const { size, areaSize, thumbSize } = useWheelContext()
   const thumbRef = useRef<HTMLDivElement>(null)
 

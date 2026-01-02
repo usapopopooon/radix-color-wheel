@@ -378,6 +378,58 @@ const hsv = hexToHsv('#00ff00') // { h: 120, s: 100, v: 100 }
 const name = getColorNameEn(30) // "orange"
 ```
 
+## Imperative API (Ref)
+
+The `Root` component exposes an imperative API via ref for programmatic control. This is useful for implementing features like eyedropper tools.
+
+```tsx
+import { useRef } from 'react'
+import * as ColorWheel from '@usapopo/react-color-wheel'
+import type { ColorWheelRef } from '@usapopo/react-color-wheel'
+
+function EyedropperExample() {
+  const colorWheelRef = useRef<ColorWheelRef>(null)
+
+  const handleEyedropper = async () => {
+    // Use the EyeDropper API (if supported)
+    if ('EyeDropper' in window) {
+      const eyeDropper = new (window as any).EyeDropper()
+      const result = await eyeDropper.open()
+      colorWheelRef.current?.setColor(result.sRGBHex)
+    }
+  }
+
+  return (
+    <div>
+      <ColorWheel.Root ref={colorWheelRef} defaultValue="#ff0000">
+        <ColorWheel.Wheel>
+          <ColorWheel.HueRing />
+          <ColorWheel.HueThumb />
+          <ColorWheel.Area />
+          <ColorWheel.AreaThumb />
+        </ColorWheel.Wheel>
+      </ColorWheel.Root>
+      <button onClick={handleEyedropper}>Pick Color</button>
+    </div>
+  )
+}
+```
+
+### ColorWheelRef Methods
+
+| Method | Type | Description |
+|--------|------|-------------|
+| `getColor()` | `() => string` | Get current HEX color (6 digits, e.g., `"#ff0000"`) |
+| `getColor8()` | `() => string` | Get current HEX8 color with alpha (e.g., `"#ff0000ff"`) |
+| `getAlpha()` | `() => number` | Get current alpha value (0-100) |
+| `getHsv()` | `() => HSV` | Get current HSV values (`{ h, s, v }`) |
+| `setColor(hex)` | `(hex: string) => void` | Set color by HEX value (6 or 8 digits) |
+| `setAlpha(alpha)` | `(alpha: number) => void` | Set alpha value (0-100) |
+| `setHsv(hsv)` | `(hsv: HSV) => void` | Set color by HSV values |
+| `setHue(hue)` | `(hue: number) => void` | Set hue value (0-360) |
+| `setSaturation(s)` | `(s: number) => void` | Set saturation value (0-100) |
+| `setBrightness(v)` | `(v: number) => void` | Set brightness/value (0-100) |
+
 ## TypeScript
 
 All types are exported:
@@ -399,6 +451,7 @@ import type {
 
   // Data Types
   HSV, // { h: number, s: number, v: number }
+  ColorWheelRef, // Imperative API ref type
 } from '@usapopo/react-color-wheel'
 ```
 

@@ -15,6 +15,50 @@ export interface HSV {
 }
 
 /**
+ * Imperative handle for ColorWheel.Root component
+ *
+ * Provides methods to programmatically get and set color values.
+ * Useful for integrations like eyedropper tools.
+ *
+ * @example
+ * ```tsx
+ * const colorWheelRef = useRef<ColorWheelRef>(null)
+ *
+ * // Get current values
+ * const hex = colorWheelRef.current?.getColor()
+ * const alpha = colorWheelRef.current?.getAlpha()
+ * const hsv = colorWheelRef.current?.getHsv()
+ *
+ * // Set values programmatically
+ * colorWheelRef.current?.setColor('#00ff00')
+ * colorWheelRef.current?.setAlpha(50)
+ * colorWheelRef.current?.setHsv({ h: 120, s: 100, v: 100 })
+ * ```
+ */
+export interface ColorWheelRef {
+  /** Get current HEX color (6 digits, e.g., "#ff0000") */
+  getColor: () => string
+  /** Get current HEX8 color with alpha (8 digits, e.g., "#ff0000ff") */
+  getColor8: () => string
+  /** Get current alpha value (0-100) */
+  getAlpha: () => number
+  /** Get current HSV values */
+  getHsv: () => HSV
+  /** Set color by HEX value (6 or 8 digits) */
+  setColor: (hex: string) => void
+  /** Set alpha value (0-100) */
+  setAlpha: (alpha: number) => void
+  /** Set color by HSV values */
+  setHsv: (hsv: HSV) => void
+  /** Set hue value (0-360) */
+  setHue: (hue: number) => void
+  /** Set saturation value (0-100) */
+  setSaturation: (saturation: number) => void
+  /** Set brightness/value (0-100) */
+  setBrightness: (brightness: number) => void
+}
+
+/**
  * Props for ColorWheel.Root component
  */
 export interface RootProps {

@@ -25,6 +25,7 @@ export type {
   CopyButtonProps,
   PasteButtonProps,
   HSV,
+  ColorWheelRef,
 } from './types'
 
 // Re-export context hooks for advanced usage

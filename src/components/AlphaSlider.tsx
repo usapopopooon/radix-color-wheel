@@ -25,8 +25,18 @@ import type { AlphaSliderProps } from '../types'
  */
 export const AlphaSlider = forwardRef<HTMLDivElement, AlphaSliderProps>(
   ({ className, style, orientation = 'horizontal', ...props }, ref) => {
-    const { hex, hex8, alpha, setAlpha, disabled, onDragStart, onDrag, onDragEnd, onFocus, onBlur } =
-      useColorWheelContext()
+    const {
+      hex,
+      hex8,
+      alpha,
+      setAlpha,
+      disabled,
+      onDragStart,
+      onDrag,
+      onDragEnd,
+      onFocus,
+      onBlur,
+    } = useColorWheelContext()
     const sliderRef = useRef<HTMLDivElement>(null)
 
     // Forward ref to internal slider element

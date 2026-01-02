@@ -1,9 +1,108 @@
 import { createRef } from 'react'
 import { describe, it, expect } from 'vitest'
-import { render } from '@testing-library/react'
+import { render, act } from '@testing-library/react'
 import * as ColorWheel from '../../components'
+import type { ColorWheelRef } from '../../types'
 
 describe('forwardRef support', () => {
+  describe('Root', () => {
+    it('should expose imperative API via ref', () => {
+      const ref = createRef<ColorWheelRef>()
+
+      render(
+        <ColorWheel.Root ref={ref} value="#ff0000" onValueChange={() => {}}>
+          <ColorWheel.Wheel>
+            <ColorWheel.HueRing />
+          </ColorWheel.Wheel>
+        </ColorWheel.Root>
+      )
+
+      expect(ref.current).not.toBeNull()
+      expect(typeof ref.current?.getColor).toBe('function')
+      expect(typeof ref.current?.getColor8).toBe('function')
+      expect(typeof ref.current?.getAlpha).toBe('function')
+      expect(typeof ref.current?.getHsv).toBe('function')
+      expect(typeof ref.current?.setColor).toBe('function')
+      expect(typeof ref.current?.setAlpha).toBe('function')
+      expect(typeof ref.current?.setHsv).toBe('function')
+      expect(typeof ref.current?.setHue).toBe('function')
+      expect(typeof ref.current?.setSaturation).toBe('function')
+      expect(typeof ref.current?.setBrightness).toBe('function')
+    })
+
+    it('should get current color values via ref', () => {
+      const ref = createRef<ColorWheelRef>()
+
+      render(
+        <ColorWheel.Root ref={ref} defaultValue="#00ff00" defaultAlpha={50}>
+          <ColorWheel.Wheel>
+            <ColorWheel.HueRing />
+          </ColorWheel.Wheel>
+        </ColorWheel.Root>
+      )
+
+      expect(ref.current?.getColor()).toBe('#00ff00')
+      expect(ref.current?.getAlpha()).toBe(50)
+      expect(ref.current?.getColor8()).toBe('#00ff0080')
+
+      const hsv = ref.current?.getHsv()
+      expect(hsv?.h).toBe(120)
+      expect(hsv?.s).toBe(100)
+      expect(hsv?.v).toBe(100)
+    })
+
+    it('should set color via ref', () => {
+      const ref = createRef<ColorWheelRef>()
+
+      render(
+        <ColorWheel.Root ref={ref} defaultValue="#ff0000">
+          <ColorWheel.Wheel>
+            <ColorWheel.HueRing />
+          </ColorWheel.Wheel>
+        </ColorWheel.Root>
+      )
+
+      act(() => {
+        ref.current?.setColor('#0000ff')
+      })
+      expect(ref.current?.getColor()).toBe('#0000ff')
+    })
+
+    it('should set alpha via ref', () => {
+      const ref = createRef<ColorWheelRef>()
+
+      render(
+        <ColorWheel.Root ref={ref} defaultValue="#ff0000">
+          <ColorWheel.Wheel>
+            <ColorWheel.HueRing />
+          </ColorWheel.Wheel>
+        </ColorWheel.Root>
+      )
+
+      act(() => {
+        ref.current?.setAlpha(25)
+      })
+      expect(ref.current?.getAlpha()).toBe(25)
+    })
+
+    it('should set HSV via ref', () => {
+      const ref = createRef<ColorWheelRef>()
+
+      render(
+        <ColorWheel.Root ref={ref} defaultValue="#ff0000">
+          <ColorWheel.Wheel>
+            <ColorWheel.HueRing />
+          </ColorWheel.Wheel>
+        </ColorWheel.Root>
+      )
+
+      act(() => {
+        ref.current?.setHsv({ h: 240, s: 100, v: 100 })
+      })
+      expect(ref.current?.getColor()).toBe('#0000ff')
+    })
+  })
+
   describe('Wheel', () => {
     it('should forward ref to div element', () => {
       const ref = createRef<HTMLDivElement>()

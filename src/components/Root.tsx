@@ -1,8 +1,17 @@
-import { useCallback, useMemo, useRef, useEffect, useId, useState } from 'react'
+import {
+  useCallback,
+  useMemo,
+  useRef,
+  useEffect,
+  useId,
+  useState,
+  forwardRef,
+  useImperativeHandle,
+} from 'react'
 import { useControllableState } from '@radix-ui/react-use-controllable-state'
 import { ColorWheelContext, type ColorWheelContextValue } from '../context/ColorWheelContext'
 import { hexToHsv, hsvToHex, parseAlphaFromHex, combineHexWithAlpha, alphaToHex } from '../utils'
-import type { RootProps } from '../types'
+import type { RootProps, ColorWheelRef, HSV } from '../types'
 
 /**
  * Root component for ColorWheel
@@ -17,10 +26,13 @@ import type { RootProps } from '../types'
  * @param props.onValueChangeEnd - Callback when drag ends
  * @param props.disabled - If true, disables all interactions
  * @param props.children - Child components
+ * @param ref - Imperative handle for programmatic control
  *
  * @example
  * ```tsx
- * <ColorWheel.Root value={color} onValueChange={setColor}>
+ * const colorWheelRef = useRef<ColorWheelRef>(null)
+ *
+ * <ColorWheel.Root ref={colorWheelRef} value={color} onValueChange={setColor}>
  *   <ColorWheel.Wheel>
  *     <ColorWheel.HueRing />
  *     <ColorWheel.HueThumb />
@@ -28,27 +40,34 @@ import type { RootProps } from '../types'
  *     <ColorWheel.AreaThumb />
  *   </ColorWheel.Wheel>
  * </ColorWheel.Root>
+ *
+ * // Programmatic access
+ * colorWheelRef.current?.setColor('#00ff00')
+ * colorWheelRef.current?.setAlpha(50)
  * ```
  */
-export function Root({
-  value,
-  defaultValue = '#ff0000',
-  alpha: alphaProp,
-  defaultAlpha = 100,
-  onValueChange,
-  onValueChangeEnd,
-  onHueChange,
-  onSaturationChange,
-  onBrightnessChange,
-  onAlphaChange,
-  onDragStart,
-  onDrag,
-  onDragEnd,
-  onFocus,
-  onBlur,
-  disabled = false,
-  children,
-}: RootProps): React.ReactElement {
+export const Root = forwardRef<ColorWheelRef, RootProps>(function Root(
+  {
+    value,
+    defaultValue = '#ff0000',
+    alpha: alphaProp,
+    defaultAlpha = 100,
+    onValueChange,
+    onValueChangeEnd,
+    onHueChange,
+    onSaturationChange,
+    onBrightnessChange,
+    onAlphaChange,
+    onDragStart,
+    onDrag,
+    onDragEnd,
+    onFocus,
+    onBlur,
+    disabled = false,
+    children,
+  },
+  ref
+) {
   // Controllable hex state (may include alpha as 8 digits)
   const [hexWithAlpha, setHexWithAlphaState] = useControllableState({
     prop: value,
@@ -165,6 +184,33 @@ export function Root({
     [alpha, setHexWithAlphaState]
   )
 
+  // setHsv - set color by HSV values
+  const setHsv = useCallback(
+    (newHsv: HSV) => {
+      const newHex = hsvToHex(newHsv.h, newHsv.s, newHsv.v)
+      setHexWithAlphaState(combineHexWithAlpha(newHex, alpha))
+    },
+    [alpha, setHexWithAlphaState]
+  )
+
+  // Expose imperative API via ref
+  useImperativeHandle(
+    ref,
+    () => ({
+      getColor: () => hex,
+      getColor8: () => hex8,
+      getAlpha: () => alpha,
+      getHsv: () => ({ ...hsv }),
+      setColor: setHex,
+      setAlpha,
+      setHsv,
+      setHue,
+      setSaturation,
+      setBrightness,
+    }),
+    [hex, hex8, alpha, hsv, setHex, setAlpha, setHsv, setHue, setSaturation, setBrightness]
+  )
+
   const handleDragStart = useCallback(() => {
     setIsDragging(true)
     onDragStart?.()
@@ -260,4 +306,6 @@ export function Root({
       </div>
     </ColorWheelContext.Provider>
   )
-}
+})
+
+Root.displayName = 'Root'
