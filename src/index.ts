@@ -1,4 +1,4 @@
-export { Root, Wheel, HueRing, HueThumb, Area, AreaThumb } from './components'
+export { Root, Wheel, HueRing, HueThumb, Area, AreaThumb, HexInput, Swatch } from './components'
 
 export type {
   RootProps,
@@ -7,6 +7,8 @@ export type {
   HueThumbProps,
   AreaProps,
   AreaThumbProps,
+  HexInputProps,
+  SwatchProps,
   HSV,
 } from './types'
 

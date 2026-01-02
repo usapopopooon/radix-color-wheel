@@ -132,3 +132,25 @@ export interface AreaThumbProps {
   /** Inline styles */
   readonly style?: React.CSSProperties
 }
+
+/**
+ * Props for ColorWheel.HexInput component
+ */
+export interface HexInputProps {
+  /** Additional CSS class */
+  readonly className?: string
+  /** Inline styles */
+  readonly style?: React.CSSProperties
+  /** Placeholder text */
+  readonly placeholder?: string
+}
+
+/**
+ * Props for ColorWheel.Swatch component
+ */
+export interface SwatchProps {
+  /** Additional CSS class */
+  readonly className?: string
+  /** Inline styles */
+  readonly style?: React.CSSProperties
+}
