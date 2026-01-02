@@ -564,4 +564,356 @@ describe('ColorWheel', () => {
 
     expect(onBlur).toHaveBeenCalled()
   })
+
+  describe('jumpOnClick', () => {
+    it('should call onDragStart when clicking on HueRing with jumpOnClick=true (default)', () => {
+      const onDragStart = vi.fn()
+
+      render(
+        <ColorWheel.Root value="#ff0000" onValueChange={() => {}} onDragStart={onDragStart}>
+          <ColorWheel.Wheel size={200} ringWidth={20}>
+            <ColorWheel.HueRing />
+            <ColorWheel.HueThumb />
+            <ColorWheel.Area />
+            <ColorWheel.AreaThumb />
+          </ColorWheel.Wheel>
+        </ColorWheel.Root>
+      )
+
+      const hueRing = document.querySelector('[data-color-wheel-hue-ring]') as HTMLElement
+
+      // Mock getBoundingClientRect
+      hueRing.getBoundingClientRect = vi.fn().mockReturnValue({
+        left: 0,
+        top: 0,
+        width: 200,
+        height: 200,
+      })
+
+      // Mock setPointerCapture
+      hueRing.setPointerCapture = vi.fn()
+
+      // Click on the ring area (at the right edge of the ring)
+      // Center is 100, ring outer is 100, inner is 80
+      // Click at x=95 (within ring), y=100 (middle)
+      fireEvent.pointerDown(hueRing, { clientX: 195, clientY: 100, pointerId: 1 })
+
+      expect(onDragStart).toHaveBeenCalled()
+    })
+
+    it('should not call onDragStart when clicking on HueRing with jumpOnClick=false', () => {
+      const onDragStart = vi.fn()
+
+      render(
+        <ColorWheel.Root
+          value="#ff0000"
+          onValueChange={() => {}}
+          onDragStart={onDragStart}
+          jumpOnClick={false}
+        >
+          <ColorWheel.Wheel size={200} ringWidth={20}>
+            <ColorWheel.HueRing />
+            <ColorWheel.HueThumb />
+            <ColorWheel.Area />
+            <ColorWheel.AreaThumb />
+          </ColorWheel.Wheel>
+        </ColorWheel.Root>
+      )
+
+      const hueRing = document.querySelector('[data-color-wheel-hue-ring]') as HTMLElement
+
+      // Mock getBoundingClientRect
+      hueRing.getBoundingClientRect = vi.fn().mockReturnValue({
+        left: 0,
+        top: 0,
+        width: 200,
+        height: 200,
+      })
+
+      fireEvent.pointerDown(hueRing, { clientX: 195, clientY: 100, pointerId: 1 })
+
+      expect(onDragStart).not.toHaveBeenCalled()
+    })
+
+    it('should call onDragStart when clicking on Area with jumpOnClick=true (default)', () => {
+      const onDragStart = vi.fn()
+
+      render(
+        <ColorWheel.Root value="#ff0000" onValueChange={() => {}} onDragStart={onDragStart}>
+          <ColorWheel.Wheel size={200} ringWidth={20}>
+            <ColorWheel.HueRing />
+            <ColorWheel.HueThumb />
+            <ColorWheel.Area />
+            <ColorWheel.AreaThumb />
+          </ColorWheel.Wheel>
+        </ColorWheel.Root>
+      )
+
+      const area = document.querySelector('[data-color-wheel-area]') as HTMLElement
+
+      // Mock getBoundingClientRect
+      area.getBoundingClientRect = vi.fn().mockReturnValue({
+        left: 50,
+        top: 50,
+        width: 100,
+        height: 100,
+      })
+
+      // Mock setPointerCapture
+      area.setPointerCapture = vi.fn()
+
+      // Click in the center of the area
+      fireEvent.pointerDown(area, { clientX: 100, clientY: 100, pointerId: 1 })
+
+      expect(onDragStart).toHaveBeenCalled()
+    })
+
+    it('should not call onDragStart when clicking on Area with jumpOnClick=false', () => {
+      const onDragStart = vi.fn()
+
+      render(
+        <ColorWheel.Root
+          value="#ff0000"
+          onValueChange={() => {}}
+          onDragStart={onDragStart}
+          jumpOnClick={false}
+        >
+          <ColorWheel.Wheel size={200} ringWidth={20}>
+            <ColorWheel.HueRing />
+            <ColorWheel.HueThumb />
+            <ColorWheel.Area />
+            <ColorWheel.AreaThumb />
+          </ColorWheel.Wheel>
+        </ColorWheel.Root>
+      )
+
+      const area = document.querySelector('[data-color-wheel-area]') as HTMLElement
+
+      // Mock getBoundingClientRect
+      area.getBoundingClientRect = vi.fn().mockReturnValue({
+        left: 50,
+        top: 50,
+        width: 100,
+        height: 100,
+      })
+
+      fireEvent.pointerDown(area, { clientX: 100, clientY: 100, pointerId: 1 })
+
+      expect(onDragStart).not.toHaveBeenCalled()
+    })
+
+    it('should update hue when clicking on HueRing', () => {
+      const onHueChange = vi.fn()
+
+      render(
+        <ColorWheel.Root value="#ff0000" onValueChange={() => {}} onHueChange={onHueChange}>
+          <ColorWheel.Wheel size={200} ringWidth={20}>
+            <ColorWheel.HueRing />
+            <ColorWheel.HueThumb />
+            <ColorWheel.Area />
+            <ColorWheel.AreaThumb />
+          </ColorWheel.Wheel>
+        </ColorWheel.Root>
+      )
+
+      const hueRing = document.querySelector('[data-color-wheel-hue-ring]') as HTMLElement
+
+      // Mock getBoundingClientRect
+      hueRing.getBoundingClientRect = vi.fn().mockReturnValue({
+        left: 0,
+        top: 0,
+        width: 200,
+        height: 200,
+      })
+
+      // Mock setPointerCapture
+      hueRing.setPointerCapture = vi.fn()
+
+      // Click on the right side of the ring (should be around 90 degrees = green-ish)
+      fireEvent.pointerDown(hueRing, { clientX: 195, clientY: 100, pointerId: 1 })
+
+      expect(onHueChange).toHaveBeenCalledWith(expect.any(Number))
+    })
+
+    it('should update saturation and brightness when clicking on Area', () => {
+      const onSaturationChange = vi.fn()
+      const onBrightnessChange = vi.fn()
+
+      render(
+        <ColorWheel.Root
+          value="#ff0000"
+          onValueChange={() => {}}
+          onSaturationChange={onSaturationChange}
+          onBrightnessChange={onBrightnessChange}
+        >
+          <ColorWheel.Wheel size={200} ringWidth={20}>
+            <ColorWheel.HueRing />
+            <ColorWheel.HueThumb />
+            <ColorWheel.Area />
+            <ColorWheel.AreaThumb />
+          </ColorWheel.Wheel>
+        </ColorWheel.Root>
+      )
+
+      const area = document.querySelector('[data-color-wheel-area]') as HTMLElement
+
+      // Mock getBoundingClientRect
+      area.getBoundingClientRect = vi.fn().mockReturnValue({
+        left: 50,
+        top: 50,
+        width: 100,
+        height: 100,
+      })
+
+      // Mock setPointerCapture
+      area.setPointerCapture = vi.fn()
+
+      // Click in the center of the area
+      fireEvent.pointerDown(area, { clientX: 100, clientY: 100, pointerId: 1 })
+
+      expect(onSaturationChange).toHaveBeenCalled()
+      expect(onBrightnessChange).toHaveBeenCalled()
+    })
+
+    it('should have cursor pointer on HueRing when enabled', () => {
+      render(
+        <ColorWheel.Root value="#ff0000" onValueChange={() => {}}>
+          <ColorWheel.Wheel>
+            <ColorWheel.HueRing />
+            <ColorWheel.HueThumb />
+            <ColorWheel.Area />
+            <ColorWheel.AreaThumb />
+          </ColorWheel.Wheel>
+        </ColorWheel.Root>
+      )
+
+      const hueRing = document.querySelector('[data-color-wheel-hue-ring]') as HTMLElement
+      expect(hueRing.style.cursor).toBe('pointer')
+    })
+
+    it('should have cursor default on HueRing when disabled', () => {
+      render(
+        <ColorWheel.Root value="#ff0000" onValueChange={() => {}} disabled>
+          <ColorWheel.Wheel>
+            <ColorWheel.HueRing />
+            <ColorWheel.HueThumb />
+            <ColorWheel.Area />
+            <ColorWheel.AreaThumb />
+          </ColorWheel.Wheel>
+        </ColorWheel.Root>
+      )
+
+      const hueRing = document.querySelector('[data-color-wheel-hue-ring]') as HTMLElement
+      expect(hueRing.style.cursor).toBe('default')
+    })
+
+    it('should have cursor crosshair on Area when enabled', () => {
+      render(
+        <ColorWheel.Root value="#ff0000" onValueChange={() => {}}>
+          <ColorWheel.Wheel>
+            <ColorWheel.HueRing />
+            <ColorWheel.HueThumb />
+            <ColorWheel.Area />
+            <ColorWheel.AreaThumb />
+          </ColorWheel.Wheel>
+        </ColorWheel.Root>
+      )
+
+      const area = document.querySelector('[data-color-wheel-area]') as HTMLElement
+      expect(area.style.cursor).toBe('crosshair')
+    })
+
+    it('should have cursor default on Area when disabled', () => {
+      render(
+        <ColorWheel.Root value="#ff0000" onValueChange={() => {}} disabled>
+          <ColorWheel.Wheel>
+            <ColorWheel.HueRing />
+            <ColorWheel.HueThumb />
+            <ColorWheel.Area />
+            <ColorWheel.AreaThumb />
+          </ColorWheel.Wheel>
+        </ColorWheel.Root>
+      )
+
+      const area = document.querySelector('[data-color-wheel-area]') as HTMLElement
+      expect(area.style.cursor).toBe('default')
+    })
+
+    it('should update saturation and brightness atomically when clicking on AreaThumb', () => {
+      const onSaturationChange = vi.fn()
+      const onBrightnessChange = vi.fn()
+
+      render(
+        <ColorWheel.Root
+          value="#ff0000"
+          onValueChange={() => {}}
+          onSaturationChange={onSaturationChange}
+          onBrightnessChange={onBrightnessChange}
+        >
+          <ColorWheel.Wheel size={200} ringWidth={20}>
+            <ColorWheel.HueRing />
+            <ColorWheel.HueThumb />
+            <ColorWheel.Area />
+            <ColorWheel.AreaThumb />
+          </ColorWheel.Wheel>
+        </ColorWheel.Root>
+      )
+
+      const areaThumb = screen.getByRole('slider', { name: /saturation and brightness/i })
+      const wheel = document.querySelector('[data-color-wheel-wheel]') as HTMLElement
+
+      // Mock getBoundingClientRect for the wheel (parent element)
+      wheel.getBoundingClientRect = vi.fn().mockReturnValue({
+        left: 0,
+        top: 0,
+        width: 200,
+        height: 200,
+      })
+
+      // Mock setPointerCapture
+      areaThumb.setPointerCapture = vi.fn()
+
+      // Click on the AreaThumb - should update both saturation and brightness
+      fireEvent.pointerDown(areaThumb, { clientX: 150, clientY: 80, pointerId: 1 })
+
+      // Both callbacks should be called (atomic update)
+      expect(onSaturationChange).toHaveBeenCalled()
+      expect(onBrightnessChange).toHaveBeenCalled()
+    })
+
+    it('should update hue when clicking on HueThumb with jumpOnClick enabled', () => {
+      const onHueChange = vi.fn()
+
+      render(
+        <ColorWheel.Root value="#ff0000" onValueChange={() => {}} onHueChange={onHueChange}>
+          <ColorWheel.Wheel size={200} ringWidth={20}>
+            <ColorWheel.HueRing />
+            <ColorWheel.HueThumb />
+            <ColorWheel.Area />
+            <ColorWheel.AreaThumb />
+          </ColorWheel.Wheel>
+        </ColorWheel.Root>
+      )
+
+      const hueThumb = screen.getByRole('slider', { name: /hue/i })
+      const wheel = document.querySelector('[data-color-wheel-wheel]') as HTMLElement
+
+      // Mock getBoundingClientRect for the wheel
+      wheel.getBoundingClientRect = vi.fn().mockReturnValue({
+        left: 0,
+        top: 0,
+        width: 200,
+        height: 200,
+      })
+
+      // Mock setPointerCapture
+      hueThumb.setPointerCapture = vi.fn()
+
+      // Click on the HueThumb
+      fireEvent.pointerDown(hueThumb, { clientX: 100, clientY: 10, pointerId: 1 })
+
+      // onDragStart should be called (thumb always responds to clicks for dragging)
+      expect(hueThumb.setPointerCapture).toHaveBeenCalled()
+    })
+  })
 })

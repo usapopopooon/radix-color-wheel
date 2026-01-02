@@ -20,6 +20,8 @@ export interface ColorWheelContextValue {
   readonly setSaturation: (saturation: number) => void
   /** Set brightness/value (0-100) */
   readonly setBrightness: (brightness: number) => void
+  /** Set both saturation and brightness at once (0-100 each) */
+  readonly setSaturationAndBrightness: (saturation: number, brightness: number) => void
   /** Set alpha value (0-100) */
   readonly setAlpha: (alpha: number) => void
   /** Set hex value directly */
@@ -42,6 +44,8 @@ export interface ColorWheelContextValue {
   readonly onFocus?: () => void
   /** Callback when focus is lost */
   readonly onBlur?: () => void
+  /** Whether clicking jumps to clicked position */
+  readonly jumpOnClick: boolean
 }
 
 /**

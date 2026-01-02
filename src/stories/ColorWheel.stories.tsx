@@ -205,3 +205,51 @@ export const FullFeatured: StoryFn = () => {
     </div>
   )
 }
+
+/**
+ * With jumpOnClick disabled, clicking on the ring or area does not jump
+ * the thumb to the clicked position. The thumb only moves when dragged.
+ */
+export const JumpOnClickDisabled: StoryFn = () => {
+  const [color, setColor] = useState('#f43f5e')
+  return (
+    <div>
+      <p style={{ marginBottom: 12, color: '#666' }}>
+        Click on ring/area: thumb does NOT jump (drag only)
+      </p>
+      <ColorWheel.Root value={color} onValueChange={setColor} jumpOnClick={false}>
+        <ColorWheel.Wheel size={200} ringWidth={20}>
+          <ColorWheel.HueRing />
+          <ColorWheel.HueThumb />
+          <ColorWheel.Area />
+          <ColorWheel.AreaThumb />
+        </ColorWheel.Wheel>
+      </ColorWheel.Root>
+      <p style={{ marginTop: 16, fontFamily: 'monospace' }}>Selected: {color}</p>
+    </div>
+  )
+}
+
+/**
+ * Default behavior (jumpOnClick=true): clicking on the ring or area
+ * immediately jumps the thumb to the clicked position.
+ */
+export const JumpOnClickEnabled: StoryFn = () => {
+  const [color, setColor] = useState('#10b981')
+  return (
+    <div>
+      <p style={{ marginBottom: 12, color: '#666' }}>
+        Click on ring/area: thumb JUMPS to position (default)
+      </p>
+      <ColorWheel.Root value={color} onValueChange={setColor} jumpOnClick={true}>
+        <ColorWheel.Wheel size={200} ringWidth={20}>
+          <ColorWheel.HueRing />
+          <ColorWheel.HueThumb />
+          <ColorWheel.Area />
+          <ColorWheel.AreaThumb />
+        </ColorWheel.Wheel>
+      </ColorWheel.Root>
+      <p style={{ marginTop: 16, fontFamily: 'monospace' }}>Selected: {color}</p>
+    </div>
+  )
+}

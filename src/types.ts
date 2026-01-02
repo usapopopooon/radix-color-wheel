@@ -208,6 +208,14 @@ export interface RootProps {
    */
   readonly disabled?: boolean
 
+  /**
+   * If true, clicking on the hue ring or saturation/brightness area
+   * will jump the thumb to the clicked position immediately.
+   * If false, the thumb only moves when dragged.
+   * @default true
+   */
+  readonly jumpOnClick?: boolean
+
   /** Child components */
   readonly children: React.ReactNode
 }

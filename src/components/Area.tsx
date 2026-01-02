@@ -1,7 +1,7 @@
-import { forwardRef, useMemo } from 'react'
+import { forwardRef, useMemo, useCallback, useRef, useImperativeHandle } from 'react'
 import { useColorWheelContext } from '../context/ColorWheelContext'
 import { useWheelContext } from '../context/WheelContext'
-import { hsvToHex } from '../utils'
+import { hsvToHex, getSVFromPosition } from '../utils'
 import type { AreaProps } from '../types'
 
 /**
@@ -9,7 +9,8 @@ import type { AreaProps } from '../types'
  *
  * Displays a square gradient area inside the hue ring where users can
  * select saturation (x-axis) and value/brightness (y-axis).
- * This component is decorative and non-interactive (use AreaThumb for interaction).
+ * When jumpOnClick is true (default), clicking on the area will jump
+ * the thumb to the clicked position.
  *
  * @param props - Component props
  * @param props.className - Additional CSS class
@@ -25,8 +26,68 @@ import type { AreaProps } from '../types'
  * ```
  */
 export const Area = forwardRef<HTMLDivElement, AreaProps>(({ className, style, ...props }, ref) => {
-  const { hsv } = useColorWheelContext()
+  const {
+    hsv,
+    hex,
+    setSaturationAndBrightness,
+    disabled,
+    jumpOnClick,
+    onDragStart,
+    onDrag,
+    onDragEnd,
+  } = useColorWheelContext()
   const { areaSize } = useWheelContext()
+  const areaRef = useRef<HTMLDivElement>(null)
+
+  useImperativeHandle(ref, () => areaRef.current!, [])
+
+  const handlePointerDown = useCallback(
+    (e: React.PointerEvent) => {
+      if (disabled || !jumpOnClick) return
+      e.preventDefault()
+
+      const rect = areaRef.current?.getBoundingClientRect()
+      if (!rect) return
+
+      // Capture pointer on the area for continued dragging
+      areaRef.current?.setPointerCapture(e.pointerId)
+      onDragStart?.()
+
+      const x = e.clientX - rect.left
+      const y = e.clientY - rect.top
+
+      // Calculate and set saturation/brightness atomically
+      const { s, v } = getSVFromPosition(x, y, areaSize)
+      setSaturationAndBrightness(Math.round(s), Math.round(v))
+    },
+    [disabled, jumpOnClick, areaSize, setSaturationAndBrightness, onDragStart]
+  )
+
+  const handlePointerMove = useCallback(
+    (e: React.PointerEvent) => {
+      if (disabled) return
+      if (!areaRef.current?.hasPointerCapture(e.pointerId)) return
+
+      const rect = areaRef.current.getBoundingClientRect()
+      const x = e.clientX - rect.left
+      const y = e.clientY - rect.top
+
+      const { s, v } = getSVFromPosition(x, y, areaSize)
+      setSaturationAndBrightness(Math.round(s), Math.round(v))
+      onDrag?.(hex)
+    },
+    [disabled, areaSize, setSaturationAndBrightness, onDrag, hex]
+  )
+
+  const handlePointerUp = useCallback(
+    (e: React.PointerEvent) => {
+      if (areaRef.current?.hasPointerCapture(e.pointerId)) {
+        areaRef.current.releasePointerCapture(e.pointerId)
+        onDragEnd?.()
+      }
+    },
+    [onDragEnd]
+  )
 
   // Current hue color for the area background
   const hueColor = useMemo(() => hsvToHex(hsv.h, 100, 100), [hsv.h])
@@ -48,18 +109,23 @@ export const Area = forwardRef<HTMLDivElement, AreaProps>(({ className, style, .
         linear-gradient(to bottom, transparent 0%, #000 100%),
         linear-gradient(to right, #fff 0%, transparent 100%)
       `,
+      cursor: disabled ? 'default' : 'crosshair',
+      touchAction: 'none',
       ...style,
     }),
-    [areaSize, hueColor, style]
+    [areaSize, hueColor, style, disabled]
   )
 
   return (
     <div
-      ref={ref}
+      ref={areaRef}
       data-color-wheel-area
       className={className}
       style={areaStyle}
       aria-hidden="true"
+      onPointerDown={handlePointerDown}
+      onPointerMove={handlePointerMove}
+      onPointerUp={handlePointerUp}
       {...props}
     />
   )

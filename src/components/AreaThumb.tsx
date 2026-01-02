@@ -29,7 +29,9 @@ export const AreaThumb = forwardRef<HTMLDivElement, AreaThumbProps>(({ className
     hex,
     setSaturation,
     setBrightness,
+    setSaturationAndBrightness,
     disabled,
+    jumpOnClick,
     onDragStart,
     onDrag,
     onDragEnd,
@@ -65,9 +67,23 @@ export const AreaThumb = forwardRef<HTMLDivElement, AreaThumbProps>(({ className
       e.preventDefault()
       e.stopPropagation()
       ;(e.target as HTMLElement).setPointerCapture(e.pointerId)
+
+      // If jumpOnClick is enabled, calculate position and jump to click location
+      if (jumpOnClick) {
+        const wheelElement = thumbRef.current?.parentElement
+        if (wheelElement) {
+          const rect = wheelElement.getBoundingClientRect()
+          const x = e.clientX - rect.left - areaOffset
+          const y = e.clientY - rect.top - areaOffset
+
+          const { s, v } = getSVFromPosition(x, y, areaSize)
+          setSaturationAndBrightness(Math.round(s), Math.round(v))
+        }
+      }
+
       onDragStart?.()
     },
-    [disabled, onDragStart]
+    [disabled, jumpOnClick, areaOffset, areaSize, setSaturationAndBrightness, onDragStart]
   )
 
   const handlePointerMove = useCallback(
@@ -85,13 +101,12 @@ export const AreaThumb = forwardRef<HTMLDivElement, AreaThumbProps>(({ className
 
       // Calculate saturation and brightness from position
       const { s, v } = getSVFromPosition(x, y, areaSize)
-      setSaturation(Math.round(s))
-      setBrightness(Math.round(v))
+      setSaturationAndBrightness(Math.round(s), Math.round(v))
 
       // Call onDrag with current hex
       onDrag?.(hex)
     },
-    [disabled, areaOffset, areaSize, setSaturation, setBrightness, onDrag, hex]
+    [disabled, areaOffset, areaSize, setSaturationAndBrightness, onDrag, hex]
   )
 
   const handlePointerUp = useCallback(

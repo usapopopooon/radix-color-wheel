@@ -71,6 +71,7 @@ export const Root = forwardRef<ColorWheelRef, RootProps>(function Root(
     onFocus,
     onBlur,
     disabled = false,
+    jumpOnClick = true,
     children,
   },
   ref
@@ -170,6 +171,17 @@ export const Root = forwardRef<ColorWheelRef, RootProps>(function Root(
     [hsv.h, hsv.s, alpha, setHexWithAlphaState, onBrightnessChange]
   )
 
+  // Set both saturation and brightness atomically to avoid race conditions
+  const setSaturationAndBrightness = useCallback(
+    (s: number, v: number) => {
+      const newHex = hsvToHex(hsv.h, s, v)
+      setHexWithAlphaState(combineHexWithAlpha(newHex, alpha))
+      onSaturationChange?.(s)
+      onBrightnessChange?.(v)
+    },
+    [hsv.h, alpha, setHexWithAlphaState, onSaturationChange, onBrightnessChange]
+  )
+
   const setAlpha = useCallback(
     (a: number) => {
       setAlphaState(a)
@@ -259,6 +271,7 @@ export const Root = forwardRef<ColorWheelRef, RootProps>(function Root(
       setHue,
       setSaturation,
       setBrightness,
+      setSaturationAndBrightness,
       setAlpha,
       setHex,
       disabled,
@@ -269,6 +282,7 @@ export const Root = forwardRef<ColorWheelRef, RootProps>(function Root(
       onDragEnd: handleDragEnd,
       onFocus: handleFocus,
       onBlur: handleBlur,
+      jumpOnClick,
     }),
     [
       hsv,
@@ -278,6 +292,7 @@ export const Root = forwardRef<ColorWheelRef, RootProps>(function Root(
       setHue,
       setSaturation,
       setBrightness,
+      setSaturationAndBrightness,
       setAlpha,
       setHex,
       disabled,
@@ -287,6 +302,7 @@ export const Root = forwardRef<ColorWheelRef, RootProps>(function Root(
       handleDragEnd,
       handleFocus,
       handleBlur,
+      jumpOnClick,
     ]
   )
 
