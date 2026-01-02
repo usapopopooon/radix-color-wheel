@@ -131,4 +131,42 @@ describe('AlphaSlider', () => {
     const sliderContainer = document.querySelector('[data-color-wheel-alpha-slider]')
     expect(sliderContainer).toBeInTheDocument()
   })
+
+  it('should use alpha prop for controlled alpha value', () => {
+    render(
+      <ColorWheel.Root value="#ff0000" alpha={50} onValueChange={() => {}}>
+        <ColorWheel.AlphaSlider />
+      </ColorWheel.Root>
+    )
+
+    const slider = screen.getByRole('slider', { name: /opacity/i })
+    expect(slider).toHaveAttribute('aria-valuenow', '50')
+    expect(slider).toHaveAttribute('aria-valuetext', '50%')
+  })
+
+  it('should use defaultAlpha prop for initial uncontrolled value', () => {
+    render(
+      <ColorWheel.Root value="#ff0000" defaultAlpha={75} onValueChange={() => {}}>
+        <ColorWheel.AlphaSlider />
+      </ColorWheel.Root>
+    )
+
+    const slider = screen.getByRole('slider', { name: /opacity/i })
+    expect(slider).toHaveAttribute('aria-valuenow', '75')
+  })
+
+  it('should call onAlphaChange when alpha changes with controlled alpha', () => {
+    const onAlphaChange = vi.fn()
+
+    render(
+      <ColorWheel.Root value="#ff0000" alpha={50} onValueChange={() => {}} onAlphaChange={onAlphaChange}>
+        <ColorWheel.AlphaSlider />
+      </ColorWheel.Root>
+    )
+
+    const slider = screen.getByRole('slider', { name: /opacity/i })
+    fireEvent.keyDown(slider, { key: 'ArrowRight' })
+
+    expect(onAlphaChange).toHaveBeenCalledWith(51)
+  })
 })

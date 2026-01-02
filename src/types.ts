@@ -31,6 +31,18 @@ export interface RootProps {
   readonly defaultValue?: string
 
   /**
+   * Current alpha value (0-100)
+   * When provided, controls alpha separately from the hex value
+   */
+  readonly alpha?: number
+
+  /**
+   * Initial alpha value for uncontrolled mode (0-100)
+   * @default 100
+   */
+  readonly defaultAlpha?: number
+
+  /**
    * Callback called when color changes
    * Called in real-time during drag
    */

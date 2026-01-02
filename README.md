@@ -55,6 +55,8 @@ Context provider that manages color state.
 |------|------|---------|-------------|
 | `value` | `string` | - | Controlled color value (`#rrggbb` or `#rrggbbaa`) |
 | `defaultValue` | `string` | `"#ff0000"` | Initial value for uncontrolled mode |
+| `alpha` | `number` | - | Controlled alpha value (0-100) |
+| `defaultAlpha` | `number` | `100` | Initial alpha value for uncontrolled mode |
 | `onValueChange` | `(hex: string) => void` | - | Called on every change (real-time during drag) |
 | `onValueChangeEnd` | `(hex: string) => void` | - | Called when drag ends (final value only) |
 | `onHueChange` | `(hue: number) => void` | - | Called when hue changes (0-360) |

@@ -1,4 +1,4 @@
-import { useState, useCallback, useMemo, useRef, useEffect, useId } from 'react'
+import { useCallback, useMemo, useRef, useEffect, useId, useState } from 'react'
 import { useControllableState } from '@radix-ui/react-use-controllable-state'
 import { ColorWheelContext, type ColorWheelContextValue } from '../context/ColorWheelContext'
 import { hexToHsv, hsvToHex, parseAlphaFromHex, combineHexWithAlpha, alphaToHex } from '../utils'
@@ -33,6 +33,8 @@ import type { RootProps } from '../types'
 export function Root({
   value,
   defaultValue = '#ff0000',
+  alpha: alphaProp,
+  defaultAlpha = 100,
   onValueChange,
   onValueChangeEnd,
   onHueChange,
@@ -63,8 +65,23 @@ export function Root({
   // Derived HSV state from hex
   const hsv = useMemo(() => hexToHsv(hex), [hex])
 
-  // Alpha state
-  const [alpha, setAlphaState] = useState(() => parseAlphaFromHex(hexWithAlpha ?? '#ff0000'))
+  // Alpha state - controllable
+  // Priority: alphaProp > defaultAlpha > parsed from hex
+  const computedDefaultAlpha = useMemo(() => {
+    // If defaultAlpha is explicitly set (not 100), use it
+    // Otherwise parse from hex value
+    if (defaultAlpha !== 100) {
+      return defaultAlpha
+    }
+    return parseAlphaFromHex(hexWithAlpha ?? '#ff0000')
+  }, []) // Only compute once on mount
+
+  const [alphaState, setAlphaState] = useControllableState({
+    prop: alphaProp,
+    defaultProp: computedDefaultAlpha,
+    onChange: onAlphaChange,
+  })
+  const alpha = alphaState ?? 100
 
   // Generate hex8 (with alpha)
   const hex8 = useMemo(() => `${hex}${alphaToHex(alpha)}`, [hex, alpha])
@@ -128,9 +145,8 @@ export function Root({
     (a: number) => {
       setAlphaState(a)
       setHexWithAlphaState(combineHexWithAlpha(hex, a))
-      onAlphaChange?.(a)
     },
-    [hex, setHexWithAlphaState, onAlphaChange]
+    [hex, setHexWithAlphaState, setAlphaState]
   )
 
   const setHex = useCallback(
