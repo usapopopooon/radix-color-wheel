@@ -1,6 +1,6 @@
-# @usapopo/react-color-wheel
+# react-hsv-ring
 
-[![CI](https://github.com/usapopopooon/react-color-wheel/actions/workflows/ci.yml/badge.svg)](https://github.com/usapopopooon/react-color-wheel/actions/workflows/ci.yml) ![coverage](https://usapopopooon.github.io/react-color-wheel/coverage-badge.svg) [![Storybook](https://img.shields.io/badge/Storybook-open-ff4785?logo=storybook&logoColor=white)](https://usapopopooon.github.io/react-color-wheel/storybook/) [![npm](https://img.shields.io/npm/v/@usapopo/react-color-wheel)](https://www.npmjs.com/package/@usapopo/react-color-wheel) [![license](https://img.shields.io/npm/l/@usapopo/react-color-wheel)](./LICENSE)
+[![CI](https://github.com/usapopopooon/react-hsv-ring/actions/workflows/ci.yml/badge.svg)](https://github.com/usapopopooon/react-hsv-ring/actions/workflows/ci.yml) ![coverage](https://usapopopooon.github.io/react-hsv-ring/coverage-badge.svg) [![Storybook](https://img.shields.io/badge/Storybook-open-ff4785?logo=storybook&logoColor=white)](https://usapopopooon.github.io/react-hsv-ring/storybook/) [![npm](https://img.shields.io/npm/v/react-hsv-ring)](https://www.npmjs.com/package/react-hsv-ring) [![license](https://img.shields.io/npm/l/react-hsv-ring)](./LICENSE)
 
 A fully accessible color wheel component for React, following the [Radix UI](https://www.radix-ui.com/) Compound Components pattern.
 
@@ -20,7 +20,7 @@ A fully accessible color wheel component for React, following the [Radix UI](htt
 ## Installation
 
 ```bash
-npm install @usapopo/react-color-wheel
+npm install react-hsv-ring
 ```
 
 **Peer Dependencies:** React 18 or 19
@@ -29,7 +29,7 @@ npm install @usapopo/react-color-wheel
 
 ```tsx
 import { useState } from 'react'
-import * as ColorWheel from '@usapopo/react-color-wheel'
+import * as ColorWheel from 'react-hsv-ring'
 
 function App() {
   const [color, setColor] = useState('#3b82f6')
@@ -51,7 +51,7 @@ function App() {
 
 ```tsx
 import { useState } from 'react'
-import * as ColorWheel from '@usapopo/react-color-wheel'
+import * as ColorWheel from 'react-hsv-ring'
 
 function ColorPicker() {
   const [color, setColor] = useState('#3b82f6')
@@ -86,7 +86,7 @@ function ColorPicker() {
 
 ## Live Demo
 
-Explore all components interactively in our [Storybook](https://usapopopooon.github.io/react-color-wheel/storybook/).
+Explore all components interactively in our [Storybook](https://usapopopooon.github.io/react-hsv-ring/storybook/).
 
 ## License
 

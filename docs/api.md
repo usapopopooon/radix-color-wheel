@@ -22,7 +22,7 @@ Context hooks, imperative API, TypeScript types, accessibility, and browser supp
 Access color state from custom components:
 
 ```tsx
-import { useColorWheelContext } from '@usapopo/react-color-wheel'
+import { useColorWheelContext } from 'react-hsv-ring'
 
 function CustomDisplay() {
   const {
@@ -58,7 +58,7 @@ function CustomDisplay() {
 Access wheel dimensions (must be inside `Wheel`):
 
 ```tsx
-import { useWheelContext } from '@usapopo/react-color-wheel'
+import { useWheelContext } from 'react-hsv-ring'
 
 function CustomComponent() {
   const {
@@ -80,8 +80,8 @@ The `Root` component exposes an imperative API via ref for programmatic control.
 
 ```tsx
 import { useRef } from 'react'
-import * as ColorWheel from '@usapopo/react-color-wheel'
-import type { ColorWheelRef } from '@usapopo/react-color-wheel'
+import * as ColorWheel from 'react-hsv-ring'
+import type { ColorWheelRef } from 'react-hsv-ring'
 
 function EyedropperExample() {
   const colorWheelRef = useRef<ColorWheelRef>(null)
@@ -134,7 +134,7 @@ All components support ref forwarding:
 
 ```tsx
 import { useRef } from 'react'
-import * as ColorWheel from '@usapopo/react-color-wheel'
+import * as ColorWheel from 'react-hsv-ring'
 
 function App() {
   const wheelRef = useRef<HTMLDivElement>(null)
@@ -184,7 +184,7 @@ import type {
   HSLA, // { h, s, l, a: number }
   HSV,  // { h: number, s: number, v: number }
   ColorWheelRef, // Imperative API ref type
-} from '@usapopo/react-color-wheel'
+} from 'react-hsv-ring'
 ```
 
 ---

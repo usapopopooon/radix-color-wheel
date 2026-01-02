@@ -28,7 +28,7 @@ All components with props, examples, and links to live demos.
 
 Context provider that manages color state.
 
-[View in Storybook](https://usapopopooon.github.io/react-color-wheel/storybook/?path=/docs/components-colorwheel)
+[View in Storybook](https://usapopopooon.github.io/react-hsv-ring/storybook/?path=/docs/components-colorwheel)
 
 | Prop | Type | Default | Description |
 |------|------|---------|-------------|
@@ -57,7 +57,7 @@ Context provider that manages color state.
 
 Container for the hue ring and saturation/brightness area.
 
-[View in Storybook](https://usapopopooon.github.io/react-color-wheel/storybook/?path=/docs/components-colorwheel)
+[View in Storybook](https://usapopopooon.github.io/react-hsv-ring/storybook/?path=/docs/components-colorwheel)
 
 | Prop | Type | Default | Description |
 |------|------|---------|-------------|
@@ -75,7 +75,7 @@ Supports `ref` forwarding and all standard `div` attributes.
 
 The circular hue gradient ring. Must be placed inside `Wheel`.
 
-[View in Storybook](https://usapopopooon.github.io/react-color-wheel/storybook/?path=/docs/components-colorwheel)
+[View in Storybook](https://usapopopooon.github.io/react-hsv-ring/storybook/?path=/docs/components-colorwheel)
 
 Supports `ref` forwarding and all standard `div` attributes.
 
@@ -95,7 +95,7 @@ Supports `ref` forwarding and all standard `div` attributes.
 
 Draggable thumb for hue selection. Must be placed inside `Wheel`.
 
-[View in Storybook](https://usapopopooon.github.io/react-color-wheel/storybook/?path=/docs/components-colorwheel)
+[View in Storybook](https://usapopopooon.github.io/react-hsv-ring/storybook/?path=/docs/components-colorwheel)
 
 Supports `ref` forwarding and all standard `div` attributes.
 
@@ -105,7 +105,7 @@ Supports `ref` forwarding and all standard `div` attributes.
 
 The saturation/brightness selection area. Must be placed inside `Wheel`.
 
-[View in Storybook](https://usapopopooon.github.io/react-color-wheel/storybook/?path=/docs/components-colorwheel)
+[View in Storybook](https://usapopopooon.github.io/react-hsv-ring/storybook/?path=/docs/components-colorwheel)
 
 Supports `ref` forwarding and all standard `div` attributes.
 
@@ -129,7 +129,7 @@ Supports `ref` forwarding and all standard `div` attributes.
 
 Draggable thumb for saturation/brightness selection. Must be placed inside `Wheel`.
 
-[View in Storybook](https://usapopopooon.github.io/react-color-wheel/storybook/?path=/docs/components-colorwheel)
+[View in Storybook](https://usapopopooon.github.io/react-hsv-ring/storybook/?path=/docs/components-colorwheel)
 
 Supports `ref` forwarding and all standard `div` attributes.
 
@@ -139,7 +139,7 @@ Supports `ref` forwarding and all standard `div` attributes.
 
 Optional transparency slider.
 
-[View in Storybook](https://usapopopooon.github.io/react-color-wheel/storybook/?path=/docs/components-alphaslider)
+[View in Storybook](https://usapopopooon.github.io/react-hsv-ring/storybook/?path=/docs/components-alphaslider)
 
 | Prop | Type | Default | Description |
 |------|------|---------|-------------|
@@ -166,7 +166,7 @@ Supports `ref` forwarding and all standard `div` attributes.
 
 Optional linear hue slider (alternative to circular HueRing).
 
-[View in Storybook](https://usapopopooon.github.io/react-color-wheel/storybook/?path=/docs/components-hueslider)
+[View in Storybook](https://usapopopooon.github.io/react-hsv-ring/storybook/?path=/docs/components-hueslider)
 
 | Prop | Type | Default | Description |
 |------|------|---------|-------------|
@@ -193,7 +193,7 @@ Supports `ref` forwarding and all standard `div` attributes.
 
 Linear slider for adjusting saturation (HSV).
 
-[View in Storybook](https://usapopopooon.github.io/react-color-wheel/storybook/?path=/docs/components-saturationslider)
+[View in Storybook](https://usapopopooon.github.io/react-hsv-ring/storybook/?path=/docs/components-saturationslider)
 
 | Prop | Type | Default | Description |
 |------|------|---------|-------------|
@@ -220,7 +220,7 @@ Supports `ref` forwarding and all standard `div` attributes.
 
 Linear slider for adjusting brightness/value (HSV).
 
-[View in Storybook](https://usapopopooon.github.io/react-color-wheel/storybook/?path=/docs/components-brightnessslider)
+[View in Storybook](https://usapopopooon.github.io/react-hsv-ring/storybook/?path=/docs/components-brightnessslider)
 
 | Prop | Type | Default | Description |
 |------|------|---------|-------------|
@@ -247,7 +247,7 @@ Supports `ref` forwarding and all standard `div` attributes.
 
 Linear slider for adjusting lightness (HSL). Displays a gradient from black through pure color (50%) to white.
 
-[View in Storybook](https://usapopopooon.github.io/react-color-wheel/storybook/?path=/docs/components-lightnessslider)
+[View in Storybook](https://usapopopooon.github.io/react-hsv-ring/storybook/?path=/docs/components-lightnessslider)
 
 | Prop | Type | Default | Description |
 |------|------|---------|-------------|
@@ -276,7 +276,7 @@ Supports `ref` forwarding and all standard `div` attributes.
 
 Independent slider for gamma correction. Unlike other sliders, GammaSlider manages its own state and is not tied to the color wheel's color value.
 
-[View in Storybook](https://usapopopooon.github.io/react-color-wheel/storybook/?path=/docs/components-gammaslider)
+[View in Storybook](https://usapopopooon.github.io/react-hsv-ring/storybook/?path=/docs/components-gammaslider)
 
 | Prop | Type | Default | Description |
 |------|------|---------|-------------|
@@ -309,7 +309,7 @@ Supports `ref` forwarding and all standard `div` attributes.
 
 Text input for direct hex color entry.
 
-[View in Storybook](https://usapopopooon.github.io/react-color-wheel/storybook/?path=/docs/components-hexinput)
+[View in Storybook](https://usapopopooon.github.io/react-hsv-ring/storybook/?path=/docs/components-hexinput)
 
 | Prop | Type | Description |
 |------|------|-------------|
@@ -329,7 +329,7 @@ Supports `ref` forwarding (to `HTMLInputElement`) and all standard `input` attri
 
 Displays the current color with alpha transparency support.
 
-[View in Storybook](https://usapopopooon.github.io/react-color-wheel/storybook/?path=/docs/components-swatch)
+[View in Storybook](https://usapopopooon.github.io/react-hsv-ring/storybook/?path=/docs/components-swatch)
 
 Supports `ref` forwarding and all standard `div` attributes.
 
@@ -339,7 +339,7 @@ Supports `ref` forwarding and all standard `div` attributes.
 
 Copies the current color to clipboard.
 
-[View in Storybook](https://usapopopooon.github.io/react-color-wheel/storybook/?path=/docs/components-clipboardbuttons)
+[View in Storybook](https://usapopopooon.github.io/react-hsv-ring/storybook/?path=/docs/components-clipboardbuttons)
 
 | Prop | Type | Description |
 |------|------|-------------|
@@ -355,7 +355,7 @@ Supports `ref` forwarding (to `HTMLButtonElement`) and all standard `button` att
 
 Pastes color from clipboard.
 
-[View in Storybook](https://usapopopooon.github.io/react-color-wheel/storybook/?path=/docs/components-clipboardbuttons)
+[View in Storybook](https://usapopopooon.github.io/react-hsv-ring/storybook/?path=/docs/components-clipboardbuttons)
 
 | Prop | Type | Description |
 |------|------|-------------|

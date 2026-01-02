@@ -47,7 +47,7 @@ import {
   normalizeHex,    // (hex) => string (adds # if missing, lowercase)
   getColorNameEn,  // (hue) => "red" | "orange" | ...
   clamp,           // (value, min, max) => number
-} from '@usapopo/react-color-wheel'
+} from 'react-hsv-ring'
 ```
 
 ### Examples
@@ -57,7 +57,7 @@ import {
   hsvToHex, hexToHsv, hexToRgb, rgbToHex,
   hexToHsl, hslToHex, hexToCssRgb, cssRgbToHex,
   getColorNameEn
-} from '@usapopo/react-color-wheel'
+} from 'react-hsv-ring'
 
 // HSV <-> HEX
 const hex = hsvToHex(0, 100, 100) // "#ff0000"
@@ -109,13 +109,13 @@ import {
   // CSS string schemas
   cssRgbSchema,        // "rgb(...)" or "rgba(...)"
   cssHslSchema,        // "hsl(...)" or "hsla(...)"
-} from '@usapopo/react-color-wheel'
+} from 'react-hsv-ring'
 ```
 
 **Example: Form validation**
 
 ```tsx
-import { hexSchema, rgbSchema } from '@usapopo/react-color-wheel'
+import { hexSchema, rgbSchema } from 'react-hsv-ring'
 
 // Validate user input
 const result = hexSchema.safeParse(userInput)
@@ -146,7 +146,7 @@ All conversion functions throw `ColorValidationError` when validation fails:
 import {
   hexToRgb,
   ColorValidationError,
-} from '@usapopo/react-color-wheel'
+} from 'react-hsv-ring'
 
 try {
   const rgb = hexToRgb(userInput)
@@ -181,7 +181,7 @@ import {
   hexToCssHslSafe,
   cssHslToHexSafe,
   type SafeResult,
-} from '@usapopo/react-color-wheel'
+} from 'react-hsv-ring'
 
 // SafeResult<T> is:
 // | { success: true; data: T; error: null }
@@ -216,7 +216,7 @@ import {
   grayscale,    // (hex) => hex - Convert to grayscale
   rotateHue,    // (hex, degrees) => hex - Rotate hue on color wheel
   setAlpha,     // (hex, alpha) => hex8 - Set transparency (0-1)
-} from '@usapopo/react-color-wheel'
+} from 'react-hsv-ring'
 
 // Examples
 lighten('#ff0000', 20)        // Lighten red by 20%
@@ -241,7 +241,7 @@ import {
   getBestContrast,   // (bg, options[]) => hex - Best contrasting color
   isLight,           // (hex) => boolean
   isDark,            // (hex) => boolean
-} from '@usapopo/react-color-wheel'
+} from 'react-hsv-ring'
 
 // Examples
 getContrastRatio('#000000', '#ffffff') // => 21
@@ -267,7 +267,7 @@ import {
   generateTints,             // (hex, count?) => hex[] - Lighter variations
   generateScale,             // (hex, steps?) => hex[] - Full light/dark scale
   generateMonochromatic,     // (hex, count?) => hex[] - Same hue variations
-} from '@usapopo/react-color-wheel'
+} from 'react-hsv-ring'
 
 // Examples
 generateTriadic('#ff0000')    // => ['#ff0000', '#00ff00', '#0000ff']
@@ -297,7 +297,7 @@ import {
 
   // Color difference
   getDeltaE,  // (hex1, hex2) => number - Perceptual difference
-} from '@usapopo/react-color-wheel'
+} from 'react-hsv-ring'
 
 // Examples
 hexToLab('#ff0000')   // => { l: 53.23, a: 80.11, b: 67.22 }
@@ -320,7 +320,7 @@ import {
   isValidColor,      // (str) => boolean
   getNamedColor,     // (hex) => string | null - CSS color name
   getNamedColors,    // () => Record<string, hex> - All CSS colors
-} from '@usapopo/react-color-wheel'
+} from 'react-hsv-ring'
 
 // Parse any format
 parseColor('#f00')              // => "#ff0000"
