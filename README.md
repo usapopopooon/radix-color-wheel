@@ -93,8 +93,8 @@ Supports `ref` forwarding and all standard `div` attributes.
 
 | Key | Action |
 |-----|--------|
-| `ArrowLeft` / `ArrowDown` | Decrease hue by 1° |
-| `ArrowRight` / `ArrowUp` | Increase hue by 1° |
+| `ArrowLeft` / `ArrowDown` / `A` / `S` | Decrease hue by 1° |
+| `ArrowRight` / `ArrowUp` / `D` / `W` | Increase hue by 1° |
 | `Shift + Arrow` | Change hue by 10° |
 | `Alt + ArrowLeft` / `Alt + ArrowDown` | Set hue to 0° |
 | `Alt + ArrowRight` / `Alt + ArrowUp` | Set hue to 359° |
@@ -115,10 +115,10 @@ Supports `ref` forwarding and all standard `div` attributes.
 
 | Key | Action |
 |-----|--------|
-| `ArrowLeft` | Decrease saturation by 1% |
-| `ArrowRight` | Increase saturation by 1% |
-| `ArrowUp` | Increase brightness by 1% |
-| `ArrowDown` | Decrease brightness by 1% |
+| `ArrowLeft` / `A` | Decrease saturation by 1% |
+| `ArrowRight` / `D` | Increase saturation by 1% |
+| `ArrowUp` / `W` | Increase brightness by 1% |
+| `ArrowDown` / `S` | Decrease brightness by 1% |
 | `Shift + Arrow` | Change by 10% |
 | `Alt + ArrowLeft` | Set saturation to 0% |
 | `Alt + ArrowRight` | Set saturation to 100% |
@@ -145,8 +145,8 @@ Supports `ref` forwarding and all standard `div` attributes.
 
 | Key | Action |
 |-----|--------|
-| `ArrowLeft` / `ArrowDown` | Decrease alpha by 1% |
-| `ArrowRight` / `ArrowUp` | Increase alpha by 1% |
+| `ArrowLeft` / `ArrowDown` / `A` / `S` | Decrease alpha by 1% |
+| `ArrowRight` / `ArrowUp` / `D` / `W` | Increase alpha by 1% |
 | `Shift + Arrow` | Change alpha by 10% |
 | `Alt + ArrowLeft` / `Alt + ArrowDown` | Set alpha to 0% |
 | `Alt + ArrowRight` / `Alt + ArrowUp` | Set alpha to 100% |

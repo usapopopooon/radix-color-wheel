@@ -250,6 +250,48 @@ describe('ColorWheel', () => {
     expect(onHueChange).toHaveBeenCalledWith(359)
   })
 
+  it('should decrease hue when A key is pressed (WASD)', () => {
+    const onHueChange = vi.fn()
+
+    render(
+      <ColorWheel.Root value="#00ff00" onValueChange={() => {}} onHueChange={onHueChange}>
+        <ColorWheel.Wheel>
+          <ColorWheel.HueRing />
+          <ColorWheel.HueThumb />
+          <ColorWheel.Area />
+          <ColorWheel.AreaThumb />
+        </ColorWheel.Wheel>
+      </ColorWheel.Root>
+    )
+
+    const hueThumb = screen.getByRole('slider', { name: /hue/i })
+    fireEvent.keyDown(hueThumb, { key: 'a' })
+
+    // Green is 120°, so 120 - 1 = 119
+    expect(onHueChange).toHaveBeenCalledWith(119)
+  })
+
+  it('should increase hue when D key is pressed (WASD)', () => {
+    const onHueChange = vi.fn()
+
+    render(
+      <ColorWheel.Root value="#00ff00" onValueChange={() => {}} onHueChange={onHueChange}>
+        <ColorWheel.Wheel>
+          <ColorWheel.HueRing />
+          <ColorWheel.HueThumb />
+          <ColorWheel.Area />
+          <ColorWheel.AreaThumb />
+        </ColorWheel.Wheel>
+      </ColorWheel.Root>
+    )
+
+    const hueThumb = screen.getByRole('slider', { name: /hue/i })
+    fireEvent.keyDown(hueThumb, { key: 'd' })
+
+    // Green is 120°, so 120 + 1 = 121
+    expect(onHueChange).toHaveBeenCalledWith(121)
+  })
+
   it('should call onDragStart when pointer down on HueThumb', () => {
     const onDragStart = vi.fn()
 
@@ -343,6 +385,102 @@ describe('ColorWheel', () => {
     fireEvent.pointerMove(areaThumb, { pointerId: 1, clientX: 150, clientY: 100 })
 
     expect(onDrag).toHaveBeenCalledWith(expect.stringMatching(/^#[0-9a-f]{6}$/i))
+  })
+
+  it('should decrease saturation when A key is pressed (WASD)', () => {
+    const onSaturationChange = vi.fn()
+
+    render(
+      <ColorWheel.Root
+        value="#ff8080"
+        onValueChange={() => {}}
+        onSaturationChange={onSaturationChange}
+      >
+        <ColorWheel.Wheel>
+          <ColorWheel.HueRing />
+          <ColorWheel.HueThumb />
+          <ColorWheel.Area />
+          <ColorWheel.AreaThumb />
+        </ColorWheel.Wheel>
+      </ColorWheel.Root>
+    )
+
+    const areaThumb = screen.getByRole('slider', { name: /saturation and brightness/i })
+    fireEvent.keyDown(areaThumb, { key: 'a' })
+
+    expect(onSaturationChange).toHaveBeenCalled()
+  })
+
+  it('should increase saturation when D key is pressed (WASD)', () => {
+    const onSaturationChange = vi.fn()
+
+    render(
+      <ColorWheel.Root
+        value="#ff8080"
+        onValueChange={() => {}}
+        onSaturationChange={onSaturationChange}
+      >
+        <ColorWheel.Wheel>
+          <ColorWheel.HueRing />
+          <ColorWheel.HueThumb />
+          <ColorWheel.Area />
+          <ColorWheel.AreaThumb />
+        </ColorWheel.Wheel>
+      </ColorWheel.Root>
+    )
+
+    const areaThumb = screen.getByRole('slider', { name: /saturation and brightness/i })
+    fireEvent.keyDown(areaThumb, { key: 'd' })
+
+    expect(onSaturationChange).toHaveBeenCalled()
+  })
+
+  it('should increase brightness when W key is pressed (WASD)', () => {
+    const onBrightnessChange = vi.fn()
+
+    render(
+      <ColorWheel.Root
+        value="#800000"
+        onValueChange={() => {}}
+        onBrightnessChange={onBrightnessChange}
+      >
+        <ColorWheel.Wheel>
+          <ColorWheel.HueRing />
+          <ColorWheel.HueThumb />
+          <ColorWheel.Area />
+          <ColorWheel.AreaThumb />
+        </ColorWheel.Wheel>
+      </ColorWheel.Root>
+    )
+
+    const areaThumb = screen.getByRole('slider', { name: /saturation and brightness/i })
+    fireEvent.keyDown(areaThumb, { key: 'w' })
+
+    expect(onBrightnessChange).toHaveBeenCalled()
+  })
+
+  it('should decrease brightness when S key is pressed (WASD)', () => {
+    const onBrightnessChange = vi.fn()
+
+    render(
+      <ColorWheel.Root
+        value="#ff0000"
+        onValueChange={() => {}}
+        onBrightnessChange={onBrightnessChange}
+      >
+        <ColorWheel.Wheel>
+          <ColorWheel.HueRing />
+          <ColorWheel.HueThumb />
+          <ColorWheel.Area />
+          <ColorWheel.AreaThumb />
+        </ColorWheel.Wheel>
+      </ColorWheel.Root>
+    )
+
+    const areaThumb = screen.getByRole('slider', { name: /saturation and brightness/i })
+    fireEvent.keyDown(areaThumb, { key: 's' })
+
+    expect(onBrightnessChange).toHaveBeenCalled()
   })
 
   it('should call onFocus when HueThumb receives focus', () => {

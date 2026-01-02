@@ -110,6 +110,8 @@ export const AlphaSlider = forwardRef<HTMLDivElement, AlphaSliderProps>(
         switch (e.key) {
           case 'ArrowLeft':
           case 'ArrowDown':
+          case 'a':
+          case 's':
             e.preventDefault()
             // Alt: jump to minimum (0)
             if (e.altKey) {
@@ -120,6 +122,8 @@ export const AlphaSlider = forwardRef<HTMLDivElement, AlphaSliderProps>(
             break
           case 'ArrowRight':
           case 'ArrowUp':
+          case 'd':
+          case 'w':
             e.preventDefault()
             // Alt: jump to maximum (100)
             if (e.altKey) {

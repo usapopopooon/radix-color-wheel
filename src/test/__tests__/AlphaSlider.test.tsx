@@ -87,6 +87,36 @@ describe('AlphaSlider', () => {
     expect(onAlphaChange).toHaveBeenCalledWith(100)
   })
 
+  it('should decrease alpha when A key is pressed (WASD)', () => {
+    const onAlphaChange = vi.fn()
+
+    render(
+      <ColorWheel.Root value="#ff0000" onValueChange={() => {}} onAlphaChange={onAlphaChange}>
+        <ColorWheel.AlphaSlider />
+      </ColorWheel.Root>
+    )
+
+    const slider = screen.getByRole('slider', { name: /opacity/i })
+    fireEvent.keyDown(slider, { key: 'a' })
+
+    expect(onAlphaChange).toHaveBeenCalledWith(99)
+  })
+
+  it('should increase alpha when D key is pressed (WASD)', () => {
+    const onAlphaChange = vi.fn()
+
+    render(
+      <ColorWheel.Root value="#ff000080" onValueChange={() => {}} onAlphaChange={onAlphaChange}>
+        <ColorWheel.AlphaSlider />
+      </ColorWheel.Root>
+    )
+
+    const slider = screen.getByRole('slider', { name: /opacity/i })
+    fireEvent.keyDown(slider, { key: 'd' })
+
+    expect(onAlphaChange).toHaveBeenCalledWith(51)
+  })
+
   it('should be disabled when parent Root is disabled', () => {
     render(
       <ColorWheel.Root value="#ff0000" onValueChange={() => {}} disabled>

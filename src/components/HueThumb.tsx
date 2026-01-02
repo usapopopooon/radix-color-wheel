@@ -104,6 +104,8 @@ export const HueThumb = forwardRef<HTMLDivElement, HueThumbProps>(({ className, 
       switch (e.key) {
         case 'ArrowLeft':
         case 'ArrowDown':
+        case 'a':
+        case 's':
           e.preventDefault()
           // Alt: jump to minimum (0)
           if (e.altKey) {
@@ -114,6 +116,8 @@ export const HueThumb = forwardRef<HTMLDivElement, HueThumbProps>(({ className, 
           break
         case 'ArrowRight':
         case 'ArrowUp':
+        case 'd':
+        case 'w':
           e.preventDefault()
           // Alt: jump to maximum (359)
           if (e.altKey) {

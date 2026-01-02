@@ -111,6 +111,7 @@ export const AreaThumb = forwardRef<HTMLDivElement, AreaThumbProps>(({ className
 
       switch (e.key) {
         case 'ArrowLeft':
+        case 'a':
           e.preventDefault()
           // Alt: jump to minimum saturation (0)
           if (e.altKey) {
@@ -120,6 +121,7 @@ export const AreaThumb = forwardRef<HTMLDivElement, AreaThumbProps>(({ className
           }
           break
         case 'ArrowRight':
+        case 'd':
           e.preventDefault()
           // Alt: jump to maximum saturation (100)
           if (e.altKey) {
@@ -129,6 +131,7 @@ export const AreaThumb = forwardRef<HTMLDivElement, AreaThumbProps>(({ className
           }
           break
         case 'ArrowUp':
+        case 'w':
           e.preventDefault()
           // Alt: jump to maximum brightness (100)
           if (e.altKey) {
@@ -138,6 +141,7 @@ export const AreaThumb = forwardRef<HTMLDivElement, AreaThumbProps>(({ className
           }
           break
         case 'ArrowDown':
+        case 's':
           e.preventDefault()
           // Alt: jump to minimum brightness (0)
           if (e.altKey) {
