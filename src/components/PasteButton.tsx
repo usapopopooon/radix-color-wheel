@@ -1,25 +1,8 @@
 import { useCallback } from 'react'
 import { useColorWheelContext } from '../context/ColorWheelContext'
 import { Button } from './ui/button'
+import { isValidHex, normalizeHex } from '../utils'
 import type { PasteButtonProps } from '../types'
-
-/**
- * Validate if a string is a valid HEX color (6 or 8 digits)
- */
-function isValidHex(value: string): boolean {
-  return /^#[0-9A-Fa-f]{6}([0-9A-Fa-f]{2})?$/.test(value)
-}
-
-/**
- * Normalize HEX input value
- */
-function normalizeHex(value: string): string {
-  let normalized = value.trim()
-  if (!normalized.startsWith('#')) {
-    normalized = '#' + normalized
-  }
-  return normalized.toLowerCase()
-}
 
 /**
  * PasteButton component - Pastes color from clipboard

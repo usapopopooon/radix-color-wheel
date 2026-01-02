@@ -1,5 +1,10 @@
 import { useMemo } from 'react'
-import { WheelContext, type WheelContextValue } from '../context/WheelContext'
+import {
+  WheelContext,
+  calculateAreaSize,
+  calculateThumbSize,
+  type WheelContextValue,
+} from '../context/WheelContext'
 import type { WheelProps } from '../types'
 
 /**
@@ -32,12 +37,17 @@ export function Wheel({
   style,
   children,
 }: WheelProps): React.ReactElement {
+  const areaSize = useMemo(() => calculateAreaSize(size, ringWidth), [size, ringWidth])
+  const thumbSize = useMemo(() => calculateThumbSize(size), [size])
+
   const contextValue = useMemo<WheelContextValue>(
     () => ({
       size,
       ringWidth,
+      areaSize,
+      thumbSize,
     }),
-    [size, ringWidth]
+    [size, ringWidth, areaSize, thumbSize]
   )
 
   const wheelStyle: React.CSSProperties = useMemo(

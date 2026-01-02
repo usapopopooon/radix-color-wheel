@@ -26,18 +26,7 @@ import type { AreaProps } from '../types'
  */
 export function Area({ className, style }: AreaProps): React.ReactElement {
   const { hsv } = useColorWheelContext()
-  const { size, ringWidth } = useWheelContext()
-
-  // Calculate the size of the square area that fits inside the ring
-  // The largest square that fits inside a circle has diagonal = diameter
-  // For a circle with radius r, the inscribed square has side = r * sqrt(2)
-  // Inner radius = (size/2 - ringWidth)
-  // Area size = inner radius * sqrt(2) * 0.9 (with some padding)
-  const areaSize = useMemo(() => {
-    const innerRadius = size / 2 - ringWidth
-    // Using 0.707 (1/sqrt(2)) to get inscribed square, then reducing slightly for padding
-    return Math.floor(innerRadius * Math.SQRT2 * 0.95)
-  }, [size, ringWidth])
+  const { areaSize } = useWheelContext()
 
   // Current hue color for the area background
   const hueColor = useMemo(() => hsvToHex(hsv.h, 100, 100), [hsv.h])

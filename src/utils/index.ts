@@ -1,6 +1,8 @@
+export { alphaToHex, parseAlphaFromHex, combineHexWithAlpha } from './alphaConversion'
 export { clamp } from './clamp'
 export { getColorNameEn } from './getColorNameEn'
 export { getHueFromPosition } from './getHueFromPosition'
 export { getSVFromPosition } from './getSVFromPosition'
 export { hexToHsv } from './hexToHsv'
 export { hsvToHex } from './hsvToHex'
+export { isValidHex, isValidHex6, normalizeHex } from './hexValidation'

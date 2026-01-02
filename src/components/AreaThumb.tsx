@@ -26,14 +26,8 @@ import type { AreaThumbProps } from '../types'
 export function AreaThumb({ className, style }: AreaThumbProps): React.ReactElement {
   const { hsv, setSaturation, setBrightness, disabled, onDragStart, onDragEnd } =
     useColorWheelContext()
-  const { size, ringWidth } = useWheelContext()
+  const { size, areaSize, thumbSize } = useWheelContext()
   const thumbRef = useRef<HTMLDivElement>(null)
-
-  // Calculate area size (same as in Area component)
-  const areaSize = useMemo(() => {
-    const innerRadius = size / 2 - ringWidth
-    return Math.floor(innerRadius * Math.SQRT2 * 0.95)
-  }, [size, ringWidth])
 
   // Calculate area offset from wheel center
   const areaOffset = useMemo(() => {
@@ -51,9 +45,6 @@ export function AreaThumb({ className, style }: AreaThumbProps): React.ReactElem
 
   // Use the current selected color for the thumb
   const currentColor = useMemo(() => hsvToHex(hsv.h, hsv.s, hsv.v), [hsv.h, hsv.s, hsv.v])
-
-  // Thumb size proportional to wheel size (base: 14px at 200px wheel)
-  const thumbSize = useMemo(() => Math.round(size * 0.07), [size])
 
   const handlePointerDown = useCallback(
     (e: React.PointerEvent) => {

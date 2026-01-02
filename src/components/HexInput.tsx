@@ -2,33 +2,8 @@ import { useState, useCallback, useMemo, useId } from 'react'
 import { useColorWheelContext } from '../context/ColorWheelContext'
 import { Input } from './ui/input'
 import { cn } from '@/lib/utils'
+import { isValidHex6, normalizeHex } from '../utils'
 import type { HexInputProps } from '../types'
-
-/**
- * Validate if a string is a valid HEX color
- *
- * @param value - The string to validate
- * @returns true if valid HEX color format
- */
-function isValidHex(value: string): boolean {
-  return /^#[0-9A-Fa-f]{6}$/.test(value)
-}
-
-/**
- * Normalize HEX input value
- *
- * Adds # prefix if missing and converts to lowercase
- *
- * @param value - The input value
- * @returns Normalized HEX string
- */
-function normalizeHex(value: string): string {
-  let normalized = value.trim()
-  if (!normalized.startsWith('#')) {
-    normalized = '#' + normalized
-  }
-  return normalized.toLowerCase()
-}
 
 /**
  * HexInput component - Text field for direct HEX value input
@@ -62,7 +37,7 @@ export function HexInput({
   const displayValue = isEditing ? editingValue : hex
 
   // Check if current input is valid
-  const isValid = useMemo(() => isValidHex(normalizeHex(displayValue)), [displayValue])
+  const isValid = useMemo(() => isValidHex6(normalizeHex(displayValue)), [displayValue])
 
   const handleChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     setEditingValue(e.target.value)
@@ -75,7 +50,7 @@ export function HexInput({
 
   const commitValue = useCallback(() => {
     const normalized = normalizeHex(editingValue)
-    if (isValidHex(normalized)) {
+    if (isValidHex6(normalized)) {
       setHex(normalized)
     }
     setIsEditing(false)

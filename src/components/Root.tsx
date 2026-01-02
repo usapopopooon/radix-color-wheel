@@ -1,30 +1,8 @@
 import { useState, useCallback, useMemo, useRef, useEffect, useId } from 'react'
 import { useControllableState } from '@radix-ui/react-use-controllable-state'
 import { ColorWheelContext, type ColorWheelContextValue } from '../context/ColorWheelContext'
-import { hexToHsv, hsvToHex } from '../utils'
+import { hexToHsv, hsvToHex, parseAlphaFromHex, combineHexWithAlpha, alphaToHex } from '../utils'
 import type { RootProps } from '../types'
-
-/**
- * Convert alpha value (0-100) to hex string (00-ff)
- */
-function alphaToHex(alpha: number): string {
-  return Math.round((alpha / 100) * 255)
-    .toString(16)
-    .padStart(2, '0')
-}
-
-/**
- * Parse alpha from 8-digit hex string
- * Returns 100 if hex is 6 digits (no alpha)
- */
-function parseAlphaFromHex(hex: string): number {
-  if (hex.length === 9) {
-    // #rrggbbaa format
-    const alphaHex = hex.slice(7, 9)
-    return Math.round((parseInt(alphaHex, 16) / 255) * 100)
-  }
-  return 100
-}
 
 /**
  * Root component for ColorWheel
@@ -119,8 +97,7 @@ export function Root({
   const setHue = useCallback(
     (h: number) => {
       const newHex = hsvToHex(h, hsv.s, hsv.v)
-      const newHexWithAlpha = alpha < 100 ? `${newHex}${alphaToHex(alpha)}` : newHex
-      setHexWithAlphaState(newHexWithAlpha)
+      setHexWithAlphaState(combineHexWithAlpha(newHex, alpha))
       onHueChange?.(h)
     },
     [hsv.s, hsv.v, alpha, setHexWithAlphaState, onHueChange]
@@ -129,8 +106,7 @@ export function Root({
   const setSaturation = useCallback(
     (s: number) => {
       const newHex = hsvToHex(hsv.h, s, hsv.v)
-      const newHexWithAlpha = alpha < 100 ? `${newHex}${alphaToHex(alpha)}` : newHex
-      setHexWithAlphaState(newHexWithAlpha)
+      setHexWithAlphaState(combineHexWithAlpha(newHex, alpha))
       onSaturationChange?.(s)
     },
     [hsv.h, hsv.v, alpha, setHexWithAlphaState, onSaturationChange]
@@ -139,8 +115,7 @@ export function Root({
   const setBrightness = useCallback(
     (v: number) => {
       const newHex = hsvToHex(hsv.h, hsv.s, v)
-      const newHexWithAlpha = alpha < 100 ? `${newHex}${alphaToHex(alpha)}` : newHex
-      setHexWithAlphaState(newHexWithAlpha)
+      setHexWithAlphaState(combineHexWithAlpha(newHex, alpha))
       onBrightnessChange?.(v)
     },
     [hsv.h, hsv.s, alpha, setHexWithAlphaState, onBrightnessChange]
@@ -149,8 +124,7 @@ export function Root({
   const setAlpha = useCallback(
     (a: number) => {
       setAlphaState(a)
-      const newHexWithAlpha = a < 100 ? `${hex}${alphaToHex(a)}` : hex
-      setHexWithAlphaState(newHexWithAlpha)
+      setHexWithAlphaState(combineHexWithAlpha(hex, a))
       onAlphaChange?.(a)
     },
     [hex, setHexWithAlphaState, onAlphaChange]
@@ -159,8 +133,8 @@ export function Root({
   const setHex = useCallback(
     (newHex: string) => {
       // If setting a 6-digit hex, preserve current alpha
-      if (newHex.length === 7 && alpha < 100) {
-        setHexWithAlphaState(`${newHex}${alphaToHex(alpha)}`)
+      if (newHex.length === 7) {
+        setHexWithAlphaState(combineHexWithAlpha(newHex, alpha))
       } else {
         setHexWithAlphaState(newHex)
         // Update alpha if 8-digit hex was provided

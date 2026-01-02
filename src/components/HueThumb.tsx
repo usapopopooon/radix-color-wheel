@@ -25,7 +25,7 @@ import type { HueThumbProps } from '../types'
  */
 export function HueThumb({ className, style }: HueThumbProps): React.ReactElement {
   const { hsv, setHue, disabled, onDragStart, onDragEnd } = useColorWheelContext()
-  const { size, ringWidth } = useWheelContext()
+  const { size, ringWidth, thumbSize } = useWheelContext()
   const thumbRef = useRef<HTMLDivElement>(null)
 
   // Calculate thumb position on the ring
@@ -46,9 +46,6 @@ export function HueThumb({ className, style }: HueThumbProps): React.ReactElemen
 
   // Current hue color for thumb background
   const hueColor = useMemo(() => hsvToHex(hsv.h, 100, 100), [hsv.h])
-
-  // Thumb size proportional to wheel size (base: 14px at 200px wheel)
-  const thumbSize = useMemo(() => Math.round(size * 0.07), [size])
 
   const handlePointerDown = useCallback(
     (e: React.PointerEvent) => {

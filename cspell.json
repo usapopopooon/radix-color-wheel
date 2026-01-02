@@ -30,7 +30,9 @@
     "Vitest",
     "jsdom",
     "autodocs",
-    "unstub"
+    "unstub",
+    "rrggbb",
+    "rrggbbaa"
   ],
   "ignorePaths": [
     "node_modules",
