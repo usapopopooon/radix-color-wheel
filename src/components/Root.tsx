@@ -93,31 +93,18 @@ export const Root = forwardRef<ColorWheelRef, RootProps>(function Root(
     return stripAlphaFromHex(hexWithAlpha ?? '#ff0000')
   }, [hexWithAlpha])
 
-  // Internal HSV state - preserves hue when saturation is 0
-  // This is needed because HSV->HEX->HSV conversion loses hue information at saturation 0
-  const [internalHsv, setInternalHsv] = useState<HSV>(() => hexToHsv(hex))
+  // Derived HSV from hex
+  const derivedHsv = useMemo(() => hexToHsv(hex), [hex])
 
-  // Sync internal HSV when hex changes from external source (controlled mode)
-  // but preserve hue if saturation is 0
-  useEffect(() => {
-    const derivedHsv = hexToHsv(hex)
-    // Only update internal hue if saturation is not 0 (hue is meaningful)
-    if (derivedHsv.s > 0) {
-      setInternalHsv(derivedHsv)
-    } else {
-      // Keep hue, update s and v
-      setInternalHsv((prev) => ({ ...prev, s: derivedHsv.s, v: derivedHsv.v }))
-    }
-  }, [hex])
+  // Preserve hue independently - needed because grayscale colors lose hue info
+  // When saturation > 0, sync preservedHue with derived value via useSyncExternalStore pattern
+  const [preservedHue, setPreservedHue] = useState(() => derivedHsv.h)
 
-  const hsv = useMemo(() => {
-    const derivedHsv = hexToHsv(hex)
-    // If saturation is 0, preserve the internal hue value
-    if (derivedHsv.s === 0) {
-      return { ...derivedHsv, h: internalHsv.h }
-    }
-    return derivedHsv
-  }, [hex, internalHsv.h])
+  // Combined HSV: when saturation is 0, use preserved hue
+  const hsv = useMemo(
+    () => (derivedHsv.s === 0 ? { ...derivedHsv, h: preservedHue } : derivedHsv),
+    [derivedHsv, preservedHue]
+  )
 
   // Alpha state - controllable
   // Priority: alphaProp > defaultAlpha > parsed from hex
@@ -170,8 +157,8 @@ export const Root = forwardRef<ColorWheelRef, RootProps>(function Root(
   // Update handlers
   const setHue = useCallback(
     (h: number) => {
-      // Update internal HSV to preserve hue when saturation is 0
-      setInternalHsv((prev) => ({ ...prev, h }))
+      // Always update preserved hue so it persists when saturation is 0
+      setPreservedHue(h)
       const newHex = hsvToHex(h, hsv.s, hsv.v)
       setHexWithAlphaState(combineHexWithAlpha(newHex, alpha))
       onHueChange?.(h)
