@@ -93,8 +93,18 @@ export const Root = forwardRef<ColorWheelRef, RootProps>(function Root(
     return stripAlphaFromHex(hexWithAlpha ?? '#ff0000')
   }, [hexWithAlpha])
 
-  // Derived HSV state from hex
-  const hsv = useMemo(() => hexToHsv(hex), [hex])
+  // Derived HSV from hex
+  const derivedHsv = useMemo(() => hexToHsv(hex), [hex])
+
+  // Preserve hue independently - needed because grayscale colors lose hue info
+  // When saturation > 0, sync preservedHue with derived value via useSyncExternalStore pattern
+  const [preservedHue, setPreservedHue] = useState(() => derivedHsv.h)
+
+  // Combined HSV: when saturation is 0, use preserved hue
+  const hsv = useMemo(
+    () => (derivedHsv.s === 0 ? { ...derivedHsv, h: preservedHue } : derivedHsv),
+    [derivedHsv, preservedHue]
+  )
 
   // Alpha state - controllable
   // Priority: alphaProp > defaultAlpha > parsed from hex
@@ -147,6 +157,8 @@ export const Root = forwardRef<ColorWheelRef, RootProps>(function Root(
   // Update handlers
   const setHue = useCallback(
     (h: number) => {
+      // Always update preserved hue so it persists when saturation is 0
+      setPreservedHue(h)
       const newHex = hsvToHex(h, hsv.s, hsv.v)
       setHexWithAlphaState(combineHexWithAlpha(newHex, alpha))
       onHueChange?.(h)

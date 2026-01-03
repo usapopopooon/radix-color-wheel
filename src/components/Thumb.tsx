@@ -7,7 +7,7 @@ export const THUMB_BOX_SHADOW =
 
 /** Common className for all thumbs */
 export const THUMB_CLASS_NAME =
-  'rounded-full focus-visible:outline focus-visible:outline-3 focus-visible:outline-gray-500/[.75] active:cursor-grabbing'
+  'rounded-full focus:outline-solid focus:outline-black/[.50] focus:outline-[3px] active:outline-solid active:outline-black/[.50] active:outline-[3px] active:cursor-grabbing'
 
 export interface ThumbProps {
   /** Size of the thumb in pixels */
