@@ -20,8 +20,17 @@ const config: StorybookConfig = {
     disableTelemetry: true,
   },
   viteFinal: async (config) => {
+    // Filter out vite-plugin-dts to avoid build errors in Storybook
+    const filteredPlugins = (config.plugins ?? []).filter((plugin) => {
+      if (plugin && typeof plugin === 'object' && 'name' in plugin) {
+        return plugin.name !== 'vite:dts'
+      }
+      return true
+    })
+
     return {
       ...config,
+      plugins: filteredPlugins,
       optimizeDeps: {
         ...config.optimizeDeps,
         include: [
