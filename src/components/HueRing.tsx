@@ -97,7 +97,7 @@ export const HueRing = forwardRef<HTMLDivElement, HueRingProps>(
         // This creates a transparent center naturally
         border: `${ringWidth}px solid transparent`,
         backgroundImage: `conic-gradient(
-        from ${hueOffset}deg,
+        from 0deg,
         hsl(0, 100%, 50%),
         hsl(60, 100%, 50%),
         hsl(120, 100%, 50%),
@@ -117,7 +117,7 @@ export const HueRing = forwardRef<HTMLDivElement, HueRingProps>(
         touchAction: 'none',
         ...style,
       }),
-      [ringWidth, hueOffset, style, disabled]
+      [ringWidth, style, disabled]
     )
 
     return (

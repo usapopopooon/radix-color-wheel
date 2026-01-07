@@ -1,7 +1,7 @@
 import { forwardRef, useMemo, useCallback, useRef, useImperativeHandle } from 'react'
 import { useColorWheelContext } from '../context/ColorWheelContext'
 import { useWheelContext } from '../context/WheelContext'
-import { hsvToHex, getSVFromPosition } from '../utils'
+import { getSVFromPosition } from '../utils'
 import type { AreaProps } from '../types'
 
 /**
@@ -89,8 +89,8 @@ export const Area = forwardRef<HTMLDivElement, AreaProps>(({ className, style, .
     [onDragEnd]
   )
 
-  // Current hue color for the area background
-  const hueColor = useMemo(() => hsvToHex(hsv.h, 100, 100), [hsv.h])
+  // Current hue color for the area background (use HSL to match HueRing gradient)
+  const hueColor = useMemo(() => `hsl(${hsv.h}, 100%, 50%)`, [hsv.h])
 
   const areaStyle: React.CSSProperties = useMemo(
     () => ({

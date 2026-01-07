@@ -652,7 +652,7 @@ describe('ColorWheel', () => {
   })
 
   describe('hueOffset prop', () => {
-    it('should apply hueOffset to HueRing conic-gradient', () => {
+    it('should render HueRing with conic-gradient from 0deg', () => {
       render(
         <ColorWheel.Root value="#ff0000" onValueChange={() => {}}>
           <ColorWheel.Wheel hueOffset={0}>
@@ -665,11 +665,11 @@ describe('ColorWheel', () => {
       )
 
       const hueRing = document.querySelector('[data-color-wheel-hue-ring]') as HTMLElement
-      // With hueOffset=0, the gradient should start from 0deg
+      // Gradient always starts from 0deg (hueOffset only affects thumb position)
       expect(hueRing.style.background).toContain('from 0deg')
     })
 
-    it('should default hueOffset to -90 (red at top)', () => {
+    it('should render HueRing with conic-gradient from 0deg regardless of hueOffset', () => {
       render(
         <ColorWheel.Root value="#ff0000" onValueChange={() => {}}>
           <ColorWheel.Wheel>
@@ -682,8 +682,8 @@ describe('ColorWheel', () => {
       )
 
       const hueRing = document.querySelector('[data-color-wheel-hue-ring]') as HTMLElement
-      // Default hueOffset=-90 means the gradient starts from -90deg
-      expect(hueRing.style.background).toContain('from -90deg')
+      // Gradient always starts from 0deg; hueOffset only affects thumb position calculation
+      expect(hueRing.style.background).toContain('from 0deg')
     })
 
     it('should position HueThumb correctly with hueOffset=0', () => {
@@ -782,10 +782,10 @@ describe('ColorWheel', () => {
       expect(onHueChange).toHaveBeenCalledWith(0)
     })
 
-    it('should support positive hueOffset values', () => {
+    it('should support positive hueOffset values for thumb positioning', () => {
       render(
         <ColorWheel.Root value="#ff0000" onValueChange={() => {}}>
-          <ColorWheel.Wheel hueOffset={90}>
+          <ColorWheel.Wheel size={200} ringWidth={20} hueOffset={90}>
             <ColorWheel.HueRing />
             <ColorWheel.HueThumb />
             <ColorWheel.Area />
@@ -794,8 +794,12 @@ describe('ColorWheel', () => {
         </ColorWheel.Root>
       )
 
-      const hueRing = document.querySelector('[data-color-wheel-hue-ring]') as HTMLElement
-      expect(hueRing.style.background).toContain('from 90deg')
+      const hueThumb = screen.getByRole('slider', { name: /hue/i })
+      // Red (hue=0) with hueOffset=90: angle = 90deg
+      // center = 100, radius = 100 - 20/2 = 90
+      // x = 100 + 90 * cos(90°) = 100, y = 100 + 90 * sin(90°) = 190
+      expect(hueThumb.style.left).toBe('100px')
+      expect(hueThumb.style.top).toBe('190px')
     })
   })
 
