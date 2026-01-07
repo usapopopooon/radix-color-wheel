@@ -1,13 +1,15 @@
-import { forwardRef, useMemo } from 'react'
+import { forwardRef, useMemo, useState } from 'react'
 import { cn } from '@/lib/utils'
 
 /** Common box-shadow for all thumbs */
 export const THUMB_BOX_SHADOW =
   'inset 0 0 0 2px white, 0 0 0 1px rgba(0, 0, 0, 0.3), 0 2px 4px rgba(0, 0, 0, 0.2)'
 
-/** Common className for all thumbs */
-export const THUMB_CLASS_NAME =
-  'rounded-full focus:outline-solid focus:outline-black/[.50] focus:outline-[3px] active:outline-solid active:outline-black/[.50] active:outline-[3px] active:cursor-grabbing'
+/** Focus/active outline style */
+const FOCUS_OUTLINE = '3px solid rgba(0, 0, 0, 0.5)'
+
+/** Common className for all thumbs (only non-state-dependent styles) */
+export const THUMB_CLASS_NAME = 'rounded-full'
 
 export interface ThumbProps {
   /** Size of the thumb in pixels */
@@ -78,6 +80,9 @@ export const Thumb = forwardRef<HTMLDivElement, ThumbProps>(
     },
     ref
   ) => {
+    const [isFocused, setIsFocused] = useState(false)
+    const [isActive, setIsActive] = useState(false)
+
     const thumbStyle: React.CSSProperties = useMemo(
       () => ({
         position: 'absolute',
@@ -86,11 +91,12 @@ export const Thumb = forwardRef<HTMLDivElement, ThumbProps>(
         boxShadow: THUMB_BOX_SHADOW,
         backgroundColor: color,
         transform: 'translate(-50%, -50%)',
-        cursor: disabled ? 'not-allowed' : 'grab',
+        cursor: disabled ? 'not-allowed' : isActive ? 'grabbing' : 'grab',
         touchAction: 'none',
+        outline: isFocused || isActive ? FOCUS_OUTLINE : 'none',
         ...style,
       }),
-      [size, color, disabled, style]
+      [size, color, disabled, style, isFocused, isActive]
     )
 
     // Memoize data attributes transformation to avoid recreating on every render
@@ -100,6 +106,26 @@ export const Thumb = forwardRef<HTMLDivElement, ThumbProps>(
         Object.entries(dataAttributes).map(([key, value]) => [`data-${key}`, value])
       )
     }, [dataAttributes])
+
+    const handleFocus = (e: React.FocusEvent) => {
+      setIsFocused(true)
+      onFocus?.(e)
+    }
+
+    const handleBlur = (e: React.FocusEvent) => {
+      setIsFocused(false)
+      onBlur?.(e)
+    }
+
+    const handlePointerDown = (e: React.PointerEvent) => {
+      setIsActive(true)
+      onPointerDown?.(e)
+    }
+
+    const handlePointerUp = (e: React.PointerEvent) => {
+      setIsActive(false)
+      onPointerUp?.(e)
+    }
 
     return (
       <div
@@ -117,12 +143,12 @@ export const Thumb = forwardRef<HTMLDivElement, ThumbProps>(
         aria-valuetext={ariaValueText}
         aria-orientation={ariaOrientation}
         aria-disabled={disabled}
-        onPointerDown={onPointerDown}
+        onPointerDown={handlePointerDown}
         onPointerMove={onPointerMove}
-        onPointerUp={onPointerUp}
+        onPointerUp={handlePointerUp}
         onKeyDown={onKeyDown}
-        onFocus={onFocus}
-        onBlur={onBlur}
+        onFocus={handleFocus}
+        onBlur={handleBlur}
       />
     )
   }
