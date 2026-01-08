@@ -100,28 +100,34 @@ export const Root = forwardRef<ColorWheelRef, RootProps>(function Root(
   // Hue is undefined when saturation=0 (grayscale), so we preserve it
   // Use state instead of ref to trigger re-renders when hue changes (even if hex doesn't)
   const [preservedHue, setPreservedHue] = useState(derivedHsv.h)
-  const lastInternalHexRef = useRef<string | null>(null)
-  const lastExternalHexRef = useRef<string>(hex)
+
+  // Track hex changes to detect external vs internal updates
+  // Use state instead of ref to allow access during render
+  const [lastInternalHex, setLastInternalHex] = useState<string | null>(null)
+
+  // Track previous hex to detect external changes
+  const [prevHex, setPrevHex] = useState(hex)
 
   // Preserve saturation as state (not ref) because when v=0, hex doesn't change
   // but we still need to trigger re-renders when saturation changes
   const [preservedSaturation, setPreservedSaturation] = useState(derivedHsv.s)
 
-  // Sync preserved hue/saturation from external changes (outside of render)
-  if (lastExternalHexRef.current !== hex && lastInternalHexRef.current !== hex) {
-    // External change detected
-    // Only update preserved hue if saturation > 0 (hue is defined)
-    if (derivedHsv.s > 0) {
-      setPreservedHue(derivedHsv.h)
+  // Detect external changes and sync preserved values (during render, before useMemo)
+  // This pattern is recommended by React for derived state: https://react.dev/learn/you-might-not-need-an-effect#adjusting-some-state-when-a-prop-changes
+  if (prevHex !== hex) {
+    setPrevHex(hex)
+    // Check if this is an external change (not from our internal updates)
+    if (lastInternalHex !== hex) {
+      // External change detected
+      // Only update preserved hue if saturation > 0 (hue is defined)
+      if (derivedHsv.s > 0) {
+        setPreservedHue(derivedHsv.h)
+      }
+      // Only update preserved saturation if value > 0 (saturation is defined)
+      if (derivedHsv.v > 0) {
+        setPreservedSaturation(derivedHsv.s)
+      }
     }
-    // Only update preserved saturation if value > 0 (saturation is defined)
-    if (derivedHsv.v > 0) {
-      setPreservedSaturation(derivedHsv.s)
-    }
-    lastExternalHexRef.current = hex
-  } else if (lastInternalHexRef.current === hex) {
-    // Internal change - just update the external ref tracker
-    lastExternalHexRef.current = hex
   }
 
   // Combined HSV: use preserved values to avoid rounding errors
@@ -190,7 +196,7 @@ export const Root = forwardRef<ColorWheelRef, RootProps>(function Root(
       // This triggers re-render even if hex doesn't change (e.g., when s=0 or v=0)
       setPreservedHue(h)
       const newHex = hsvToHex(h, hsv.s, hsv.v)
-      lastInternalHexRef.current = newHex
+      setLastInternalHex(newHex)
       setHexWithAlphaState(combineHexWithAlpha(newHex, alpha))
       onHueChange?.(h)
     },
@@ -203,7 +209,7 @@ export const Root = forwardRef<ColorWheelRef, RootProps>(function Root(
       // Preserve saturation for when v=0 (black makes saturation undefined)
       setPreservedSaturation(s)
       const newHex = hsvToHex(preservedHue, s, hsv.v)
-      lastInternalHexRef.current = newHex
+      setLastInternalHex(newHex)
       setHexWithAlphaState(combineHexWithAlpha(newHex, alpha))
       onSaturationChange?.(s)
     },
@@ -215,7 +221,7 @@ export const Root = forwardRef<ColorWheelRef, RootProps>(function Root(
     (v: number) => {
       // Use preserved saturation to maintain value when at v=0
       const newHex = hsvToHex(preservedHue, preservedSaturation, v)
-      lastInternalHexRef.current = newHex
+      setLastInternalHex(newHex)
       setHexWithAlphaState(combineHexWithAlpha(newHex, alpha))
       onBrightnessChange?.(v)
     },
@@ -229,7 +235,7 @@ export const Root = forwardRef<ColorWheelRef, RootProps>(function Root(
       // Preserve saturation for when v=0 (black makes saturation undefined)
       setPreservedSaturation(s)
       const newHex = hsvToHex(preservedHue, s, v)
-      lastInternalHexRef.current = newHex
+      setLastInternalHex(newHex)
       setHexWithAlphaState(combineHexWithAlpha(newHex, alpha))
       onSaturationChange?.(s)
       onBrightnessChange?.(v)
