@@ -98,7 +98,8 @@ export const Root = forwardRef<ColorWheelRef, RootProps>(function Root(
 
   // Preserve hue independently to avoid HSV->HEX->HSV rounding errors
   // Hue is undefined when saturation=0 (grayscale), so we preserve it
-  const preservedHueRef = useRef(derivedHsv.h)
+  // Use state instead of ref to trigger re-renders when hue changes (even if hex doesn't)
+  const [preservedHue, setPreservedHue] = useState(derivedHsv.h)
   const lastInternalHexRef = useRef<string | null>(null)
   const lastExternalHexRef = useRef<string>(hex)
 
@@ -111,7 +112,7 @@ export const Root = forwardRef<ColorWheelRef, RootProps>(function Root(
     // External change detected
     // Only update preserved hue if saturation > 0 (hue is defined)
     if (derivedHsv.s > 0) {
-      preservedHueRef.current = derivedHsv.h
+      setPreservedHue(derivedHsv.h)
     }
     // Only update preserved saturation if value > 0 (saturation is defined)
     if (derivedHsv.v > 0) {
@@ -126,13 +127,12 @@ export const Root = forwardRef<ColorWheelRef, RootProps>(function Root(
   // Combined HSV: use preserved values to avoid rounding errors
   const hsv = useMemo(
     () => ({
-      h: preservedHueRef.current,
+      h: preservedHue,
       // Use preserved saturation when value=0 (black), otherwise use derived
       s: derivedHsv.v === 0 ? preservedSaturation : derivedHsv.s,
       v: derivedHsv.v,
     }),
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [derivedHsv, hex, preservedSaturation]
+    [derivedHsv, preservedHue, preservedSaturation]
   )
 
   // Alpha state - controllable
@@ -187,7 +187,8 @@ export const Root = forwardRef<ColorWheelRef, RootProps>(function Root(
   const setHue = useCallback(
     (h: number) => {
       // Always update preserved hue so it persists when saturation is 0
-      preservedHueRef.current = h
+      // This triggers re-render even if hex doesn't change (e.g., when s=0 or v=0)
+      setPreservedHue(h)
       const newHex = hsvToHex(h, hsv.s, hsv.v)
       lastInternalHexRef.current = newHex
       setHexWithAlphaState(combineHexWithAlpha(newHex, alpha))
@@ -196,44 +197,44 @@ export const Root = forwardRef<ColorWheelRef, RootProps>(function Root(
     [hsv.s, hsv.v, alpha, setHexWithAlphaState, onHueChange]
   )
 
-  // Use preservedHueRef instead of hsv.h to avoid HSV->HEX->HSV rounding errors
+  // Use preservedHue instead of hsv.h to avoid HSV->HEX->HSV rounding errors
   const setSaturation = useCallback(
     (s: number) => {
       // Preserve saturation for when v=0 (black makes saturation undefined)
       setPreservedSaturation(s)
-      const newHex = hsvToHex(preservedHueRef.current, s, hsv.v)
+      const newHex = hsvToHex(preservedHue, s, hsv.v)
       lastInternalHexRef.current = newHex
       setHexWithAlphaState(combineHexWithAlpha(newHex, alpha))
       onSaturationChange?.(s)
     },
-    [hsv.v, alpha, setHexWithAlphaState, onSaturationChange]
+    [preservedHue, hsv.v, alpha, setHexWithAlphaState, onSaturationChange]
   )
 
-  // Use preservedHueRef and preserved saturation to avoid HSV->HEX->HSV rounding errors
+  // Use preservedHue and preserved saturation to avoid HSV->HEX->HSV rounding errors
   const setBrightness = useCallback(
     (v: number) => {
       // Use preserved saturation to maintain value when at v=0
-      const newHex = hsvToHex(preservedHueRef.current, preservedSaturation, v)
+      const newHex = hsvToHex(preservedHue, preservedSaturation, v)
       lastInternalHexRef.current = newHex
       setHexWithAlphaState(combineHexWithAlpha(newHex, alpha))
       onBrightnessChange?.(v)
     },
-    [preservedSaturation, alpha, setHexWithAlphaState, onBrightnessChange]
+    [preservedHue, preservedSaturation, alpha, setHexWithAlphaState, onBrightnessChange]
   )
 
   // Set both saturation and brightness atomically to avoid race conditions
-  // Use preservedHueRef instead of hsv.h to avoid HSV->HEX->HSV rounding errors
+  // Use preservedHue instead of hsv.h to avoid HSV->HEX->HSV rounding errors
   const setSaturationAndBrightness = useCallback(
     (s: number, v: number) => {
       // Preserve saturation for when v=0 (black makes saturation undefined)
       setPreservedSaturation(s)
-      const newHex = hsvToHex(preservedHueRef.current, s, v)
+      const newHex = hsvToHex(preservedHue, s, v)
       lastInternalHexRef.current = newHex
       setHexWithAlphaState(combineHexWithAlpha(newHex, alpha))
       onSaturationChange?.(s)
       onBrightnessChange?.(v)
     },
-    [alpha, setHexWithAlphaState, onSaturationChange, onBrightnessChange]
+    [preservedHue, alpha, setHexWithAlphaState, onSaturationChange, onBrightnessChange]
   )
 
   const setAlpha = useCallback(

@@ -65,8 +65,7 @@ export const AreaThumb = forwardRef<HTMLDivElement, AreaThumbProps>(({ className
     (e: React.PointerEvent) => {
       if (disabled) return
       e.preventDefault()
-      e.stopPropagation()
-      ;(e.target as HTMLElement).setPointerCapture(e.pointerId)
+      ;(e.currentTarget as HTMLElement).setPointerCapture(e.pointerId)
 
       // If jumpOnClick is enabled, calculate position and jump to click location
       if (jumpOnClick) {
@@ -111,7 +110,7 @@ export const AreaThumb = forwardRef<HTMLDivElement, AreaThumbProps>(({ className
 
   const handlePointerUp = useCallback(
     (e: React.PointerEvent) => {
-      ;(e.target as HTMLElement).releasePointerCapture(e.pointerId)
+      ;(e.currentTarget as HTMLElement).releasePointerCapture(e.pointerId)
       onDragEnd?.()
     },
     [onDragEnd]

@@ -236,6 +236,140 @@ describe('forwardRef support', () => {
       expect(ref.current?.getHsv()?.s).toBe(50)
       expect(ref.current?.getHsv()?.v).toBe(80)
     })
+
+    it('should allow hue changes when saturation is 0 (grayscale)', () => {
+      const ref = createRef<ColorWheelRef>()
+
+      render(
+        <ColorWheel.Root ref={ref} defaultValue="#ff0000">
+          <ColorWheel.Wheel>
+            <ColorWheel.HueRing />
+            <ColorWheel.Area />
+          </ColorWheel.Wheel>
+        </ColorWheel.Root>
+      )
+
+      // Set hue to 120 (green) first
+      act(() => {
+        ref.current?.setHue(120)
+      })
+      expect(ref.current?.getHsv()?.h).toBe(120)
+
+      // Set saturation to 0 (grayscale - hue becomes mathematically undefined)
+      act(() => {
+        ref.current?.setSaturation(0)
+      })
+      // Hue should still be preserved at 120
+      expect(ref.current?.getHsv()?.h).toBe(120)
+      expect(ref.current?.getHsv()?.s).toBe(0)
+
+      // Now change hue while at s=0 - this should still work and update the UI
+      act(() => {
+        ref.current?.setHue(240)
+      })
+      // Hue should update to 240 even though hex is still grayscale
+      expect(ref.current?.getHsv()?.h).toBe(240)
+
+      // Change hue again
+      act(() => {
+        ref.current?.setHue(60)
+      })
+      expect(ref.current?.getHsv()?.h).toBe(60)
+
+      // Restore saturation - should see the new hue
+      act(() => {
+        ref.current?.setSaturation(100)
+      })
+      expect(ref.current?.getHsv()?.h).toBe(60)
+      expect(ref.current?.getHsv()?.s).toBe(100)
+    })
+
+    it('should allow hue changes when brightness is 0 (black)', () => {
+      const ref = createRef<ColorWheelRef>()
+
+      render(
+        <ColorWheel.Root ref={ref} defaultValue="#ff0000">
+          <ColorWheel.Wheel>
+            <ColorWheel.HueRing />
+            <ColorWheel.Area />
+          </ColorWheel.Wheel>
+        </ColorWheel.Root>
+      )
+
+      // Set hue to 180 (cyan) first
+      act(() => {
+        ref.current?.setHue(180)
+      })
+      expect(ref.current?.getHsv()?.h).toBe(180)
+
+      // Set brightness to 0 (black - hue becomes mathematically undefined)
+      act(() => {
+        ref.current?.setBrightness(0)
+      })
+      // Hue should still be preserved at 180
+      expect(ref.current?.getHsv()?.h).toBe(180)
+      expect(ref.current?.getHsv()?.v).toBe(0)
+
+      // Now change hue while at v=0 - this should still work and update the UI
+      act(() => {
+        ref.current?.setHue(300)
+      })
+      // Hue should update to 300 even though hex is still black
+      expect(ref.current?.getHsv()?.h).toBe(300)
+
+      // Change hue again
+      act(() => {
+        ref.current?.setHue(45)
+      })
+      expect(ref.current?.getHsv()?.h).toBe(45)
+
+      // Restore brightness - should see the new hue
+      act(() => {
+        ref.current?.setBrightness(100)
+      })
+      expect(ref.current?.getHsv()?.h).toBe(45)
+      expect(ref.current?.getHsv()?.v).toBe(100)
+    })
+
+    it('should allow hue changes when both saturation is 0 and brightness is low', () => {
+      const ref = createRef<ColorWheelRef>()
+
+      render(
+        <ColorWheel.Root ref={ref} defaultValue="#ff0000">
+          <ColorWheel.Wheel>
+            <ColorWheel.HueRing />
+            <ColorWheel.Area />
+          </ColorWheel.Wheel>
+        </ColorWheel.Root>
+      )
+
+      // Set to a grayscale color with low brightness (separate acts to ensure state updates)
+      act(() => {
+        ref.current?.setHue(200)
+      })
+      act(() => {
+        ref.current?.setSaturation(0)
+      })
+      act(() => {
+        ref.current?.setBrightness(30)
+      })
+      expect(ref.current?.getHsv()?.h).toBe(200)
+      expect(ref.current?.getHsv()?.s).toBe(0)
+      expect(ref.current?.getHsv()?.v).toBe(30)
+      // Hex should be a gray color
+      expect(ref.current?.getColor()).toBe('#4d4d4d')
+
+      // Change hue multiple times - should all work
+      const hueValues = [0, 90, 180, 270, 360]
+      for (const hue of hueValues) {
+        act(() => {
+          ref.current?.setHue(hue)
+        })
+        expect(ref.current?.getHsv()?.h).toBe(hue === 360 ? 360 : hue)
+        // Hex should remain gray since s=0
+        expect(ref.current?.getColor()).toBe('#4d4d4d')
+      }
+    })
   })
 
   describe('Wheel', () => {

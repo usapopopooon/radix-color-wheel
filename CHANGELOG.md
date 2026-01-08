@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Saturation is now preserved when brightness is 0 (black)
 - AreaThumb no longer gets stuck at bottom edge when dragging outside the area
+- Hue can now be changed when saturation is 0 or brightness is 0 (HueRing/HueThumb now works at grayscale/black)
 
 ## [0.1.7] - 2026-01-08
 
