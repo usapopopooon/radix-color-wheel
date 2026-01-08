@@ -56,8 +56,7 @@ export const HueThumb = forwardRef<HTMLDivElement, HueThumbProps>(({ className, 
     (e: React.PointerEvent) => {
       if (disabled) return
       e.preventDefault()
-      e.stopPropagation()
-      ;(e.target as HTMLElement).setPointerCapture(e.pointerId)
+      ;(e.currentTarget as HTMLElement).setPointerCapture(e.pointerId)
       onDragStart?.()
     },
     [disabled, onDragStart]
@@ -89,7 +88,7 @@ export const HueThumb = forwardRef<HTMLDivElement, HueThumbProps>(({ className, 
 
   const handlePointerUp = useCallback(
     (e: React.PointerEvent) => {
-      ;(e.target as HTMLElement).releasePointerCapture(e.pointerId)
+      ;(e.currentTarget as HTMLElement).releasePointerCapture(e.pointerId)
       onDragEnd?.()
     },
     [onDragEnd]
