@@ -96,14 +96,29 @@ export const Root = forwardRef<ColorWheelRef, RootProps>(function Root(
   // Derived HSV from hex
   const derivedHsv = useMemo(() => hexToHsv(hex), [hex])
 
-  // Preserve hue independently - needed because grayscale colors lose hue info
-  // When saturation > 0, sync preservedHue with derived value via useSyncExternalStore pattern
-  const [preservedHue, setPreservedHue] = useState(() => derivedHsv.h)
+  // Preserve hue independently to avoid HSV->HEX->HSV rounding errors
+  // This ensures hue remains stable during saturation/brightness changes
+  const preservedHueRef = useRef(derivedHsv.h)
+  const lastInternalHexRef = useRef<string | null>(null)
+  const lastExternalHexRef = useRef<string>(hex)
 
-  // Combined HSV: when saturation is 0, use preserved hue
+  // Sync preserved hue from external changes (outside of render)
+  if (lastExternalHexRef.current !== hex && lastInternalHexRef.current !== hex) {
+    // External change detected
+    if (derivedHsv.s > 0) {
+      preservedHueRef.current = derivedHsv.h
+    }
+    lastExternalHexRef.current = hex
+  } else if (lastInternalHexRef.current === hex) {
+    // Internal change - just update the external ref tracker
+    lastExternalHexRef.current = hex
+  }
+
+  // Combined HSV: always use preservedHueRef to avoid rounding errors
   const hsv = useMemo(
-    () => (derivedHsv.s === 0 ? { ...derivedHsv, h: preservedHue } : derivedHsv),
-    [derivedHsv, preservedHue]
+    () => ({ ...derivedHsv, h: preservedHueRef.current }),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [derivedHsv, hex]
   )
 
   // Alpha state - controllable
@@ -158,41 +173,48 @@ export const Root = forwardRef<ColorWheelRef, RootProps>(function Root(
   const setHue = useCallback(
     (h: number) => {
       // Always update preserved hue so it persists when saturation is 0
-      setPreservedHue(h)
+      preservedHueRef.current = h
       const newHex = hsvToHex(h, hsv.s, hsv.v)
+      lastInternalHexRef.current = newHex
       setHexWithAlphaState(combineHexWithAlpha(newHex, alpha))
       onHueChange?.(h)
     },
     [hsv.s, hsv.v, alpha, setHexWithAlphaState, onHueChange]
   )
 
+  // Use preservedHueRef instead of hsv.h to avoid HSV->HEX->HSV rounding errors
   const setSaturation = useCallback(
     (s: number) => {
-      const newHex = hsvToHex(hsv.h, s, hsv.v)
+      const newHex = hsvToHex(preservedHueRef.current, s, hsv.v)
+      lastInternalHexRef.current = newHex
       setHexWithAlphaState(combineHexWithAlpha(newHex, alpha))
       onSaturationChange?.(s)
     },
-    [hsv.h, hsv.v, alpha, setHexWithAlphaState, onSaturationChange]
+    [hsv.v, alpha, setHexWithAlphaState, onSaturationChange]
   )
 
+  // Use preservedHueRef instead of hsv.h to avoid HSV->HEX->HSV rounding errors
   const setBrightness = useCallback(
     (v: number) => {
-      const newHex = hsvToHex(hsv.h, hsv.s, v)
+      const newHex = hsvToHex(preservedHueRef.current, hsv.s, v)
+      lastInternalHexRef.current = newHex
       setHexWithAlphaState(combineHexWithAlpha(newHex, alpha))
       onBrightnessChange?.(v)
     },
-    [hsv.h, hsv.s, alpha, setHexWithAlphaState, onBrightnessChange]
+    [hsv.s, alpha, setHexWithAlphaState, onBrightnessChange]
   )
 
   // Set both saturation and brightness atomically to avoid race conditions
+  // Use preservedHueRef instead of hsv.h to avoid HSV->HEX->HSV rounding errors
   const setSaturationAndBrightness = useCallback(
     (s: number, v: number) => {
-      const newHex = hsvToHex(hsv.h, s, v)
+      const newHex = hsvToHex(preservedHueRef.current, s, v)
+      lastInternalHexRef.current = newHex
       setHexWithAlphaState(combineHexWithAlpha(newHex, alpha))
       onSaturationChange?.(s)
       onBrightnessChange?.(v)
     },
-    [hsv.h, alpha, setHexWithAlphaState, onSaturationChange, onBrightnessChange]
+    [alpha, setHexWithAlphaState, onSaturationChange, onBrightnessChange]
   )
 
   const setAlpha = useCallback(
