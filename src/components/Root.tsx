@@ -97,16 +97,25 @@ export const Root = forwardRef<ColorWheelRef, RootProps>(function Root(
   const derivedHsv = useMemo(() => hexToHsv(hex), [hex])
 
   // Preserve hue independently to avoid HSV->HEX->HSV rounding errors
-  // This ensures hue remains stable during saturation/brightness changes
+  // Hue is undefined when saturation=0 (grayscale), so we preserve it
   const preservedHueRef = useRef(derivedHsv.h)
   const lastInternalHexRef = useRef<string | null>(null)
   const lastExternalHexRef = useRef<string>(hex)
 
-  // Sync preserved hue from external changes (outside of render)
+  // Preserve saturation as state (not ref) because when v=0, hex doesn't change
+  // but we still need to trigger re-renders when saturation changes
+  const [preservedSaturation, setPreservedSaturation] = useState(derivedHsv.s)
+
+  // Sync preserved hue/saturation from external changes (outside of render)
   if (lastExternalHexRef.current !== hex && lastInternalHexRef.current !== hex) {
     // External change detected
+    // Only update preserved hue if saturation > 0 (hue is defined)
     if (derivedHsv.s > 0) {
       preservedHueRef.current = derivedHsv.h
+    }
+    // Only update preserved saturation if value > 0 (saturation is defined)
+    if (derivedHsv.v > 0) {
+      setPreservedSaturation(derivedHsv.s)
     }
     lastExternalHexRef.current = hex
   } else if (lastInternalHexRef.current === hex) {
@@ -114,11 +123,16 @@ export const Root = forwardRef<ColorWheelRef, RootProps>(function Root(
     lastExternalHexRef.current = hex
   }
 
-  // Combined HSV: always use preservedHueRef to avoid rounding errors
+  // Combined HSV: use preserved values to avoid rounding errors
   const hsv = useMemo(
-    () => ({ ...derivedHsv, h: preservedHueRef.current }),
+    () => ({
+      h: preservedHueRef.current,
+      // Use preserved saturation when value=0 (black), otherwise use derived
+      s: derivedHsv.v === 0 ? preservedSaturation : derivedHsv.s,
+      v: derivedHsv.v,
+    }),
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [derivedHsv, hex]
+    [derivedHsv, hex, preservedSaturation]
   )
 
   // Alpha state - controllable
@@ -185,6 +199,8 @@ export const Root = forwardRef<ColorWheelRef, RootProps>(function Root(
   // Use preservedHueRef instead of hsv.h to avoid HSV->HEX->HSV rounding errors
   const setSaturation = useCallback(
     (s: number) => {
+      // Preserve saturation for when v=0 (black makes saturation undefined)
+      setPreservedSaturation(s)
       const newHex = hsvToHex(preservedHueRef.current, s, hsv.v)
       lastInternalHexRef.current = newHex
       setHexWithAlphaState(combineHexWithAlpha(newHex, alpha))
@@ -193,21 +209,24 @@ export const Root = forwardRef<ColorWheelRef, RootProps>(function Root(
     [hsv.v, alpha, setHexWithAlphaState, onSaturationChange]
   )
 
-  // Use preservedHueRef instead of hsv.h to avoid HSV->HEX->HSV rounding errors
+  // Use preservedHueRef and preserved saturation to avoid HSV->HEX->HSV rounding errors
   const setBrightness = useCallback(
     (v: number) => {
-      const newHex = hsvToHex(preservedHueRef.current, hsv.s, v)
+      // Use preserved saturation to maintain value when at v=0
+      const newHex = hsvToHex(preservedHueRef.current, preservedSaturation, v)
       lastInternalHexRef.current = newHex
       setHexWithAlphaState(combineHexWithAlpha(newHex, alpha))
       onBrightnessChange?.(v)
     },
-    [hsv.s, alpha, setHexWithAlphaState, onBrightnessChange]
+    [preservedSaturation, alpha, setHexWithAlphaState, onBrightnessChange]
   )
 
   // Set both saturation and brightness atomically to avoid race conditions
   // Use preservedHueRef instead of hsv.h to avoid HSV->HEX->HSV rounding errors
   const setSaturationAndBrightness = useCallback(
     (s: number, v: number) => {
+      // Preserve saturation for when v=0 (black makes saturation undefined)
+      setPreservedSaturation(s)
       const newHex = hsvToHex(preservedHueRef.current, s, v)
       lastInternalHexRef.current = newHex
       setHexWithAlphaState(combineHexWithAlpha(newHex, alpha))
