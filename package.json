@@ -1,6 +1,6 @@
 {
   "name": "react-hsv-ring",
-  "version": "0.1.7",
+  "version": "0.1.8",
   "description": "Color wheel component based on Radix UI design philosophy",
   "type": "module",
   "main": "./dist/index.cjs",
