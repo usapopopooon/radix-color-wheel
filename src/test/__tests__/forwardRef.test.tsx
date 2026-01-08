@@ -101,6 +101,141 @@ describe('forwardRef support', () => {
       })
       expect(ref.current?.getColor()).toBe('#0000ff')
     })
+
+    it('should preserve hue when saturation/brightness changes (no HSV rounding drift)', () => {
+      const ref = createRef<ColorWheelRef>()
+
+      render(
+        <ColorWheel.Root ref={ref} defaultValue="#ff0000">
+          <ColorWheel.Wheel>
+            <ColorWheel.HueRing />
+            <ColorWheel.Area />
+          </ColorWheel.Wheel>
+        </ColorWheel.Root>
+      )
+
+      // Set initial hue to 200 (cyan-blue)
+      act(() => {
+        ref.current?.setHue(200)
+      })
+      const initialHue = ref.current?.getHsv()?.h
+      expect(initialHue).toBe(200)
+
+      // Simulate multiple saturation/brightness changes (like dragging in Area)
+      // This previously caused hue drift due to HSV->HEX->HSV rounding errors
+      for (let i = 0; i < 10; i++) {
+        act(() => {
+          ref.current?.setSaturation(50 + i * 5)
+          ref.current?.setBrightness(80 - i * 3)
+        })
+      }
+
+      // Hue should remain exactly 200 after all changes
+      const finalHue = ref.current?.getHsv()?.h
+      expect(finalHue).toBe(200)
+    })
+
+    it('should preserve hue even at low saturation values', () => {
+      const ref = createRef<ColorWheelRef>()
+
+      render(
+        <ColorWheel.Root ref={ref} defaultValue="#ff0000">
+          <ColorWheel.Wheel>
+            <ColorWheel.HueRing />
+            <ColorWheel.Area />
+          </ColorWheel.Wheel>
+        </ColorWheel.Root>
+      )
+
+      // Set hue to 120 (green)
+      act(() => {
+        ref.current?.setHue(120)
+      })
+
+      // Set saturation very low (near grayscale where hue is mathematically undefined)
+      act(() => {
+        ref.current?.setSaturation(5)
+        ref.current?.setBrightness(50)
+      })
+
+      // Hue should still be preserved at 120
+      expect(ref.current?.getHsv()?.h).toBe(120)
+
+      // Increase saturation back - hue should still be 120
+      act(() => {
+        ref.current?.setSaturation(80)
+      })
+      expect(ref.current?.getHsv()?.h).toBe(120)
+    })
+
+    it('should preserve saturation when brightness is 0 (black)', () => {
+      const ref = createRef<ColorWheelRef>()
+
+      render(
+        <ColorWheel.Root ref={ref} defaultValue="#ff0000">
+          <ColorWheel.Wheel>
+            <ColorWheel.HueRing />
+            <ColorWheel.Area />
+          </ColorWheel.Wheel>
+        </ColorWheel.Root>
+      )
+
+      // Set saturation to 75
+      act(() => {
+        ref.current?.setSaturation(75)
+      })
+      expect(ref.current?.getHsv()?.s).toBe(75)
+
+      // Set brightness to 0 (black) - saturation becomes undefined in hex
+      act(() => {
+        ref.current?.setBrightness(0)
+      })
+
+      // Saturation should still be preserved at 75 even though hex is #000000
+      expect(ref.current?.getHsv()?.s).toBe(75)
+      expect(ref.current?.getHsv()?.v).toBe(0)
+    })
+
+    it('should allow saturation changes while at brightness 0', () => {
+      const ref = createRef<ColorWheelRef>()
+
+      render(
+        <ColorWheel.Root ref={ref} defaultValue="#ff0000">
+          <ColorWheel.Wheel>
+            <ColorWheel.HueRing />
+            <ColorWheel.Area />
+          </ColorWheel.Wheel>
+        </ColorWheel.Root>
+      )
+
+      // Set brightness to 0 first
+      act(() => {
+        ref.current?.setBrightness(0)
+      })
+
+      // Change saturation multiple times while at v=0
+      act(() => {
+        ref.current?.setSaturation(25)
+      })
+      expect(ref.current?.getHsv()?.s).toBe(25)
+
+      act(() => {
+        ref.current?.setSaturation(100)
+      })
+      expect(ref.current?.getHsv()?.s).toBe(100)
+
+      act(() => {
+        ref.current?.setSaturation(50)
+      })
+      expect(ref.current?.getHsv()?.s).toBe(50)
+
+      // Increase brightness - saturation should still be 50
+      act(() => {
+        ref.current?.setBrightness(80)
+      })
+      expect(ref.current?.getHsv()?.s).toBe(50)
+      expect(ref.current?.getHsv()?.v).toBe(80)
+    })
   })
 
   describe('Wheel', () => {
